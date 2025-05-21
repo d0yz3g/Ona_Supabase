@@ -15,14 +15,12 @@ from aiogram.exceptions import TelegramAPIError
 from aiohttp import web
 
 from db import Database
-import handlers
+# Импортируем questionnaire_router напрямую
+from handlers import questionnaire_router
 from handlers.recs import recs_router
 from handlers.meditate import meditate_router
 from handlers.reminders import reminders_router, set_scheduler
 from services.scheduler import ReminderScheduler
-
-# Используем модуль handlers.py для questionnaire
-questionnaire_router = handlers.questionnaire_router
 
 # Настройка логирования
 logging.basicConfig(
