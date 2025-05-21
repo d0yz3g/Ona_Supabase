@@ -8,7 +8,10 @@ from openai import AsyncOpenAI
 logger = logging.getLogger(__name__)
 
 # Инициализация клиента OpenAI с API-ключом из переменных окружения
-client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = AsyncOpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    http_client=None  # Это заставит OpenAI использовать стандартные параметры httpx без proxies
+)
 
 # Список доступных фокусов для рекомендаций
 AVAILABLE_FOCUSES = {

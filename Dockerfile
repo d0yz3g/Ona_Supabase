@@ -18,9 +18,11 @@ RUN pip install --upgrade pip setuptools wheel
 # Копируем только requirements.txt
 COPY requirements.txt .
 
-# Установка базовых зависимостей по отдельности для лучшей отладки
-RUN pip install --no-cache-dir python-dotenv aiohttp==3.9.1 pytz 
-RUN pip install --no-cache-dir pre-commit pytest
+# Установка базовых зависимостей и корректной версии httpx
+RUN pip install --no-cache-dir httpx>=0.24.0
+
+# Установка остальных зависимостей
+RUN pip install --no-cache-dir python-dotenv pytz pre-commit pytest
 RUN pip install --no-cache-dir aiogram==3.2.0
 RUN pip install --no-cache-dir openai==1.3.5
 RUN pip install --no-cache-dir ephem elevenlabs aiofiles apscheduler
