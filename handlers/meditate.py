@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Optional
 
 from aiogram import Router, F
@@ -11,9 +12,9 @@ from services.tts import generate_voice, delete_voice_file, MEDITATION_TEXTS
 logger = logging.getLogger(__name__)
 
 # Инициализация роутера
-meditate_router = Router(name="meditation")
+router = Router(name="meditation")
 
-@meditate_router.message(Command("meditate"))
+@router.message(Command("meditate"))
 async def meditate_command(message: Message):
     """Обработчик команды /meditate с возможностью указания типа медитации."""
     # Получаем аргументы команды
@@ -32,34 +33,43 @@ async def meditate_command(message: Message):
         f"Подготавливаю медитацию '{meditation_type}'. Это займет несколько секунд..."
     )
     
-    # Генерируем голосовой файл
-    voice_file_path = await generate_voice(
-        text=meditation_text,
-        tg_id=message.from_user.id
-    )
+    # Создаем директорию для временных файлов, если её нет
+    os.makedirs("tmp", exist_ok=True)
     
-    if voice_file_path:
-        try:
-            # Отправляем голосовое сообщение
-            await message.answer_voice(
-                voice=FSInputFile(voice_file_path),
-                caption="Найдите тихое место, где вас никто не побеспокоит. Расслабьтесь и следуйте инструкциям."
+    try:
+        # Генерируем голосовой файл
+        voice_file_path = await generate_voice(
+            text=meditation_text,
+            tg_id=message.from_user.id
+        )
+        
+        if voice_file_path:
+            try:
+                # Отправляем голосовое сообщение
+                await message.answer_voice(
+                    voice=FSInputFile(voice_file_path),
+                    caption="Найдите тихое место, где вас никто не побеспокоит. Расслабьтесь и следуйте инструкциям."
+                )
+                logger.info(f"Отправлена медитация типа '{meditation_type}' пользователю {message.from_user.id}")
+                
+                # Удаляем временный файл
+                await delete_voice_file(voice_file_path)
+            except Exception as e:
+                logger.error(f"Ошибка при отправке голосового сообщения: {e}")
+                await message.answer("Произошла ошибка при отправке медитации. Пожалуйста, попробуйте позже.")
+                # В случае ошибки также пытаемся удалить файл
+                await delete_voice_file(voice_file_path)
+        else:
+            await message.answer(
+                "К сожалению, не удалось сгенерировать медитацию. Пожалуйста, попробуйте позже."
             )
-            logger.info(f"Отправлена медитация типа '{meditation_type}' пользователю {message.from_user.id}")
-            
-            # Удаляем временный файл
-            await delete_voice_file(voice_file_path)
-        except Exception as e:
-            logger.error(f"Ошибка при отправке голосового сообщения: {e}")
-            await message.answer("Произошла ошибка при отправке медитации. Пожалуйста, попробуйте позже.")
-            # В случае ошибки также пытаемся удалить файл
-            await delete_voice_file(voice_file_path)
-    else:
+    except Exception as e:
+        logger.error(f"Ошибка при генерации медитации: {e}")
         await message.answer(
-            "К сожалению, не удалось сгенерировать медитацию. Пожалуйста, попробуйте позже."
+            "Произошла ошибка при генерации медитации. Пожалуйста, попробуйте позже."
         )
 
-@meditate_router.message(Command("help_meditate"))
+@router.message(Command("help_meditate"))
 async def help_meditate(message: Message):
     """Справка по использованию команды /meditate и доступным типам медитаций."""
     help_text = [

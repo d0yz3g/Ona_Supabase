@@ -12,7 +12,7 @@ from services.scheduler import ReminderScheduler
 logger = logging.getLogger(__name__)
 
 # Инициализация роутера
-reminders_router = Router(name="reminders")
+router = Router(name="reminder")
 
 # Сообщения для пользователя
 REMINDER_ENABLED_MESSAGE = (
@@ -48,7 +48,7 @@ def set_scheduler(reminder_scheduler: ReminderScheduler):
     global scheduler
     scheduler = reminder_scheduler
 
-@reminders_router.message(Command("reminder_on"))
+@router.message(Command("reminder_on"))
 async def enable_reminder(message: Message):
     """Обработчик команды для включения напоминаний."""
     user_id = message.from_user.id
@@ -92,7 +92,7 @@ async def enable_reminder(message: Message):
         )
         logger.error(f"Ошибка при включении напоминаний для пользователя {user_id}")
 
-@reminders_router.message(Command("reminder_off"))
+@router.message(Command("reminder_off"))
 async def disable_reminder(message: Message):
     """Обработчик команды для отключения напоминаний."""
     user_id = message.from_user.id
@@ -130,7 +130,7 @@ async def disable_reminder(message: Message):
         )
         logger.error(f"Ошибка при отключении напоминаний для пользователя {user_id}")
 
-@reminders_router.message(Command("reminder_status"))
+@router.message(Command("reminder_status"))
 async def check_reminder_status(message: Message):
     """Проверка статуса напоминаний."""
     user_id = message.from_user.id
@@ -163,7 +163,7 @@ async def check_reminder_status(message: Message):
             "Чтобы включить напоминания, используйте команду /reminder_on."
         )
 
-@reminders_router.message(Command("help_reminder"))
+@router.message(Command("help_reminder"))
 async def help_reminder(message: Message):
     """Справка по командам управления напоминаниями."""
     help_text = [

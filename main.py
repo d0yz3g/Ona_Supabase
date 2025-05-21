@@ -8,18 +8,22 @@ from typing import Dict, Any, Optional
 from dotenv import load_dotenv
 
 from aiogram import Bot, Dispatcher, Router, F, html
-from aiogram.types import Message
+from aiogram.types import Message, Update, ErrorEvent
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.exceptions import TelegramAPIError
 from aiohttp import web
 
 from db import Database
-# Импортируем роутеры напрямую из соответствующих модулей
-from handlers.recs import recs_router
-from handlers.meditate import meditate_router
-from handlers.reminders import reminders_router, set_scheduler
-from handlers.questionnaire import questionnaire_router
+# Импортируем роутеры из handlers/__init__.py
+from handlers import (
+    reflect_router,
+    meditate_router,
+    reminder_router,
+    survey_router,
+    general_router
+)
+
 from services.scheduler import ReminderScheduler
 
 # Настройка логирования
@@ -241,24 +245,33 @@ async def root_handler(request):
     })
 
 # Обработчик ошибок для диспетчера
-async def errors_handler(update, exception):
+async def errors_handler(event: ErrorEvent):
     """Обработчик ошибок при обработке обновлений Telegram."""
+    # Получаем информацию об ошибке
+    update = event.update if hasattr(event, 'update') else None
+    exception = event.exception
+    
     # Получаем информацию о пользователе и сообщении
-    if update.message:
-        user_id = update.message.from_user.id
+    user_id = 'Неизвестно'
+    chat_id = 'Неизвестно'
+    message_id = 'Неизвестно'
+    user_text = 'Неизвестно'
+    
+    if update and hasattr(update, 'message') and update.message:
+        user_id = update.message.from_user.id if update.message.from_user else 'Неизвестно'
         chat_id = update.message.chat.id
         message_id = update.message.message_id
-        user_text = update.message.text if hasattr(update.message, 'text') else '<нет текста>'
-    else:
-        user_id = 'Неизвестно'
-        chat_id = 'Неизвестно'
-        message_id = 'Неизвестно'
-        user_text = 'Неизвестно'
+        user_text = update.message.text if hasattr(update.message, 'text') and update.message.text else '<нет текста>'
+    elif update and hasattr(update, 'callback_query') and update.callback_query:
+        user_id = update.callback_query.from_user.id if update.callback_query.from_user else 'Неизвестно'
+        chat_id = update.callback_query.message.chat.id if update.callback_query.message else 'Неизвестно'
+        message_id = update.callback_query.message.message_id if update.callback_query.message else 'Неизвестно'
+        user_text = update.callback_query.data if update.callback_query.data else '<нет данных>'
     
     # Подготовка данных об ошибке
     error_message = f"Ошибка при обработке сообщения от пользователя {user_id}:\n"
     error_message += f"Чат: {chat_id}, Сообщение ID: {message_id}\n"
-    error_message += f"Текст сообщения: {html.quote(user_text)}\n"
+    error_message += f"Текст сообщения: {html.quote(str(user_text))}\n"
     error_message += f"Ошибка: {html.quote(str(exception))}"
     
     # Логирование ошибки
@@ -283,14 +296,24 @@ async def main():
     scheduler = ReminderScheduler(bot=bot, db=db)
     
     # Передаем экземпляр планировщика в модуль напоминаний
+    from handlers.reminder import set_scheduler
     set_scheduler(scheduler)
+
+    # Настройка приоритетов роутеров (чем выше число, тем выше приоритет)
+    main_router.message.middleware.priority = 10  # Самый высокий приоритет для основных команд
+    survey_router.message.middleware.priority = 9  # Высокий приоритет для опросника
+    reflect_router.message.middleware.priority = 8
+    meditate_router.message.middleware.priority = 8
+    reminder_router.message.middleware.priority = 8
+    general_router.message.middleware.priority = 1  # Самый низкий приоритет для обработки неспециализированных сообщений
 
     # Регистрация роутеров
     dp.include_router(main_router)
-    dp.include_router(questionnaire_router)
-    dp.include_router(recs_router)  # Регистрируем роутер рекомендаций
-    dp.include_router(meditate_router)  # Регистрируем роутер медитаций
-    dp.include_router(reminders_router)  # Регистрируем роутер напоминаний
+    dp.include_router(survey_router)
+    dp.include_router(reflect_router)
+    dp.include_router(meditate_router)
+    dp.include_router(reminder_router)
+    dp.include_router(general_router)  # Регистрируем последним с низким приоритетом
 
     # Запускаем планировщик
     scheduler.start()
