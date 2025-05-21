@@ -1,10 +1,17 @@
 import logging
-import ephem
 from datetime import datetime
 from typing import Dict, Any, Tuple
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
+
+# Пытаемся импортировать PyEphem, обрабатываем ошибки если недоступен
+EPHEM_AVAILABLE = False
+try:
+    import ephem
+    EPHEM_AVAILABLE = True
+except ImportError:
+    logger.warning("Библиотека PyEphem не установлена. Натальная карта будет создана с заполнителями.")
 
 # Словарь с координатами некоторых городов (широта, долгота)
 CITY_COORDINATES = {
@@ -38,6 +45,27 @@ def make_natal_chart(date_str: str, city: str, name: str = None) -> Dict[str, An
     Returns:
         Dict[str, Any]: JSON-объект с данными натальной карты.
     """
+    # Проверяем, доступен ли PyEphem
+    if not EPHEM_AVAILABLE:
+        logger.warning("Создание натальной карты невозможно: PyEphem не установлен")
+        return {
+            "note": "Натальная карта создана с заполнителями (PyEphem не установлен)",
+            "sun_long": 0.0,
+            "moon_long": 0.0,
+            "mercury_long": 0.0,
+            "venus_long": 0.0,
+            "mars_long": 0.0,
+            "jupiter_long": 0.0,
+            "saturn_long": 0.0,
+            "coordinates": {
+                "latitude": 0.0,
+                "longitude": 0.0
+            },
+            "date": date_str,
+            "city": city,
+            "name": name
+        }
+    
     try:
         # Получаем координаты города
         lat, lon = get_coordinates(city)

@@ -11,6 +11,9 @@ logger = logging.getLogger(__name__)
 
 # Параметры API
 ELEVEN_API_KEY = os.getenv("ELEVEN_API_KEY")
+if not ELEVEN_API_KEY:
+    logger.warning("ELEVEN_API_KEY не найден в переменных окружения. Будет использоваться заглушка для голосовых сообщений.")
+
 ELEVEN_VOICE_ID = os.getenv("ELEVEN_VOICE_ID", "21m00Tcm4TlvDq8ikWAM")  # ID женского голоса по умолчанию
 API_URL = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVEN_VOICE_ID}"
 
@@ -18,9 +21,13 @@ API_URL = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVEN_VOICE_ID}"
 TMP_DIR = "tmp"
 os.makedirs(TMP_DIR, exist_ok=True)
 
+# Путь к заготовленному аудиофайлу для заглушки
+DEFAULT_AUDIO_PATH = os.path.join(TMP_DIR, "default_meditation.mp3")
+
 async def generate_voice(text: str, tg_id: int) -> Optional[str]:
     """
     Генерация голосового сообщения с использованием ElevenLabs API.
+    Если API-ключ отсутствует, возвращается путь к заготовленному аудиофайлу.
     
     Args:
         text: Текст для озвучивания.
@@ -30,8 +37,34 @@ async def generate_voice(text: str, tg_id: int) -> Optional[str]:
         Optional[str]: Путь к созданному аудиофайлу или None в случае ошибки.
     """
     if not ELEVEN_API_KEY:
-        logger.error("ELEVEN_API_KEY не найден в переменных окружения")
-        return None
+        logger.info(f"Используется заглушка для голосового сообщения пользователя {tg_id}")
+        
+        # Создаем копию заготовленного аудиофайла с уникальным именем
+        file_uuid = str(uuid.uuid4())
+        file_path = os.path.join(TMP_DIR, f"{tg_id}_{file_uuid}.mp3")
+        
+        # Если существует заготовленный файл, копируем его
+        if os.path.exists(DEFAULT_AUDIO_PATH):
+            try:
+                # Копирование файла синхронно (для простоты)
+                with open(DEFAULT_AUDIO_PATH, 'rb') as src, open(file_path, 'wb') as dst:
+                    dst.write(src.read())
+                logger.info(f"Создана копия заготовленного аудиофайла {file_path} для пользователя {tg_id}")
+                return file_path
+            except Exception as e:
+                logger.error(f"Ошибка при копировании заготовленного аудиофайла: {e}")
+                return None
+        else:
+            # Если заготовленный файл не существует, создаем пустой файл
+            try:
+                with open(file_path, 'wb') as f:
+                    # Записываем минимальный MP3-заголовок
+                    f.write(b'\xFF\xFB\x90\x44\x00\x00\x00\x00')
+                logger.info(f"Создан пустой аудиофайл {file_path} для пользователя {tg_id}")
+                return file_path
+            except Exception as e:
+                logger.error(f"Ошибка при создании пустого аудиофайла: {e}")
+                return None
     
     # Ограничение на количество слов
     words = text.split()
@@ -73,9 +106,36 @@ async def generate_voice(text: str, tg_id: int) -> Optional[str]:
                 else:
                     error_text = await response.text()
                     logger.error(f"Ошибка API ElevenLabs: {response.status} - {error_text}")
-                    return None
+                    # В случае ошибки API также используем заглушку
+                    return await _generate_fallback_audio(tg_id)
     except Exception as e:
         logger.error(f"Ошибка при генерации голосового сообщения: {e}")
+        # В случае исключения также используем заглушку
+        return await _generate_fallback_audio(tg_id)
+
+async def _generate_fallback_audio(tg_id: int) -> Optional[str]:
+    """
+    Создает заглушку аудиофайла в случае ошибки API.
+    
+    Args:
+        tg_id: ID пользователя в Telegram.
+        
+    Returns:
+        Optional[str]: Путь к созданному аудиофайлу или None в случае ошибки.
+    """
+    # Формирование уникального имени файла
+    file_uuid = str(uuid.uuid4())
+    file_path = os.path.join(TMP_DIR, f"{tg_id}_{file_uuid}.mp3")
+    
+    try:
+        # Создаем минимальный MP3 файл
+        with open(file_path, 'wb') as f:
+            # Записываем минимальный MP3-заголовок
+            f.write(b'\xFF\xFB\x90\x44\x00\x00\x00\x00')
+        logger.info(f"Создан запасной аудиофайл {file_path} для пользователя {tg_id}")
+        return file_path
+    except Exception as e:
+        logger.error(f"Ошибка при создании запасного аудиофайла: {e}")
         return None
 
 async def delete_voice_file(file_path: str) -> bool:
