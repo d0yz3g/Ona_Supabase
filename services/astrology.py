@@ -26,13 +26,14 @@ def get_coordinates(city: str) -> Tuple[float, float]:
     # Для MVP возвращаем координаты из словаря или (0, 0) если город не найден
     return CITY_COORDINATES.get(city, (0.0, 0.0))
 
-def make_natal_chart(date_str: str, city: str) -> Dict[str, Any]:
+def make_natal_chart(date_str: str, city: str, name: str = None) -> Dict[str, Any]:
     """
     Создание натальной карты на основе даты и места рождения.
     
     Args:
         date_str: Дата и время рождения в формате "YYYY-MM-DD HH:MM".
         city: Название города рождения.
+        name: Имя человека (опционально).
         
     Returns:
         Dict[str, Any]: JSON-объект с данными натальной карты.
@@ -56,7 +57,8 @@ def make_natal_chart(date_str: str, city: str) -> Dict[str, Any]:
             return {
                 "error": f"Неверный формат даты: {date_str}",
                 "date": date_str,
-                "city": city
+                "city": city,
+                "name": name
             }
         
         # Рассчитываем положения небесных тел
@@ -84,7 +86,8 @@ def make_natal_chart(date_str: str, city: str) -> Dict[str, Any]:
                 "latitude": lat,
                 "longitude": lon
             },
-            "date": date_str
+            "date": date_str,
+            "name": name
         }
         
         return result
@@ -95,5 +98,6 @@ def make_natal_chart(date_str: str, city: str) -> Dict[str, Any]:
         return {
             "error": str(e),
             "date": date_str,
-            "city": city
+            "city": city,
+            "name": name
         } 

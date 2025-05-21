@@ -35,205 +35,239 @@ STRENGTH_QUESTIONS = [
         "id": "strength_1",
         "text": "Я часто ищу возможности помочь другим в решении их проблем.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "social"
     },
     {
         "id": "strength_2",
         "text": "Мне нравится организовывать и структурировать информацию.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "organized"
     },
     {
         "id": "strength_3",
         "text": "Я быстро нахожу связи между, казалось бы, не связанными вещами.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "analytical"
     },
     {
         "id": "strength_4",
         "text": "Я полон энтузиазма и энергии в отношении новых проектов.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "leadership"
     },
     {
         "id": "strength_5",
         "text": "Я предпочитаю глубоко разбираться в теме, а не знать понемногу обо всем.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "analytical"
     },
     {
         "id": "strength_6",
         "text": "Для меня важно, чтобы все было честно и справедливо.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "resilient"
     },
     {
         "id": "strength_7",
         "text": "Я легко нахожу общий язык с новыми людьми.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "social"
     },
     {
         "id": "strength_8",
         "text": "Мне важно доводить начатое до конца, даже если это сложно.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "resilient"
     },
     {
         "id": "strength_9",
         "text": "Я часто оказываюсь в роли неформального лидера в группе.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "leadership"
     },
     {
         "id": "strength_10",
         "text": "Я умею видеть хорошее в любой ситуации и людях.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "resilient"
     },
     {
         "id": "strength_11",
         "text": "Мне нравится учиться чему-то новому каждый день.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "analytical"
     },
     {
         "id": "strength_12",
         "text": "Я хорошо чувствую настроение и потребности других людей.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "social"
     },
     {
         "id": "strength_13",
         "text": "Мне нравится ставить цели и достигать их.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "organized"
     },
     {
         "id": "strength_14",
         "text": "Я предпочитаю тщательно обдумывать решения перед действием.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "analytical"
     },
     {
         "id": "strength_15",
         "text": "Мне нравится выражать идеи творчески и нестандартно.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "creative"
     },
     {
         "id": "strength_16",
         "text": "Я ценю гармонию и стараюсь избегать конфликтов.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "social"
     },
     {
         "id": "strength_17",
         "text": "Мне нравится работать в команде и вдохновлять других.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "leadership"
     },
     {
         "id": "strength_18",
         "text": "Я люблю решать сложные проблемы и головоломки.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "analytical"
     },
     {
         "id": "strength_19",
         "text": "Я внимателен к деталям и нюансам.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "organized"
     },
     {
         "id": "strength_20",
         "text": "Мне важно чувство принадлежности к сообществу или группе.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "social"
     },
     {
         "id": "strength_21",
         "text": "Я предпочитаю действовать самостоятельно и независимо.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "resilient"
     },
     {
         "id": "strength_22",
         "text": "Я готов высказывать свое мнение, даже если оно непопулярно.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "leadership"
     },
     {
         "id": "strength_23",
         "text": "Я ценю традиции и устоявшиеся правила.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "organized"
     },
     {
         "id": "strength_24",
         "text": "Мне важно постоянно развиваться и становиться лучше.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "resilient"
     },
     {
         "id": "strength_25",
         "text": "Я умею вдохновлять и мотивировать других людей.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "leadership"
     },
     {
         "id": "strength_26",
         "text": "Я склонен видеть проблемы как возможности для роста.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "resilient"
     },
     {
         "id": "strength_27",
         "text": "Мне нравится планировать и организовывать.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "organized"
     },
     {
         "id": "strength_28",
         "text": "Я легко адаптируюсь к изменениям и новым ситуациям.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "resilient"
     },
     {
         "id": "strength_29",
         "text": "Я стремлюсь к совершенству во всем, что делаю.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "organized"
     },
     {
         "id": "strength_30",
         "text": "Мне нравится исследовать и открывать что-то новое.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "creative"
     },
     {
         "id": "strength_31",
         "text": "Я легко формулирую и выражаю свои мысли.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "creative"
     },
     {
         "id": "strength_32",
         "text": "Мне важна стабильность и предсказуемость в жизни.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "organized"
     },
     {
         "id": "strength_33",
         "text": "Я способен хорошо работать даже под давлением.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "resilient"
     },
     {
         "id": "strength_34",
         "text": "Я чувствую, что моя жизнь имеет более глубокий смысл и предназначение.",
         "type": "choice",
-        "options": ["1", "2", "3", "4", "5"]
+        "options": ["1", "2", "3", "4", "5"],
+        "category": "creative"
     }
 ]
 
