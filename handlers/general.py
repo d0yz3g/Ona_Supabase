@@ -23,6 +23,7 @@ async def process_text_message(message: Message, state: FSMContext):
     if current_state is not None:
         # Если пользователь находится в каком-то состоянии (например, проходит опрос),
         # то не обрабатываем сообщение здесь
+        logger.debug(f"Пропуск обработки текстового сообщения: пользователь {message.from_user.id} находится в состоянии {current_state}")
         return
     
     # Определяем фокус из текста сообщения

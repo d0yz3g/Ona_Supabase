@@ -1,0 +1,1887 @@
+2025-05-21 18:23:23,752 - db - INFO - База данных инициализирована
+2025-05-21 18:23:23,754 - __main__ - INFO - Инициализация бота...
+2025-05-21 18:23:24,059 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-21 18:23:24,072 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-21 18:23:24,074 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-21 18:23:24,074 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-21 18:23:24,074 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-21 18:23:24,075 - __main__ - INFO - Веб-сервер запущен на порту 8080
+2025-05-21 18:23:24,076 - __main__ - INFO - Бот запущен, ожидание сообщений...
+2025-05-21 18:23:24,076 - aiogram.dispatcher - INFO - Start polling
+2025-05-21 18:23:24,544 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-21 18:23:28,706 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:23:28,706 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:23:34,060 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:23:34,061 - aiogram.dispatcher - WARNING - Sleep for 1.282263 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 18:23:39,883 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:23:39,883 - aiogram.dispatcher - WARNING - Sleep for 1.577830 seconds and try again... (tryings = 2, bot id = 7935736491)
+2025-05-21 18:23:46,724 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:23:46,724 - aiogram.dispatcher - WARNING - Sleep for 1.933117 seconds and try again... (tryings = 3, bot id = 7935736491)
+2025-05-21 18:23:54,236 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:23:54,236 - aiogram.dispatcher - WARNING - Sleep for 2.628976 seconds and try again... (tryings = 4, bot id = 7935736491)
+2025-05-21 18:24:00,149 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:24:00,149 - aiogram.dispatcher - WARNING - Sleep for 3.530839 seconds and try again... (tryings = 5, bot id = 7935736491)
+2025-05-21 18:24:07,948 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:24:07,949 - aiogram.dispatcher - WARNING - Sleep for 4.493694 seconds and try again... (tryings = 6, bot id = 7935736491)
+2025-05-21 18:24:17,747 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:24:17,748 - aiogram.dispatcher - WARNING - Sleep for 5.025933 seconds and try again... (tryings = 7, bot id = 7935736491)
+2025-05-21 18:24:27,963 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:24:27,965 - aiogram.dispatcher - WARNING - Sleep for 5.028133 seconds and try again... (tryings = 8, bot id = 7935736491)
+2025-05-21 18:24:38,180 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:24:38,180 - aiogram.dispatcher - WARNING - Sleep for 4.913521 seconds and try again... (tryings = 9, bot id = 7935736491)
+2025-05-21 18:24:48,468 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:24:48,469 - aiogram.dispatcher - WARNING - Sleep for 5.170483 seconds and try again... (tryings = 10, bot id = 7935736491)
+2025-05-21 18:24:58,879 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:24:58,879 - aiogram.dispatcher - WARNING - Sleep for 4.780842 seconds and try again... (tryings = 11, bot id = 7935736491)
+2025-05-21 18:25:08,918 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:25:08,918 - aiogram.dispatcher - WARNING - Sleep for 4.953891 seconds and try again... (tryings = 12, bot id = 7935736491)
+2025-05-21 18:25:18,867 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:25:18,868 - aiogram.dispatcher - WARNING - Sleep for 5.107175 seconds and try again... (tryings = 13, bot id = 7935736491)
+2025-05-21 18:25:29,107 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:25:29,108 - aiogram.dispatcher - WARNING - Sleep for 5.077141 seconds and try again... (tryings = 14, bot id = 7935736491)
+2025-05-21 18:25:39,370 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:25:39,371 - aiogram.dispatcher - WARNING - Sleep for 5.007352 seconds and try again... (tryings = 15, bot id = 7935736491)
+2025-05-21 18:25:49,916 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:25:49,916 - aiogram.dispatcher - WARNING - Sleep for 5.124398 seconds and try again... (tryings = 16, bot id = 7935736491)
+2025-05-21 18:26:00,271 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:26:00,272 - aiogram.dispatcher - WARNING - Sleep for 5.129293 seconds and try again... (tryings = 17, bot id = 7935736491)
+2025-05-21 18:26:10,615 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:26:10,616 - aiogram.dispatcher - WARNING - Sleep for 5.132110 seconds and try again... (tryings = 18, bot id = 7935736491)
+2025-05-21 18:26:20,943 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:26:20,944 - aiogram.dispatcher - WARNING - Sleep for 5.027936 seconds and try again... (tryings = 19, bot id = 7935736491)
+2025-05-21 18:26:31,234 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:26:31,235 - aiogram.dispatcher - WARNING - Sleep for 4.957616 seconds and try again... (tryings = 20, bot id = 7935736491)
+2025-05-21 18:26:41,392 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:26:41,393 - aiogram.dispatcher - WARNING - Sleep for 4.869880 seconds and try again... (tryings = 21, bot id = 7935736491)
+2025-05-21 18:26:51,543 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:26:51,543 - aiogram.dispatcher - WARNING - Sleep for 5.050079 seconds and try again... (tryings = 22, bot id = 7935736491)
+2025-05-21 18:27:02,447 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:27:02,448 - aiogram.dispatcher - WARNING - Sleep for 5.125028 seconds and try again... (tryings = 23, bot id = 7935736491)
+2025-05-21 18:27:12,872 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:27:12,872 - aiogram.dispatcher - WARNING - Sleep for 5.043346 seconds and try again... (tryings = 24, bot id = 7935736491)
+2025-05-21 18:27:22,072 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:27:22,073 - aiogram.dispatcher - WARNING - Sleep for 4.975792 seconds and try again... (tryings = 25, bot id = 7935736491)
+2025-05-21 18:27:31,200 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:27:31,200 - aiogram.dispatcher - WARNING - Sleep for 5.009517 seconds and try again... (tryings = 26, bot id = 7935736491)
+2025-05-21 18:27:40,389 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:27:40,389 - aiogram.dispatcher - WARNING - Sleep for 4.989544 seconds and try again... (tryings = 27, bot id = 7935736491)
+2025-05-21 18:27:49,529 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:27:49,529 - aiogram.dispatcher - WARNING - Sleep for 5.005238 seconds and try again... (tryings = 28, bot id = 7935736491)
+2025-05-21 18:27:58,946 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:27:58,946 - aiogram.dispatcher - WARNING - Sleep for 5.003418 seconds and try again... (tryings = 29, bot id = 7935736491)
+2025-05-21 18:28:08,155 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:28:08,156 - aiogram.dispatcher - WARNING - Sleep for 4.876702 seconds and try again... (tryings = 30, bot id = 7935736491)
+2025-05-21 18:28:17,308 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:28:17,309 - aiogram.dispatcher - WARNING - Sleep for 4.929542 seconds and try again... (tryings = 31, bot id = 7935736491)
+2025-05-21 18:28:26,421 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:28:26,421 - aiogram.dispatcher - WARNING - Sleep for 4.900312 seconds and try again... (tryings = 32, bot id = 7935736491)
+2025-05-21 18:28:35,625 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:28:35,626 - aiogram.dispatcher - WARNING - Sleep for 5.181822 seconds and try again... (tryings = 33, bot id = 7935736491)
+2025-05-21 18:28:44,953 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:28:44,955 - aiogram.dispatcher - WARNING - Sleep for 5.010623 seconds and try again... (tryings = 34, bot id = 7935736491)
+2025-05-21 18:28:54,293 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:28:54,293 - aiogram.dispatcher - WARNING - Sleep for 4.907223 seconds and try again... (tryings = 35, bot id = 7935736491)
+2025-05-21 18:28:59,622 - aiogram.dispatcher - INFO - Connection established (tryings = 36, bot id = 7935736491)
+2025-05-21 18:29:03,352 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:29:03,352 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:29:04,509 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 18:29:04,606 - services.recs - INFO - Сгенерирована рекомендация для пользователя 71770880 с фокусом 'default'
+2025-05-21 18:29:05,071 - handlers.recs - INFO - Отправлена рекомендация пользователю 71770880 по команде /reflect
+2025-05-21 18:29:05,073 - aiogram.event - INFO - Update id=566537630 is handled. Duration 5453 ms by bot id=7935736491
+2025-05-21 18:29:08,618 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:29:08,619 - aiogram.dispatcher - WARNING - Sleep for 1.423767 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 18:29:14,550 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:29:14,550 - aiogram.dispatcher - WARNING - Sleep for 1.822499 seconds and try again... (tryings = 2, bot id = 7935736491)
+2025-05-21 18:29:21,186 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:29:21,187 - aiogram.dispatcher - WARNING - Sleep for 2.342233 seconds and try again... (tryings = 3, bot id = 7935736491)
+2025-05-21 18:29:28,861 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:29:28,862 - aiogram.dispatcher - WARNING - Sleep for 3.176232 seconds and try again... (tryings = 4, bot id = 7935736491)
+2025-05-21 18:29:38,447 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:29:38,448 - aiogram.dispatcher - WARNING - Sleep for 4.176392 seconds and try again... (tryings = 5, bot id = 7935736491)
+2025-05-21 18:29:46,388 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:29:46,388 - aiogram.dispatcher - WARNING - Sleep for 4.998441 seconds and try again... (tryings = 6, bot id = 7935736491)
+2025-05-21 18:29:56,323 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:29:56,324 - aiogram.dispatcher - WARNING - Sleep for 4.845603 seconds and try again... (tryings = 7, bot id = 7935736491)
+2025-05-21 18:30:05,220 - aiogram.dispatcher - INFO - Connection established (tryings = 8, bot id = 7935736491)
+2025-05-21 18:30:05,222 - aiogram.event - INFO - Update id=566537631 is handled. Duration 0 ms by bot id=7935736491
+2025-05-21 18:30:06,410 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:30:06,412 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:30:15,603 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:30:15,603 - aiogram.dispatcher - WARNING - Sleep for 1.181445 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 18:30:21,527 - aiogram.dispatcher - INFO - Connection established (tryings = 2, bot id = 7935736491)
+2025-05-21 18:30:22,004 - __main__ - INFO - Пользователь 71770880 запросил профиль
+2025-05-21 18:30:22,005 - aiogram.event - INFO - Update id=566537632 is handled. Duration 483 ms by bot id=7935736491
+2025-05-21 18:30:24,932 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:30:24,934 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:30:30,272 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:30:30,273 - aiogram.dispatcher - WARNING - Sleep for 1.449532 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 18:30:32,484 - aiogram.dispatcher - INFO - Connection established (tryings = 2, bot id = 7935736491)
+2025-05-21 18:30:34,799 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 18:30:34,801 - services.recs - INFO - Сгенерирована рекомендация для пользователя 71770880 с фокусом 'default'
+2025-05-21 18:30:35,091 - handlers.recs - INFO - Отправлена рекомендация пользователю 71770880 на основе текстового сообщения
+2025-05-21 18:30:35,092 - aiogram.event - INFO - Update id=566537635 is handled. Duration 2609 ms by bot id=7935736491
+2025-05-21 18:30:35,987 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:30:35,988 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:30:41,801 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:30:41,801 - aiogram.dispatcher - WARNING - Sleep for 1.528680 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 18:30:48,113 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:30:48,114 - aiogram.dispatcher - WARNING - Sleep for 2.046538 seconds and try again... (tryings = 2, bot id = 7935736491)
+2025-05-21 18:30:55,474 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:30:55,475 - aiogram.dispatcher - WARNING - Sleep for 2.546826 seconds and try again... (tryings = 3, bot id = 7935736491)
+2025-05-21 18:31:04,535 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:31:04,535 - aiogram.dispatcher - WARNING - Sleep for 3.247073 seconds and try again... (tryings = 4, bot id = 7935736491)
+2025-05-21 18:31:11,644 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:31:11,645 - aiogram.dispatcher - WARNING - Sleep for 3.963558 seconds and try again... (tryings = 5, bot id = 7935736491)
+2025-05-21 18:31:20,526 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:31:20,527 - aiogram.dispatcher - WARNING - Sleep for 5.021171 seconds and try again... (tryings = 6, bot id = 7935736491)
+2025-05-21 18:31:30,610 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:31:30,611 - aiogram.dispatcher - WARNING - Sleep for 4.948315 seconds and try again... (tryings = 7, bot id = 7935736491)
+2025-05-21 18:31:40,718 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:31:40,719 - aiogram.dispatcher - WARNING - Sleep for 4.930711 seconds and try again... (tryings = 8, bot id = 7935736491)
+2025-05-21 18:31:50,876 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:31:50,876 - aiogram.dispatcher - WARNING - Sleep for 5.023874 seconds and try again... (tryings = 9, bot id = 7935736491)
+2025-05-21 18:32:00,985 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:32:00,986 - aiogram.dispatcher - WARNING - Sleep for 5.009584 seconds and try again... (tryings = 10, bot id = 7935736491)
+2025-05-21 18:32:11,298 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:32:11,298 - aiogram.dispatcher - WARNING - Sleep for 4.915374 seconds and try again... (tryings = 11, bot id = 7935736491)
+2025-05-21 18:32:21,380 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:32:21,381 - aiogram.dispatcher - WARNING - Sleep for 5.160189 seconds and try again... (tryings = 12, bot id = 7935736491)
+2025-05-21 18:32:31,504 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:32:31,505 - aiogram.dispatcher - WARNING - Sleep for 4.895515 seconds and try again... (tryings = 13, bot id = 7935736491)
+2025-05-21 18:32:41,616 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:32:41,616 - aiogram.dispatcher - WARNING - Sleep for 4.960239 seconds and try again... (tryings = 14, bot id = 7935736491)
+2025-05-21 18:32:51,852 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:32:51,852 - aiogram.dispatcher - WARNING - Sleep for 5.003146 seconds and try again... (tryings = 15, bot id = 7935736491)
+2025-05-21 18:33:02,047 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:33:02,048 - aiogram.dispatcher - WARNING - Sleep for 4.937010 seconds and try again... (tryings = 16, bot id = 7935736491)
+2025-05-21 18:33:12,077 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:33:12,077 - aiogram.dispatcher - WARNING - Sleep for 5.025224 seconds and try again... (tryings = 17, bot id = 7935736491)
+2025-05-21 18:33:22,138 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:33:22,138 - aiogram.dispatcher - WARNING - Sleep for 5.090814 seconds and try again... (tryings = 18, bot id = 7935736491)
+2025-05-21 18:33:32,543 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:33:32,543 - aiogram.dispatcher - WARNING - Sleep for 4.950653 seconds and try again... (tryings = 19, bot id = 7935736491)
+2025-05-21 18:33:46,572 - aiogram.dispatcher - INFO - Connection established (tryings = 20, bot id = 7935736491)
+2025-05-21 18:33:48,507 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 18:33:48,508 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-21 18:33:48,981 - handlers.recs - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-21 18:33:48,981 - aiogram.event - INFO - Update id=566537636 is handled. Duration 2405 ms by bot id=7935736491
+2025-05-21 18:34:54,129 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 18:34:54,132 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-21 18:34:54,611 - handlers.recs - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-21 18:34:54,612 - aiogram.event - INFO - Update id=566537637 is handled. Duration 2358 ms by bot id=7935736491
+2025-05-21 18:35:00,128 - aiogram.event - INFO - Update id=566537638 is handled. Duration 16 ms by bot id=7935736491
+2025-05-21 18:48:50,771 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:48:50,772 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:48:55,927 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:48:55,928 - aiogram.dispatcher - WARNING - Sleep for 1.301996 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 18:49:01,763 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:49:01,763 - aiogram.dispatcher - WARNING - Sleep for 1.512794 seconds and try again... (tryings = 2, bot id = 7935736491)
+2025-05-21 18:49:03,839 - aiogram.dispatcher - INFO - Connection established (tryings = 3, bot id = 7935736491)
+2025-05-21 18:49:05,782 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 18:49:05,784 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'career'
+2025-05-21 18:49:06,250 - handlers.recs - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-21 18:49:06,252 - aiogram.event - INFO - Update id=566537639 is handled. Duration 2405 ms by bot id=7935736491
+2025-05-21 18:49:08,215 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:49:08,216 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:49:10,959 - aiogram.dispatcher - INFO - Connection established (tryings = 1, bot id = 7935736491)
+2025-05-21 18:49:11,121 - __main__ - INFO - Пользователь 895018115 запросил помощь
+2025-05-21 18:49:11,122 - aiogram.event - INFO - Update id=566537640 is handled. Duration 155 ms by bot id=7935736491
+2025-05-21 18:49:14,427 - __main__ - INFO - Пользователь 895018115 запросил профиль
+2025-05-21 18:49:14,432 - aiogram.event - INFO - Update id=566537641 is handled. Duration 171 ms by bot id=7935736491
+2025-05-21 18:49:14,515 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:49:14,516 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:49:19,344 - aiogram.dispatcher - INFO - Connection established (tryings = 1, bot id = 7935736491)
+2025-05-21 18:49:19,666 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:49:19,667 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:49:20,925 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 18:49:20,927 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-21 18:49:21,075 - handlers.recs - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-21 18:49:21,075 - aiogram.event - INFO - Update id=566537643 is handled. Duration 1734 ms by bot id=7935736491
+2025-05-21 18:49:25,107 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:49:25,108 - aiogram.dispatcher - WARNING - Sleep for 1.283508 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 18:49:30,644 - aiogram.dispatcher - INFO - Connection established (tryings = 2, bot id = 7935736491)
+2025-05-21 18:49:31,231 - handlers.questionnaire - INFO - Пользователь 895018115 начал опрос
+2025-05-21 18:49:31,232 - aiogram.event - INFO - Update id=566537644 is handled. Duration 577 ms by bot id=7935736491
+2025-05-21 18:49:31,317 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:49:31,318 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:49:36,235 - aiogram.dispatcher - INFO - Connection established (tryings = 1, bot id = 7935736491)
+2025-05-21 18:49:36,249 - db - INFO - Сохранен ответ на вопрос name для пользователя 1
+2025-05-21 18:49:36,250 - handlers.questionnaire - INFO - Сохранен ответ на демо-вопрос name: Robert
+2025-05-21 18:49:36,394 - aiogram.event - INFO - Update id=566537645 is handled. Duration 172 ms by bot id=7935736491
+2025-05-21 18:49:37,712 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:49:37,713 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:49:40,036 - aiogram.dispatcher - INFO - Connection established (tryings = 1, bot id = 7935736491)
+2025-05-21 18:49:40,046 - db - INFO - Сохранен ответ на вопрос age для пользователя 1
+2025-05-21 18:49:40,047 - handlers.questionnaire - INFO - Сохранен ответ на демо-вопрос age: 21
+2025-05-21 18:49:40,315 - aiogram.event - INFO - Update id=566537647 is handled. Duration 282 ms by bot id=7935736491
+2025-05-21 18:49:42,858 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:49:42,858 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:49:46,130 - aiogram.dispatcher - INFO - Connection established (tryings = 1, bot id = 7935736491)
+2025-05-21 18:49:46,151 - db - INFO - Сохранен ответ на вопрос birthdate для пользователя 1
+2025-05-21 18:49:46,152 - handlers.questionnaire - INFO - Сохранен ответ на демо-вопрос birthdate: 20.01.2003
+2025-05-21 18:49:46,295 - aiogram.event - INFO - Update id=566537648 is handled. Duration 155 ms by bot id=7935736491
+2025-05-21 18:49:48,294 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:49:48,295 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:49:53,584 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:49:53,585 - aiogram.dispatcher - WARNING - Sleep for 1.165360 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 18:49:56,759 - aiogram.dispatcher - INFO - Connection established (tryings = 2, bot id = 7935736491)
+2025-05-21 18:49:56,779 - db - INFO - Сохранен ответ на вопрос birthplace для пользователя 1
+2025-05-21 18:49:56,784 - handlers.questionnaire - INFO - Сохранен ответ на демо-вопрос birthplace: asd
+2025-05-21 18:49:56,965 - aiogram.event - INFO - Update id=566537651 is handled. Duration 203 ms by bot id=7935736491
+2025-05-21 18:49:58,891 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:49:58,891 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:50:00,830 - aiogram.dispatcher - INFO - Connection established (tryings = 1, bot id = 7935736491)
+2025-05-21 18:50:00,842 - db - INFO - Сохранен ответ на вопрос timezone для пользователя 1
+2025-05-21 18:50:00,842 - handlers.questionnaire - INFO - Сохранен ответ на демо-вопрос timezone: _2
+2025-05-21 18:50:01,501 - aiogram.event - INFO - Update id=566537653 is handled. Duration 655 ms by bot id=7935736491
+2025-05-21 18:50:02,961 - aiogram.event - INFO - Update id=566537654 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 18:50:02,962 - aiogram.event - ERROR - Cause exception while process update id=566537654 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\questionnaire.py", line 200, in process_strength_answer
+    _, question_id, answer = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 18:50:04,047 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:50:04,047 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 18:50:09,489 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:50:09,490 - aiogram.dispatcher - WARNING - Sleep for 1.264373 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 18:50:15,429 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:50:15,431 - aiogram.dispatcher - WARNING - Sleep for 1.605015 seconds and try again... (tryings = 2, bot id = 7935736491)
+2025-05-21 18:50:22,374 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:50:22,374 - aiogram.dispatcher - WARNING - Sleep for 1.943884 seconds and try again... (tryings = 3, bot id = 7935736491)
+2025-05-21 18:50:30,418 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 18:50:30,418 - aiogram.dispatcher - WARNING - Sleep for 2.411922 seconds and try again... (tryings = 4, bot id = 7935736491)
+2025-05-21 18:50:42,961 - aiogram.dispatcher - INFO - Connection established (tryings = 5, bot id = 7935736491)
+2025-05-21 18:52:50,387 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 18:52:50,399 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-21 18:52:51,864 - handlers.recs - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-21 18:52:51,864 - aiogram.event - INFO - Update id=566537655 is handled. Duration 4546 ms by bot id=7935736491
+2025-05-21 18:53:03,930 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 18:53:03,935 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'career'
+2025-05-21 18:53:04,089 - handlers.recs - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-21 18:53:04,090 - aiogram.event - INFO - Update id=566537656 is handled. Duration 1797 ms by bot id=7935736491
+2025-05-21 19:02:34,195 - db - INFO - База данных инициализирована
+2025-05-21 19:02:34,391 - db - INFO - Соединение с базой данных закрыто
+2025-05-21 19:02:34,391 - db - INFO - Соединение с базой данных закрыто
+2025-05-21 19:02:43,182 - db - INFO - База данных инициализирована
+2025-05-21 19:02:43,182 - __main__ - INFO - Инициализация бота...
+2025-05-21 19:02:43,450 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-21 19:02:43,452 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-21 19:02:43,452 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-21 19:02:43,452 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-21 19:02:43,453 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-21 19:02:43,454 - __main__ - INFO - Веб-сервер запущен на порту 8080
+2025-05-21 19:02:43,454 - __main__ - INFO - Бот запущен, ожидание сообщений...
+2025-05-21 19:02:43,454 - aiogram.dispatcher - INFO - Start polling
+2025-05-21 19:02:43,898 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-21 19:02:47,369 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 19:02:47,379 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-21 19:02:48,126 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-21 19:02:48,126 - aiogram.event - INFO - Update id=566537657 is handled. Duration 4078 ms by bot id=7935736491
+2025-05-21 19:02:58,577 - __main__ - INFO - Пользователь 895018115 запросил профиль
+2025-05-21 19:02:58,578 - aiogram.event - INFO - Update id=566537658 is handled. Duration 234 ms by bot id=7935736491
+2025-05-21 19:03:02,214 - handlers.survey - INFO - Пользователь 895018115 начал опрос
+2025-05-21 19:03:02,215 - aiogram.event - INFO - Update id=566537659 is handled. Duration 1344 ms by bot id=7935736491
+2025-05-21 19:03:06,066 - db - INFO - Сохранен ответ на вопрос name для пользователя 1
+2025-05-21 19:03:06,073 - handlers.survey - INFO - Сохранен ответ на демо-вопрос name: Роберт
+2025-05-21 19:03:06,421 - aiogram.event - INFO - Update id=566537660 is handled. Duration 358 ms by bot id=7935736491
+2025-05-21 19:03:08,262 - db - INFO - Сохранен ответ на вопрос age для пользователя 1
+2025-05-21 19:03:08,263 - handlers.survey - INFO - Сохранен ответ на демо-вопрос age: 21
+2025-05-21 19:03:08,574 - aiogram.event - INFO - Update id=566537661 is handled. Duration 328 ms by bot id=7935736491
+2025-05-21 19:03:11,766 - db - INFO - Сохранен ответ на вопрос birthdate для пользователя 1
+2025-05-21 19:03:11,766 - handlers.survey - INFO - Сохранен ответ на демо-вопрос birthdate: 20.01.2004
+2025-05-21 19:03:11,956 - aiogram.event - INFO - Update id=566537662 is handled. Duration 203 ms by bot id=7935736491
+2025-05-21 19:03:17,555 - db - INFO - Сохранен ответ на вопрос birthplace для пользователя 1
+2025-05-21 19:03:17,555 - handlers.survey - INFO - Сохранен ответ на демо-вопрос birthplace: Алматы Казахстан
+2025-05-21 19:03:17,701 - aiogram.event - INFO - Update id=566537663 is handled. Duration 157 ms by bot id=7935736491
+2025-05-21 19:03:19,740 - db - INFO - Сохранен ответ на вопрос timezone для пользователя 1
+2025-05-21 19:03:19,740 - handlers.survey - INFO - Сохранен ответ на демо-вопрос timezone: +1
+2025-05-21 19:03:20,090 - aiogram.event - INFO - Update id=566537664 is handled. Duration 359 ms by bot id=7935736491
+2025-05-21 19:03:21,686 - aiogram.event - INFO - Update id=566537665 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:03:21,686 - aiogram.event - ERROR - Cause exception while process update id=566537665 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    _, question_id, answer = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:03:25,357 - aiogram.event - INFO - Update id=566537666 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:03:25,358 - aiogram.event - ERROR - Cause exception while process update id=566537666 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    _, question_id, answer = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:03:26,454 - aiogram.event - INFO - Update id=566537667 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:03:26,454 - aiogram.event - ERROR - Cause exception while process update id=566537667 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    _, question_id, answer = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:03:26,887 - aiogram.event - INFO - Update id=566537668 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:03:26,888 - aiogram.event - ERROR - Cause exception while process update id=566537668 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    _, question_id, answer = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:03:27,444 - aiogram.event - INFO - Update id=566537669 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:03:27,444 - aiogram.event - ERROR - Cause exception while process update id=566537669 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    _, question_id, answer = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:03:53,003 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 19:03:53,005 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-21 19:03:53,504 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-21 19:03:53,504 - aiogram.event - INFO - Update id=566537670 is handled. Duration 2906 ms by bot id=7935736491
+2025-05-21 19:04:00,158 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 19:04:00,165 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-21 19:04:00,362 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-21 19:04:00,363 - aiogram.event - INFO - Update id=566537671 is handled. Duration 2046 ms by bot id=7935736491
+2025-05-21 19:05:33,276 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 19:05:33,278 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-21 19:05:33,816 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-21 19:05:33,817 - aiogram.event - INFO - Update id=566537672 is handled. Duration 2875 ms by bot id=7935736491
+2025-05-21 19:05:38,043 - aiogram.event - INFO - Update id=566537673 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:05:38,045 - aiogram.event - ERROR - Cause exception while process update id=566537673 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    parts = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:05:42,833 - aiogram.event - INFO - Update id=566537674 is not handled. Duration 15 ms by bot id=7935736491
+2025-05-21 19:05:42,834 - aiogram.event - ERROR - Cause exception while process update id=566537674 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    parts = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:05:43,934 - aiogram.event - INFO - Update id=566537675 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:05:43,934 - aiogram.event - ERROR - Cause exception while process update id=566537675 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    parts = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:10:15,593 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 19:10:15,605 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-21 19:10:16,078 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-21 19:10:16,078 - aiogram.event - INFO - Update id=566537676 is handled. Duration 2687 ms by bot id=7935736491
+2025-05-21 19:10:20,188 - aiogram.event - INFO - Update id=566537677 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:10:20,188 - aiogram.event - ERROR - Cause exception while process update id=566537677 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    parts = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:10:23,116 - handlers.survey - INFO - Пользователь 895018115 начал опрос
+2025-05-21 19:10:23,117 - aiogram.event - INFO - Update id=566537678 is handled. Duration 687 ms by bot id=7935736491
+2025-05-21 19:10:24,390 - aiogram.event - INFO - Update id=566537679 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:10:24,390 - aiogram.event - ERROR - Cause exception while process update id=566537679 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    parts = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:10:26,602 - aiogram.event - INFO - Update id=566537680 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:10:26,603 - aiogram.event - ERROR - Cause exception while process update id=566537680 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    parts = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:11:17,588 - aiogram.event - INFO - Update id=566537681 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:11:17,589 - aiogram.event - ERROR - Cause exception while process update id=566537681 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    parts = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:11:21,715 - aiogram.event - INFO - Update id=566537682 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:11:21,715 - aiogram.event - ERROR - Cause exception while process update id=566537682 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    parts = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:11:27,930 - aiogram.event - INFO - Update id=566537683 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-21 19:11:27,930 - aiogram.event - ERROR - Cause exception while process update id=566537683 by bot id=7935736491
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 199, in process_strength_answer
+    parts = callback.data.split("_")
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 29, in __call__
+    response = await self.router.propagate_event(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 ^^^^^^^^^
+TypeError: errors_handler() missing 1 required positional argument: 'exception'
+2025-05-21 19:16:21,473 - db - INFO - База данных инициализирована
+2025-05-21 19:17:36,093 - db - INFO - База данных инициализирована
+2025-05-21 19:17:36,094 - __main__ - INFO - Инициализация бота...
+2025-05-21 19:17:36,369 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-21 19:17:36,370 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-21 19:17:36,371 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-21 19:17:36,371 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-21 19:17:36,371 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-21 19:17:36,372 - __main__ - INFO - Веб-сервер запущен на порту 8080
+2025-05-21 19:17:36,372 - __main__ - INFO - Бот запущен, ожидание сообщений...
+2025-05-21 19:17:36,372 - aiogram.dispatcher - INFO - Start polling
+2025-05-21 19:17:37,061 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-21 19:17:37,207 - handlers.survey - ERROR - Нет user_id в состоянии для пользователя 895018115
+2025-05-21 19:17:37,216 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:17:37,216 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 2
+2025-05-21 19:17:38,029 - __main__ - ERROR - Ошибка при обработке сообщения от пользователя 895018115:
+Чат: 895018115, Сообщение ID: 256
+Текст сообщения: strength_strength_2_5
+Ошибка: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\handlers\survey.py", line 233, in process_strength_answer
+    await callback.answer("Ответ принят")
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\methods\base.py", line 84, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\client\bot.py", line 432, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\client\session\base.py", line 257, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\client\session\aiohttp.py", line 179, in make_request
+    response = self.check_response(
+               ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\client\session\base.py", line 120, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+2025-05-21 19:17:38,035 - aiogram.event - INFO - Update id=566537684 is handled. Duration 842 ms by bot id=7935736491
+2025-05-21 19:17:39,800 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-21 19:17:39,817 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-21 19:17:40,012 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-21 19:17:40,012 - aiogram.event - INFO - Update id=566537685 is handled. Duration 2812 ms by bot id=7935736491
+2025-05-21 19:17:47,278 - handlers.survey - INFO - Пользователь 895018115 начал опрос
+2025-05-21 19:17:47,279 - aiogram.event - INFO - Update id=566537686 is handled. Duration 297 ms by bot id=7935736491
+2025-05-21 19:17:50,058 - db - INFO - Сохранен ответ на вопрос name для пользователя 1
+2025-05-21 19:17:50,059 - handlers.survey - INFO - Сохранен ответ на демо-вопрос name: Роберт
+2025-05-21 19:17:50,352 - aiogram.event - INFO - Update id=566537687 is handled. Duration 312 ms by bot id=7935736491
+2025-05-21 19:17:52,008 - db - INFO - Сохранен ответ на вопрос age для пользователя 1
+2025-05-21 19:17:52,008 - handlers.survey - INFO - Сохранен ответ на демо-вопрос age: 21
+2025-05-21 19:17:52,170 - aiogram.event - INFO - Update id=566537688 is handled. Duration 171 ms by bot id=7935736491
+2025-05-21 19:17:55,044 - db - INFO - Сохранен ответ на вопрос birthdate для пользователя 1
+2025-05-21 19:17:55,044 - handlers.survey - INFO - Сохранен ответ на демо-вопрос birthdate: 20.01.2004
+2025-05-21 19:17:55,289 - aiogram.event - INFO - Update id=566537689 is handled. Duration 264 ms by bot id=7935736491
+2025-05-21 19:18:01,575 - db - INFO - Сохранен ответ на вопрос birthplace для пользователя 1
+2025-05-21 19:18:01,575 - handlers.survey - INFO - Сохранен ответ на демо-вопрос birthplace: АЛматы Кз
+2025-05-21 19:18:01,740 - aiogram.event - INFO - Update id=566537690 is handled. Duration 187 ms by bot id=7935736491
+2025-05-21 19:18:03,703 - db - INFO - Сохранен ответ на вопрос timezone для пользователя 1
+2025-05-21 19:18:03,704 - handlers.survey - INFO - Сохранен ответ на демо-вопрос timezone: +1
+2025-05-21 19:18:04,128 - aiogram.event - INFO - Update id=566537691 is handled. Duration 453 ms by bot id=7935736491
+2025-05-21 19:18:05,698 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:05,698 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 1
+2025-05-21 19:18:06,032 - aiogram.event - INFO - Update id=566537692 is handled. Duration 344 ms by bot id=7935736491
+2025-05-21 19:18:07,750 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:07,750 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 2
+2025-05-21 19:18:08,098 - aiogram.event - INFO - Update id=566537693 is handled. Duration 375 ms by bot id=7935736491
+2025-05-21 19:18:09,239 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:09,240 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 3
+2025-05-21 19:18:09,592 - aiogram.event - INFO - Update id=566537694 is handled. Duration 375 ms by bot id=7935736491
+2025-05-21 19:18:10,358 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:10,359 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 4
+2025-05-21 19:18:10,645 - aiogram.event - INFO - Update id=566537695 is handled. Duration 312 ms by bot id=7935736491
+2025-05-21 19:18:11,206 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:11,206 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 5
+2025-05-21 19:18:11,530 - aiogram.event - INFO - Update id=566537696 is handled. Duration 328 ms by bot id=7935736491
+2025-05-21 19:18:12,114 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:12,115 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 6
+2025-05-21 19:18:12,404 - aiogram.event - INFO - Update id=566537697 is handled. Duration 297 ms by bot id=7935736491
+2025-05-21 19:18:13,011 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:13,013 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 7
+2025-05-21 19:18:13,411 - aiogram.event - INFO - Update id=566537698 is handled. Duration 421 ms by bot id=7935736491
+2025-05-21 19:18:13,904 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:13,905 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 8
+2025-05-21 19:18:14,351 - aiogram.event - INFO - Update id=566537699 is handled. Duration 468 ms by bot id=7935736491
+2025-05-21 19:18:15,668 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:15,668 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 9
+2025-05-21 19:18:16,149 - aiogram.event - INFO - Update id=566537700 is handled. Duration 500 ms by bot id=7935736491
+2025-05-21 19:18:16,781 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:16,781 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 10
+2025-05-21 19:18:17,137 - aiogram.event - INFO - Update id=566537701 is handled. Duration 358 ms by bot id=7935736491
+2025-05-21 19:18:17,703 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:17,703 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 11
+2025-05-21 19:18:17,998 - aiogram.event - INFO - Update id=566537702 is handled. Duration 296 ms by bot id=7935736491
+2025-05-21 19:18:18,548 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:18,549 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 12
+2025-05-21 19:18:18,858 - aiogram.event - INFO - Update id=566537703 is handled. Duration 312 ms by bot id=7935736491
+2025-05-21 19:18:19,363 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:19,363 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 13
+2025-05-21 19:18:19,690 - aiogram.event - INFO - Update id=566537704 is handled. Duration 328 ms by bot id=7935736491
+2025-05-21 19:18:20,126 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:20,127 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 14
+2025-05-21 19:18:20,476 - aiogram.event - INFO - Update id=566537705 is handled. Duration 359 ms by bot id=7935736491
+2025-05-21 19:18:28,345 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:28,345 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 15
+2025-05-21 19:18:28,697 - aiogram.event - INFO - Update id=566537706 is handled. Duration 359 ms by bot id=7935736491
+2025-05-21 19:18:29,431 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:29,431 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 16
+2025-05-21 19:18:29,721 - aiogram.event - INFO - Update id=566537707 is handled. Duration 297 ms by bot id=7935736491
+2025-05-21 19:18:30,494 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:30,495 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 17
+2025-05-21 19:18:30,911 - aiogram.event - INFO - Update id=566537708 is handled. Duration 437 ms by bot id=7935736491
+2025-05-21 19:18:31,499 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:31,499 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 18
+2025-05-21 19:18:31,861 - aiogram.event - INFO - Update id=566537709 is handled. Duration 375 ms by bot id=7935736491
+2025-05-21 19:18:32,761 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:32,761 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 19
+2025-05-21 19:18:33,077 - aiogram.event - INFO - Update id=566537710 is handled. Duration 328 ms by bot id=7935736491
+2025-05-21 19:18:33,708 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:33,708 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 20
+2025-05-21 19:18:34,001 - aiogram.event - INFO - Update id=566537711 is handled. Duration 296 ms by bot id=7935736491
+2025-05-21 19:18:34,666 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:34,667 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 21
+2025-05-21 19:18:35,043 - aiogram.event - INFO - Update id=566537712 is handled. Duration 389 ms by bot id=7935736491
+2025-05-21 19:18:35,563 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:35,564 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 22
+2025-05-21 19:18:35,912 - aiogram.event - INFO - Update id=566537713 is handled. Duration 358 ms by bot id=7935736491
+2025-05-21 19:18:36,475 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:36,476 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 23
+2025-05-21 19:18:36,945 - aiogram.event - INFO - Update id=566537714 is handled. Duration 484 ms by bot id=7935736491
+2025-05-21 19:18:37,563 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:37,564 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 24
+2025-05-21 19:18:38,065 - aiogram.event - INFO - Update id=566537715 is handled. Duration 516 ms by bot id=7935736491
+2025-05-21 19:18:39,233 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:39,233 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 25
+2025-05-21 19:18:39,513 - aiogram.event - INFO - Update id=566537716 is handled. Duration 296 ms by bot id=7935736491
+2025-05-21 19:18:40,380 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:40,381 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 26
+2025-05-21 19:18:40,698 - aiogram.event - INFO - Update id=566537717 is handled. Duration 328 ms by bot id=7935736491
+2025-05-21 19:18:41,335 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:41,336 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 27
+2025-05-21 19:18:41,623 - aiogram.event - INFO - Update id=566537718 is handled. Duration 296 ms by bot id=7935736491
+2025-05-21 19:18:42,183 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:42,184 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 28
+2025-05-21 19:18:42,466 - aiogram.event - INFO - Update id=566537719 is handled. Duration 297 ms by bot id=7935736491
+2025-05-21 19:18:43,049 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:43,049 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 29
+2025-05-21 19:18:43,345 - aiogram.event - INFO - Update id=566537720 is handled. Duration 297 ms by bot id=7935736491
+2025-05-21 19:18:46,615 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:46,615 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 30
+2025-05-21 19:18:46,921 - aiogram.event - INFO - Update id=566537721 is handled. Duration 312 ms by bot id=7935736491
+2025-05-21 19:18:47,117 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:47,117 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 30
+2025-05-21 19:18:47,473 - aiogram.event - INFO - Update id=566537722 is handled. Duration 375 ms by bot id=7935736491
+2025-05-21 19:18:48,586 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:48,586 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 32
+2025-05-21 19:18:48,900 - aiogram.event - INFO - Update id=566537723 is handled. Duration 328 ms by bot id=7935736491
+2025-05-21 19:18:49,821 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:49,822 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 33
+2025-05-21 19:18:50,253 - aiogram.event - INFO - Update id=566537724 is handled. Duration 437 ms by bot id=7935736491
+2025-05-21 19:18:52,760 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-21 19:18:52,761 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 34
+2025-05-21 19:18:53,166 - db - INFO - Создан/обновлен профиль для пользователя 1
+2025-05-21 19:18:53,166 - handlers.survey - INFO - Создана натальная карта для пользователя 1
+2025-05-21 19:18:54,238 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-05-21 19:18:54,239 - services.ai_client - ERROR - Ошибка при генерации профиля: Error code: 400 - {'error': {'message': "'messages' must contain the word 'json' in some form, to use 'response_format' of type 'json_object'.", 'type': 'invalid_request_error', 'param': 'messages', 'code': None}}
+2025-05-21 19:18:54,251 - db - INFO - Обновлены данные психологического профиля для пользователя 1
+2025-05-21 19:18:54,252 - handlers.survey - INFO - Создан психологический профиль для пользователя 1
+2025-05-21 19:18:54,266 - db - INFO - Создан/обновлен профиль для пользователя 1
+2025-05-21 19:18:54,935 - handlers.survey - INFO - Опрос завершен для пользователя 1, создан профиль 1
+2025-05-21 19:18:54,936 - aiogram.event - INFO - Update id=566537725 is handled. Duration 2187 ms by bot id=7935736491
+2025-05-21 19:19:18,937 - __main__ - INFO - Пользователь 895018115 запросил профиль
+2025-05-21 19:19:18,938 - aiogram.event - INFO - Update id=566537726 is handled. Duration 687 ms by bot id=7935736491
+2025-05-21 19:19:25,367 - __main__ - INFO - Пользователь 895018115 запросил помощь
+2025-05-21 19:19:25,367 - aiogram.event - INFO - Update id=566537727 is handled. Duration 155 ms by bot id=7935736491
+2025-05-21 19:19:31,602 - handlers.reflect - INFO - Отправлена справка по команде /reflect пользователю 895018115
+2025-05-21 19:19:31,603 - aiogram.event - INFO - Update id=566537728 is handled. Duration 155 ms by bot id=7935736491
+2025-05-21 19:19:53,845 - services.tts - INFO - Создан аудиофайл tmp\895018115_e91a3202-f6f7-4254-9f7c-636a31d3ec25.mp3 для пользователя 895018115
+2025-05-21 19:19:55,181 - handlers.meditate - INFO - Отправлена медитация типа 'default' пользователю 895018115
+2025-05-21 19:19:55,183 - services.tts - INFO - Удален временный аудиофайл tmp\895018115_e91a3202-f6f7-4254-9f7c-636a31d3ec25.mp3
+2025-05-21 19:19:55,183 - aiogram.event - INFO - Update id=566537729 is handled. Duration 12905 ms by bot id=7935736491
+2025-05-21 19:20:17,491 - handlers.meditate - INFO - Отправлена справка по медитациям пользователю 895018115
+2025-05-21 19:20:17,492 - aiogram.event - INFO - Update id=566537730 is handled. Duration 671 ms by bot id=7935736491
+2025-05-21 19:20:25,623 - handlers.reminder - INFO - Пользователь 895018115 запросил включение напоминаний
+2025-05-21 19:20:25,637 - db - INFO - Напоминания включены для пользователя 1
+2025-05-21 19:20:25,794 - handlers.reminder - INFO - Напоминания для пользователя 895018115 включены
+2025-05-21 19:20:25,945 - services.scheduler - INFO - Тестовое напоминание отправлено пользователю 895018115
+2025-05-21 19:20:25,945 - aiogram.event - INFO - Update id=566537731 is handled. Duration 328 ms by bot id=7935736491
+2025-05-21 19:20:35,469 - handlers.reminder - INFO - Пользователь 895018115 запросил отключение напоминаний
+2025-05-21 19:20:35,479 - db - INFO - Напоминания отключены для пользователя 1
+2025-05-21 19:20:35,631 - handlers.reminder - INFO - Напоминания для пользователя 895018115 отключены
+2025-05-21 19:20:35,632 - aiogram.event - INFO - Update id=566537732 is handled. Duration 171 ms by bot id=7935736491
+2025-05-21 19:21:25,683 - handlers.reminder - INFO - Пользователь 895018115 запросил статус напоминаний
+2025-05-21 19:21:26,436 - aiogram.event - INFO - Update id=566537733 is handled. Duration 750 ms by bot id=7935736491
+2025-05-21 19:21:29,491 - handlers.reminder - INFO - Пользователь 895018115 запросил включение напоминаний
+2025-05-21 19:21:29,503 - db - INFO - Напоминания включены для пользователя 1
+2025-05-21 19:21:29,695 - handlers.reminder - INFO - Напоминания для пользователя 895018115 включены
+2025-05-21 19:21:29,869 - services.scheduler - INFO - Тестовое напоминание отправлено пользователю 895018115
+2025-05-21 19:21:29,870 - aiogram.event - INFO - Update id=566537734 is handled. Duration 375 ms by bot id=7935736491
+2025-05-21 19:21:31,443 - handlers.reminder - INFO - Пользователь 895018115 запросил статус напоминаний
+2025-05-21 19:21:31,646 - aiogram.event - INFO - Update id=566537735 is handled. Duration 203 ms by bot id=7935736491
+2025-05-21 19:21:33,750 - handlers.reminder - INFO - Пользователь 895018115 запросил отключение напоминаний
+2025-05-21 19:21:33,761 - db - INFO - Напоминания отключены для пользователя 1
+2025-05-21 19:21:34,034 - handlers.reminder - INFO - Напоминания для пользователя 895018115 отключены
+2025-05-21 19:21:34,034 - aiogram.event - INFO - Update id=566537736 is handled. Duration 296 ms by bot id=7935736491
+2025-05-21 19:21:39,202 - handlers.reminder - INFO - Отправлена справка по напоминаниям пользователю 895018115
+2025-05-21 19:21:39,203 - aiogram.event - INFO - Update id=566537737 is handled. Duration 266 ms by bot id=7935736491
+2025-05-21 19:21:50,213 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-21 19:21:50,471 - services.scheduler - INFO - Планировщик напоминаний остановлен
+2025-05-21 19:21:50,472 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-05-21 19:21:50,472 - __main__ - INFO - Планировщик напоминаний и веб-сервер остановлены
+2025-05-21 19:21:50,472 - aiogram.dispatcher - INFO - Polling stopped for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-21 19:21:50,474 - __main__ - INFO - Бот остановлен вручную
+2025-05-21 19:21:50,475 - db - INFO - Соединение с базой данных закрыто
+2025-05-21 19:21:50,475 - __main__ - INFO - Соединение с базой данных закрыто
+2025-05-21 20:09:25,033 - db - INFO - База данных инициализирована
+2025-05-21 20:09:25,036 - __main__ - INFO - Инициализация бота...
+2025-05-21 20:09:25,384 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-21 20:09:25,384 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-21 20:09:25,398 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-21 20:09:25,398 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-21 20:09:25,398 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-21 20:09:25,398 - __main__ - INFO - Веб-сервер запущен на порту 8080
+2025-05-21 20:09:25,398 - __main__ - INFO - Бот запущен, ожидание сообщений...
+2025-05-21 20:09:25,398 - aiogram.dispatcher - INFO - Start polling
+2025-05-21 20:09:26,169 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-21 20:09:30,319 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:09:30,320 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 20:09:35,686 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:09:35,687 - aiogram.dispatcher - WARNING - Sleep for 1.411103 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 20:09:41,846 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:09:41,847 - aiogram.dispatcher - WARNING - Sleep for 1.793338 seconds and try again... (tryings = 2, bot id = 7935736491)
+2025-05-21 20:09:49,004 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:09:49,008 - aiogram.dispatcher - WARNING - Sleep for 2.325883 seconds and try again... (tryings = 3, bot id = 7935736491)
+2025-05-21 20:09:57,296 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:09:57,297 - aiogram.dispatcher - WARNING - Sleep for 3.084624 seconds and try again... (tryings = 4, bot id = 7935736491)
+2025-05-21 20:10:04,227 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:10:04,229 - aiogram.dispatcher - WARNING - Sleep for 3.955996 seconds and try again... (tryings = 5, bot id = 7935736491)
+2025-05-21 20:10:13,112 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:10:13,113 - aiogram.dispatcher - WARNING - Sleep for 4.989593 seconds and try again... (tryings = 6, bot id = 7935736491)
+2025-05-21 20:10:23,231 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:10:23,231 - aiogram.dispatcher - WARNING - Sleep for 4.897465 seconds and try again... (tryings = 7, bot id = 7935736491)
+2025-05-21 20:10:33,113 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:10:33,114 - aiogram.dispatcher - WARNING - Sleep for 4.858209 seconds and try again... (tryings = 8, bot id = 7935736491)
+2025-05-21 20:10:36,734 - db - INFO - База данных инициализирована
+2025-05-21 20:10:36,734 - __main__ - INFO - Инициализация бота...
+2025-05-21 20:10:37,046 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-21 20:10:37,047 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-21 20:10:37,047 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-21 20:10:37,048 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-21 20:10:37,048 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-21 20:10:37,052 - __main__ - ERROR - Ошибка при запуске бота: [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8080): обычно разрешается только одно использование адреса сокета (протокол/сетевой адрес/порт)
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\main.py", line 348, in <module>
+    asyncio.run(main())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\main.py", line 332, in main
+    await site.start()
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiohttp\web_runner.py", line 119, in start
+    self._server = await loop.create_server(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 1536, in create_server
+    raise OSError(err.errno, msg) from None
+OSError: [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8080): обычно разрешается только одно использование адреса сокета (протокол/сетевой адрес/порт)
+2025-05-21 20:10:37,058 - db - INFO - Соединение с базой данных закрыто
+2025-05-21 20:10:37,058 - __main__ - INFO - Соединение с базой данных закрыто
+2025-05-21 20:10:41,733 - aiogram.dispatcher - INFO - Connection established (tryings = 9, bot id = 7935736491)
+2025-05-21 20:10:41,739 - handlers.reminder - INFO - Пользователь 895018115 запросил статус напоминаний
+2025-05-21 20:10:42,462 - aiogram.event - INFO - Update id=566537807 is handled. Duration 734 ms by bot id=7935736491
+2025-05-21 20:10:43,374 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:10:43,374 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 20:10:52,440 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:10:52,440 - aiogram.dispatcher - WARNING - Sleep for 1.287556 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 20:11:01,943 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:11:01,943 - aiogram.dispatcher - WARNING - Sleep for 1.787477 seconds and try again... (tryings = 2, bot id = 7935736491)
+2025-05-21 20:11:07,980 - db - INFO - База данных инициализирована
+2025-05-21 20:11:07,981 - __main__ - INFO - Инициализация бота...
+2025-05-21 20:11:08,231 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-21 20:11:08,233 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-21 20:11:08,233 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-21 20:11:08,233 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-21 20:11:08,233 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-21 20:11:08,235 - __main__ - ERROR - Ошибка при запуске бота: [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8080): обычно разрешается только одно использование адреса сокета (протокол/сетевой адрес/порт)
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\main.py", line 348, in <module>
+    asyncio.run(main())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\main.py", line 332, in main
+    await site.start()
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiohttp\web_runner.py", line 119, in start
+    self._server = await loop.create_server(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 1536, in create_server
+    raise OSError(err.errno, msg) from None
+OSError: [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8080): обычно разрешается только одно использование адреса сокета (протокол/сетевой адрес/порт)
+2025-05-21 20:11:08,237 - db - INFO - Соединение с базой данных закрыто
+2025-05-21 20:11:08,237 - __main__ - INFO - Соединение с базой данных закрыто
+2025-05-21 20:11:11,858 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:11:11,858 - aiogram.dispatcher - WARNING - Sleep for 2.308320 seconds and try again... (tryings = 3, bot id = 7935736491)
+2025-05-21 20:11:22,211 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:11:22,212 - aiogram.dispatcher - WARNING - Sleep for 2.998147 seconds and try again... (tryings = 4, bot id = 7935736491)
+2025-05-21 20:11:30,488 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:11:30,488 - aiogram.dispatcher - WARNING - Sleep for 3.948349 seconds and try again... (tryings = 5, bot id = 7935736491)
+2025-05-21 20:11:35,459 - aiogram.dispatcher - INFO - Connection established (tryings = 6, bot id = 7935736491)
+2025-05-21 20:11:35,461 - handlers.reminder - INFO - Пользователь 895018115 запросил статус напоминаний
+2025-05-21 20:11:35,941 - aiogram.event - INFO - Update id=566537808 is handled. Duration 484 ms by bot id=7935736491
+2025-05-21 20:11:38,800 - handlers.reminder - INFO - Пользователь 895018115 запросил включение напоминаний
+2025-05-21 20:11:38,816 - db - INFO - Напоминания включены для пользователя 1
+2025-05-21 20:11:39,009 - handlers.reminder - INFO - Напоминания для пользователя 895018115 включены
+2025-05-21 20:11:39,185 - services.scheduler - INFO - Тестовое напоминание отправлено пользователю 895018115
+2025-05-21 20:11:39,185 - aiogram.event - INFO - Update id=566537809 is handled. Duration 375 ms by bot id=7935736491
+2025-05-21 20:11:39,647 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:11:39,647 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 20:11:48,828 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:11:48,829 - aiogram.dispatcher - WARNING - Sleep for 1.387245 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 20:11:56,599 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:11:56,600 - aiogram.dispatcher - WARNING - Sleep for 1.731515 seconds and try again... (tryings = 2, bot id = 7935736491)
+2025-05-21 20:12:02,267 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:12:02,268 - aiogram.dispatcher - WARNING - Sleep for 2.007597 seconds and try again... (tryings = 3, bot id = 7935736491)
+2025-05-21 20:12:06,547 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:12:06,547 - aiogram.dispatcher - WARNING - Sleep for 2.702600 seconds and try again... (tryings = 4, bot id = 7935736491)
+2025-05-21 20:12:13,840 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:12:13,841 - aiogram.dispatcher - WARNING - Sleep for 3.648549 seconds and try again... (tryings = 5, bot id = 7935736491)
+2025-05-21 20:12:27,652 - aiogram.dispatcher - INFO - Connection established (tryings = 6, bot id = 7935736491)
+2025-05-21 20:12:28,228 - handlers.meditate - INFO - Отправлена справка по медитациям пользователю 895018115
+2025-05-21 20:12:28,228 - aiogram.event - INFO - Update id=566537810 is handled. Duration 437 ms by bot id=7935736491
+2025-05-21 20:12:33,192 - handlers.meditate - INFO - Отправлена справка по медитациям пользователю 895018115
+2025-05-21 20:12:33,192 - aiogram.event - INFO - Update id=566537811 is handled. Duration 187 ms by bot id=7935736491
+2025-05-21 20:12:47,822 - services.tts - INFO - Создан аудиофайл tmp\895018115_373bdcd9-37a1-40b2-a5f5-e9eb1ea3a74e.mp3 для пользователя 895018115
+2025-05-21 20:12:49,132 - handlers.meditate - INFO - Отправлена медитация типа 'default' пользователю 895018115
+2025-05-21 20:12:49,136 - services.tts - INFO - Удален временный аудиофайл tmp\895018115_373bdcd9-37a1-40b2-a5f5-e9eb1ea3a74e.mp3
+2025-05-21 20:12:49,136 - aiogram.event - INFO - Update id=566537812 is handled. Duration 14781 ms by bot id=7935736491
+2025-05-21 20:12:56,399 - handlers.meditate - INFO - Отправлена справка по медитациям пользователю 895018115
+2025-05-21 20:12:56,400 - aiogram.event - INFO - Update id=566537813 is handled. Duration 250 ms by bot id=7935736491
+2025-05-21 20:12:57,748 - handlers.meditate - INFO - Отправлена справка по медитациям пользователю 895018115
+2025-05-21 20:12:57,748 - aiogram.event - INFO - Update id=566537814 is handled. Duration 155 ms by bot id=7935736491

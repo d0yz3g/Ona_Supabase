@@ -246,11 +246,10 @@ async def root_handler(request):
     })
 
 # Обработчик ошибок для диспетчера
-async def errors_handler(event: ErrorEvent):
+async def errors_handler(event: ErrorEvent, exception: Exception):
     """Обработчик ошибок при обработке обновлений Telegram."""
     # Получаем информацию об ошибке
     update = event.update if hasattr(event, 'update') else None
-    exception = event.exception
     
     # Получаем информацию о пользователе и сообщении
     user_id = 'Неизвестно'
