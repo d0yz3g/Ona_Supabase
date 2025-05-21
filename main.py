@@ -19,12 +19,8 @@ from db import Database
 from handlers.recs import recs_router
 from handlers.meditate import meditate_router
 from handlers.reminders import reminders_router, set_scheduler
-# Импортируем questionnaire_router напрямую из handlers.py
-import handlers as handlers_module
+from handlers.questionnaire import questionnaire_router
 from services.scheduler import ReminderScheduler
-
-# Получаем роутер из модуля handlers
-questionnaire_router = handlers_module.questionnaire_router
 
 # Настройка логирования
 logging.basicConfig(
