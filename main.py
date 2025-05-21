@@ -55,19 +55,20 @@ logger = logging.getLogger(__name__)
 
 # Загрузка переменных окружения
 load_dotenv()
-# Используем тестовый токен для демонстрации работы (НЕ ДЕЛАЙТЕ ТАК В РЕАЛЬНЫХ ПРОЕКТАХ)
-BOT_TOKEN = os.getenv("BOT_TOKEN", "test_token_for_demo")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "test_openai_key_for_demo")
-ELEVEN_API_KEY = os.getenv("ELEVEN_API_KEY", "test_eleven_key_for_demo")
 
-if BOT_TOKEN == "test_token_for_demo":
-    logger.warning("Используется тестовый токен бота. Для реальной работы укажите настоящий токен в файле .env")
+# Получение токенов из переменных окружения
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+if not BOT_TOKEN:
+    logger.error("BOT_TOKEN не найден в переменных окружения. Бот не может быть запущен.")
+    sys.exit(1)
 
-if OPENAI_API_KEY == "test_openai_key_for_demo":
-    logger.warning("Используется тестовый ключ OpenAI API. Для реальной работы укажите настоящий ключ в файле .env")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    logger.warning("OPENAI_API_KEY не найден в переменных окружения. Будет использована заглушка для генерации рекомендаций.")
 
-if ELEVEN_API_KEY is None or ELEVEN_API_KEY == "test_eleven_key_for_demo":
-    logger.warning("ELEVEN_API_KEY не найден в переменных окружения. Функция медитации будет недоступна.")
+ELEVEN_API_KEY = os.getenv("ELEVEN_API_KEY")
+if not ELEVEN_API_KEY:
+    logger.warning("ELEVEN_API_KEY не найден в переменных окружения. Функция медитации будет работать в режиме заглушки.")
 
 # Инициализация базы данных
 db = Database()
