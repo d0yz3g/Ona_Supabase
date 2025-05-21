@@ -1,6 +1,7 @@
 import os
 import logging
 import asyncio
+import httpx
 from typing import Dict, Any, Optional
 from openai import AsyncOpenAI
 
@@ -8,7 +9,11 @@ from openai import AsyncOpenAI
 logger = logging.getLogger(__name__)
 
 # Инициализация клиента OpenAI с API-ключом из переменных окружения
-client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+http_client = httpx.AsyncClient()
+client = AsyncOpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    http_client=http_client
+)
 
 # Список доступных фокусов для рекомендаций
 AVAILABLE_FOCUSES = {
