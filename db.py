@@ -261,7 +261,7 @@ class Database:
             user_id: ID пользователя в базе данных.
             
         Returns:
-            List[Dict]: Список всех ответов пользователя.
+            List[Dict]: Список ответов пользователя.
         """
         conn = self.get_connection()
         cursor = conn.cursor()
@@ -270,6 +270,29 @@ class Database:
         answers = cursor.fetchall()
         
         return [dict(answer) for answer in answers]
+    
+    def delete_answers_by_user_id(self, user_id: int) -> bool:
+        """
+        Удаление всех ответов пользователя.
+        
+        Args:
+            user_id: ID пользователя в базе данных.
+            
+        Returns:
+            bool: True, если удаление выполнено успешно, иначе False.
+        """
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        try:
+            cursor.execute("DELETE FROM answers WHERE user_id = ?", (user_id,))
+            conn.commit()
+            logger.info(f"Удалены все ответы пользователя {user_id}")
+            return True
+        except sqlite3.Error as e:
+            logger.error(f"Ошибка при удалении ответов: {e}")
+            conn.rollback()
+            return False
     
     # Функции для работы с профилями
     

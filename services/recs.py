@@ -2,8 +2,9 @@ import os
 import logging
 import asyncio
 import httpx
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Tuple, List
 from openai import AsyncOpenAI
+import random
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
@@ -25,6 +26,18 @@ if OPENAI_API_KEY:
     except Exception as e:
         logger.error(f"Ошибка при инициализации OpenAI API: {e}")
 
+# Типы намерений пользователя
+USER_INTENTS = {
+    "question": "вопрос пользователя на конкретную тему",
+    "meditation": "запрос на медитацию или расслабление",
+    "joke": "шутка или легкая беседа",
+    "help": "запрос помощи или совета",
+    "analysis": "запрос на анализ ситуации или проблемы",
+    "greeting": "приветствие или общее начало разговора",
+    "feedback": "обратная связь или реакция на предыдущее сообщение бота",
+    "support": "запрос психологической поддержки"
+}
+
 # Список доступных фокусов для рекомендаций
 AVAILABLE_FOCUSES = {
     "burnout": "эмоциональным выгоранием",
@@ -41,6 +54,27 @@ AVAILABLE_FOCUSES = {
     "sleep": "проблемами сна",
     "default": "повседневными трудностями"
 }
+
+# Заготовленные ответы для режима без OpenAI API
+DEFAULT_RESPONSES = {
+    "question": "Это интересный вопрос. Я постараюсь найти информацию по этой теме и ответить вам подробнее.",
+    "meditation": "Для медитации я рекомендую найти тихое место, сесть удобно и сосредоточиться на своем дыхании. Вы также можете использовать команду /meditate для получения аудио-медитации.",
+    "joke": "Рада, что у вас хорошее настроение! Продолжайте в том же духе.",
+    "help": "Я здесь, чтобы помочь. Расскажите подробнее о своей ситуации, и я постараюсь предложить решение.",
+    "analysis": "Для детального анализа этой ситуации мне нужно больше информации. Расскажите подробнее, что происходит?",
+    "greeting": "Здравствуйте! У меня всё хорошо, спасибо, что спросили. Чем я могу вам помочь сегодня?",
+    "feedback": "Спасибо за ваш отклик! Я стараюсь быть полезной.",
+    "support": "Я понимаю, что вы сейчас чувствуете. Важно помнить, что вы не одни, и эти чувства временны."
+}
+
+# Дополнительные варианты ответов на приветствия
+GREETING_RESPONSES = [
+    "Привет! У меня всё отлично. Как я могу вам помочь сегодня?",
+    "Здравствуйте! Рада вас видеть снова. Чем могу быть полезна?",
+    "Добрый день! У меня всё хорошо, надеюсь, и у вас тоже. Чем я могу помочь?",
+    "Приветствую! Я всегда готова помочь. Что вас интересует?",
+    "Здравствуйте! Отлично, спасибо, что спросили. Как я могу быть полезной сегодня?"
+]
 
 # Заготовленные рекомендации для режима без OpenAI API
 DEFAULT_RECOMMENDATIONS = {
@@ -62,82 +96,46 @@ DEFAULT_RECOMMENDATIONS = {
 # Словарь для хранения последнего времени запроса пользователя
 last_request_time: Dict[int, float] = {}
 
-async def generate_recommendation(text: str, user_id: int, focus: str = "default") -> str:
+async def detect_intent_and_focus(text: str) -> Tuple[str, str]:
     """
-    Генерация персонализированной рекомендации для пользователя с использованием OpenAI.
-    Если OpenAI API недоступен, возвращает заготовленную рекомендацию.
-    
-    Args:
-        text: Текст сообщения пользователя.
-        user_id: ID пользователя в Telegram.
-        focus: Фокус рекомендации (burnout, anxiety, postpartum и т.д.).
-        
-    Returns:
-        str: Сгенерированная рекомендация.
-    """
-    # Проверка наличия антиспам-защиты
-    current_time = asyncio.get_event_loop().time()
-    if user_id in last_request_time:
-        time_diff = current_time - last_request_time[user_id]
-        if time_diff < 5:  # Не чаще одного раза в 5 секунд
-            wait_time = round(5 - time_diff, 1)
-            return f"Пожалуйста, подождите {wait_time} сек. перед следующим запросом."
-    
-    # Обновляем время последнего запроса
-    last_request_time[user_id] = current_time
-    
-    # Нормализуем фокус
-    normalized_focus = focus.lower()
-    if normalized_focus not in AVAILABLE_FOCUSES:
-        normalized_focus = "default"
-    
-    # Если API-ключ OpenAI не настроен или клиент не инициализирован, используем заготовленные рекомендации
-    if not client:
-        return DEFAULT_RECOMMENDATIONS.get(normalized_focus, DEFAULT_RECOMMENDATIONS["default"])
-    
-    # Получаем текстовое описание фокуса
-    focus_description = AVAILABLE_FOCUSES[normalized_focus]
-    
-    try:
-        # Создаем запрос к OpenAI
-        response = await client.chat.completions.create(
-            model="gpt-3.5-turbo",  # Можно заменить на gpt-4, если доступен
-            temperature=0.7,
-            messages=[
-                {
-                    "role": "system",
-                    "content": f"Ты — профессиональный психолог. Дай 1–2 коротких, практических совета для клиента с фокусом: {focus_description}. Ответ должен быть на русском языке, не более 3-4 предложений, без введения и заключения."
-                },
-                {
-                    "role": "user",
-                    "content": text
-                }
-            ]
-        )
-        
-        # Получаем результат
-        result = response.choices[0].message.content.strip()
-        logger.info(f"Сгенерирована рекомендация для пользователя {user_id} с фокусом '{normalized_focus}'")
-        
-        return result
-        
-    except Exception as e:
-        logger.error(f"Ошибка при генерации рекомендации: {e}")
-        # В случае ошибки также возвращаем заготовленную рекомендацию
-        return DEFAULT_RECOMMENDATIONS.get(normalized_focus, DEFAULT_RECOMMENDATIONS["default"])
-
-def detect_focus(text: str) -> Optional[str]:
-    """
-    Определяет фокус рекомендации на основе текста пользователя.
+    Определяет намерение пользователя и фокус сообщения.
     
     Args:
         text: Текст сообщения пользователя.
         
     Returns:
-        Optional[str]: Фокус рекомендации или None, если фокус не определен.
+        Tuple[str, str]: Намерение пользователя и фокус сообщения.
     """
     text_lower = text.lower()
     
+    # Определение намерения по ключевым словам
+    intent_markers = {
+        "question": ["как", "что", "где", "когда", "почему", "зачем", "какой", "сколько", "?"],
+        "meditation": ["медитация", "медитировать", "релакс", "расслабиться", "успокоиться", "медитируй"],
+        "joke": ["шутка", "анекдот", "смешно", "весело", "рассмеши", "шути", "юмор"],
+        "help": ["помоги", "помощь", "поддержка", "совет", "подскажи", "посоветуй"],
+        "analysis": ["анализ", "разбор", "объясни", "расскажи", "проанализируй", "пойми"],
+        "greeting": ["привет", "здравствуй", "добрый день", "здорова", "хай", "приветствую", "как дела", "что нового", "как жизнь", "как поживаешь", "доброе утро", "добрый вечер"],
+        "feedback": ["спасибо", "благодарю", "хорошо", "отлично", "понравилось", "не понравилось"],
+    }
+    
+    # Проверяем наличие полных фраз для приветствий
+    greeting_phrases = ["как дела", "как жизнь", "как поживаешь", "что нового"]
+    for phrase in greeting_phrases:
+        if phrase in text_lower:
+            return "greeting", "default"
+    
+    # Проверяем наличие маркеров интента
+    detected_intent = "support"  # По умолчанию считаем, что это запрос поддержки
+    for intent, markers in intent_markers.items():
+        for marker in markers:
+            if marker in text_lower:
+                detected_intent = intent
+                break
+        if detected_intent != "support":
+            break
+    
+    # Определение фокуса сообщения
     focus_keywords = {
         "burnout": ["выгорание", "выгорел", "устал", "истощение", "нет сил", "перегрузк"],
         "anxiety": ["тревога", "тревожность", "паник", "волнение", "беспокойств", "страх"],
@@ -153,9 +151,179 @@ def detect_focus(text: str) -> Optional[str]:
         "sleep": ["сон", "бессонница", "не спится", "просыпаюсь", "недосып"]
     }
     
+    detected_focus = "default"
     for focus, keywords in focus_keywords.items():
         for keyword in keywords:
             if keyword in text_lower:
-                return focus
+                detected_focus = focus
+                break
+        if detected_focus != "default":
+            break
     
-    return None 
+    return detected_intent, detected_focus
+
+async def detect_intent_with_ai(text: str) -> Tuple[str, float]:
+    """
+    Определяет намерение пользователя с помощью OpenAI.
+    
+    Args:
+        text: Текст сообщения пользователя.
+        
+    Returns:
+        Tuple[str, float]: Намерение пользователя и уверенность в определении.
+    """
+    if not client:
+        # Если API недоступен, используем правила
+        intent, _ = await detect_intent_and_focus(text)
+        return intent, 0.7
+    
+    try:
+        response = await client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            temperature=0.3,
+            messages=[
+                {
+                    "role": "system",
+                    "content": f"""Определи, какое из следующих намерений лучше всего соответствует сообщению пользователя.
+Доступные намерения:
+- question: вопрос пользователя на конкретную тему
+- meditation: запрос на медитацию или расслабление
+- joke: шутка или легкая беседа
+- help: запрос помощи или совета
+- analysis: запрос на анализ ситуации или проблемы
+- greeting: приветствие или общее начало разговора
+- feedback: обратная связь или реакция на предыдущее сообщение бота
+- support: запрос психологической поддержки
+
+Ответь только названием намерения на английском (например, "question").
+"""
+                },
+                {
+                    "role": "user",
+                    "content": text
+                }
+            ]
+        )
+        
+        intent = response.choices[0].message.content.strip().lower()
+        
+        # Проверяем, что ответ соответствует одному из возможных намерений
+        if intent in USER_INTENTS:
+            return intent, 0.9
+        else:
+            # Если ответ не соответствует, используем правила
+            logger.warning(f"AI вернул неизвестное намерение: {intent}. Используем правила.")
+            detected_intent, _ = await detect_intent_and_focus(text)
+            return detected_intent, 0.6
+            
+    except Exception as e:
+        logger.error(f"Ошибка при определении намерения: {e}")
+        # В случае ошибки используем правила
+        detected_intent, _ = await detect_intent_and_focus(text)
+        return detected_intent, 0.5
+
+async def generate_response(text: str, user_id: int) -> str:
+    """
+    Генерирует контекстуальный ответ на сообщение пользователя с использованием OpenAI.
+    
+    Args:
+        text: Текст сообщения пользователя.
+        user_id: ID пользователя в Telegram.
+        
+    Returns:
+        str: Сгенерированный ответ.
+    """
+    # Проверка антиспам-защиты
+    current_time = asyncio.get_event_loop().time()
+    if user_id in last_request_time:
+        time_diff = current_time - last_request_time[user_id]
+        if time_diff < 2:  # Не чаще одного раза в 2 секунды
+            wait_time = round(2 - time_diff, 1)
+            return f"Пожалуйста, подождите {wait_time} сек. перед следующим запросом."
+    
+    # Обновляем время последнего запроса
+    last_request_time[user_id] = current_time
+    
+    # Определяем намерение пользователя и фокус сообщения
+    intent, confidence = await detect_intent_with_ai(text)
+    _, focus = await detect_intent_and_focus(text)
+    
+    logger.info(f"Определено намерение: {intent} с уверенностью {confidence}. Фокус: {focus}")
+    
+    # Если API-ключ OpenAI не настроен или клиент не инициализирован
+    if not client:
+        if intent == "support":
+            return DEFAULT_RECOMMENDATIONS.get(focus, DEFAULT_RECOMMENDATIONS["default"])
+        elif intent == "greeting":
+            # Для приветствий выбираем случайный ответ из заготовленных
+            return random.choice(GREETING_RESPONSES)
+        else:
+            return DEFAULT_RESPONSES.get(intent, DEFAULT_RESPONSES["support"])
+    
+    try:
+        # Создаем запрос к OpenAI в зависимости от намерения
+        if intent == "question":
+            system_prompt = "Ты - дружелюбный и информативный помощник. Дай краткий, но полный ответ на вопрос пользователя. Ответ должен быть на русском языке."
+        elif intent == "meditation":
+            system_prompt = "Ты - специалист по медитации и расслаблению. Предложи пользователю короткую технику медитации или релаксации. Ответ должен быть на русском языке."
+        elif intent == "joke":
+            system_prompt = "Ты - дружелюбный собеседник с чувством юмора. Ответь легко и с юмором. Ответ должен быть на русском языке."
+        elif intent == "help":
+            system_prompt = "Ты - компетентный помощник. Предложи конкретные шаги или решения для проблемы пользователя. Ответ должен быть на русском языке."
+        elif intent == "analysis":
+            system_prompt = "Ты - аналитический помощник. Проанализируй ситуацию или тему, упомянутую пользователем, и дай структурированный ответ. Ответ должен быть на русском языке."
+        elif intent == "greeting":
+            system_prompt = "Ты - дружелюбный цифровой помощник по имени Она. Ответь на приветствие пользователя коротко, тепло и естественно, как будто вы друзья. Избегай формальностей и шаблонных фраз. Если пользователь спрашивает как дела - ответь позитивно и коротко. Ответ должен быть на русском языке и не более 1-2 предложений."
+        elif intent == "feedback":
+            system_prompt = "Ты - внимательный собеседник. Поблагодари пользователя за обратную связь и покажи, что ценишь его мнение. Ответ должен быть на русском языке."
+        else:  # support
+            focus_description = AVAILABLE_FOCUSES[focus]
+            system_prompt = f"Ты — профессиональный психолог. Дай 1–2 коротких, практических совета для клиента с фокусом: {focus_description}. Ответ должен быть на русском языке, не более 3-4 предложений, без введения и заключения."
+        
+        response = await client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            temperature=0.7,
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_prompt
+                },
+                {
+                    "role": "user",
+                    "content": text
+                }
+            ]
+        )
+        
+        # Получаем результат
+        result = response.choices[0].message.content.strip()
+        logger.info(f"Сгенерирован ответ для пользователя {user_id} с намерением '{intent}' и фокусом '{focus}'")
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Ошибка при генерации ответа: {e}")
+        # В случае ошибки также возвращаем заготовленный ответ
+        if intent == "support":
+            return DEFAULT_RECOMMENDATIONS.get(focus, DEFAULT_RECOMMENDATIONS["default"])
+        else:
+            return DEFAULT_RESPONSES.get(intent, DEFAULT_RESPONSES["support"])
+
+# Устаревшая функция, сохраняем для обратной совместимости
+async def generate_recommendation(text: str, user_id: int, focus: str = "default") -> str:
+    """
+    Генерация персонализированной рекомендации для пользователя с использованием OpenAI.
+    Устаревшая функция, используйте generate_response.
+    """
+    logger.warning("Использование устаревшей функции generate_recommendation. Рекомендуется перейти на generate_response.")
+    return await generate_response(text, user_id)
+
+# Устаревшая функция, сохраняем для обратной совместимости
+def detect_focus(text: str) -> Optional[str]:
+    """
+    Определяет фокус рекомендации на основе текста пользователя.
+    Устаревшая функция, используйте detect_intent_and_focus.
+    """
+    logger.warning("Использование устаревшей функции detect_focus. Рекомендуется перейти на detect_intent_and_focus.")
+    _, focus = asyncio.run(detect_intent_and_focus(text))
+    return focus 

@@ -13,6 +13,7 @@ from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.exceptions import TelegramAPIError
 from aiohttp import web
+from aiogram.fsm.context import FSMContext
 
 from db import Database
 # Импортируем роутеры из handlers/__init__.py
@@ -101,6 +102,7 @@ async def help_command(message: Message):
         "/help - Показать это сообщение\n"
         "/profile - Показать ваш профиль (или начать опрос, если профиль отсутствует)\n"
         "/questionnaire, /begin - Начать опрос для создания профиля\n"
+        "/reset - Сбросить ваш профиль и все ответы\n"
         "/reflect - Получить психологический совет\n"
         "/help_reflect - Справка по получению советов\n"
         "/meditate - Получить голосовую медитацию\n"
@@ -113,6 +115,55 @@ async def help_command(message: Message):
     )
     await message.answer(help_text)
     logger.info(f"Пользователь {message.from_user.id} запросил помощь")
+
+@main_router.message(Command("reset"))
+async def reset_profile(message: Message, state: FSMContext):
+    """Обработчик команды /reset для сброса профиля."""
+    # Проверка наличия пользователя в БД
+    user = db.get_user_by_tg_id(message.from_user.id)
+    
+    if not user:
+        user_id = db.add_user(
+            message.from_user.id,
+            f"{message.from_user.first_name} {message.from_user.last_name if message.from_user.last_name else ''}"
+        )
+        await message.answer("У вас еще нет профиля для сброса.")
+        return
+    else:
+        user_id = user["id"]
+    
+    # Проверка наличия профиля
+    profile = db.get_profile(user_id)
+    
+    if not profile:
+        await message.answer("У вас еще нет профиля для сброса.")
+        return
+    
+    # Сбрасываем состояние FSM
+    await state.clear()
+    
+    # Удаляем все ответы пользователя
+    db.delete_answers_by_user_id(user_id)
+    
+    # Удаляем профиль (сброс на уровне БД)
+    cur = db.get_connection().cursor()
+    cur.execute("DELETE FROM profiles WHERE user_id = ?", (user_id,))
+    db.get_connection().commit()
+    
+    await message.answer(
+        "Ваш профиль и все ответы успешно сброшены. "
+        "Вы можете начать опрос заново с помощью команды /questionnaire."
+    )
+    
+    logger.info(f"Пользователь {message.from_user.id} сбросил свой профиль")
+
+@main_router.message(Command("clear_state"))
+async def clear_state(message: Message, state: FSMContext):
+    """Обработчик команды /clear_state для сброса состояния FSM."""
+    current_state = await state.get_state()
+    await state.clear()
+    await message.answer(f"Ваше состояние было сброшено. Предыдущее состояние: {current_state or 'Не задано'}")
+    logger.info(f"Пользователь {message.from_user.id} сбросил своё состояние (было: {current_state})")
 
 @main_router.message(Command("profile"))
 async def profile(message: Message):
@@ -246,10 +297,11 @@ async def root_handler(request):
     })
 
 # Обработчик ошибок для диспетчера
-async def errors_handler(event: ErrorEvent, exception: Exception):
+async def errors_handler(event: ErrorEvent):
     """Обработчик ошибок при обработке обновлений Telegram."""
     # Получаем информацию об ошибке
     update = event.update if hasattr(event, 'update') else None
+    exception = event.exception
     
     # Получаем информацию о пользователе и сообщении
     user_id = 'Неизвестно'
@@ -275,7 +327,8 @@ async def errors_handler(event: ErrorEvent, exception: Exception):
     error_message += f"Ошибка: {html.quote(str(exception))}"
     
     # Логирование ошибки
-    logger.error(error_message, exc_info=True)
+    logger.error(error_message)
+    logger.error(f"Traceback: {traceback.format_exc()}")
     
     # Возвращать False, чтобы aiogram продолжил обработку ошибки
     return False

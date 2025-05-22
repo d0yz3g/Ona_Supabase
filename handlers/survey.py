@@ -9,12 +9,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from db import Database
 from states import QuestionnaireStates
-from questions import (
-    get_demo_questions, 
-    get_strength_questions, 
-    get_strength_options_labels,
-    get_question_by_id
-)
+from questions import (    get_demo_questions,     get_strength_questions,     get_strength_options_labels,    get_question_by_id)
 from services.astrology import make_natal_chart
 from services.ai_client import generate_profile
 
@@ -49,6 +44,9 @@ async def start_questionnaire(message: Message, state: FSMContext):
             "У вас уже есть созданный профиль. "
             "Хотите пройти опрос заново? (Это перезапишет ваш текущий профиль)"
         )
+        # Сохраняем ID пользователя в FSM-контексте для последующего использования
+        await state.update_data(user_id=user_id)
+        
         # Предложить кнопки Да/Нет
         builder = InlineKeyboardBuilder()
         builder.button(text="Да", callback_data="restart_questionnaire")
@@ -58,6 +56,12 @@ async def start_questionnaire(message: Message, state: FSMContext):
     
     # Сохраняем ID пользователя в FSM-контексте
     await state.update_data(user_id=user_id)
+    
+    # Очищаем предыдущие ответы на случай, если опрос не был завершен в прошлый раз
+    db.delete_answers_by_user_id(user_id)
+    
+    # Сбрасываем индексы вопросов
+    await state.update_data(current_demo_question_index=0, current_strength_question_index=0)
     
     # Начинаем опрос
     await state.set_state(QuestionnaireStates.started)
@@ -76,7 +80,14 @@ async def start_questionnaire(message: Message, state: FSMContext):
 async def restart_questionnaire(callback: CallbackQuery, state: FSMContext):
     """Обработчик перезапуска опроса."""
     user = db.get_user_by_tg_id(callback.from_user.id)
-    await state.update_data(user_id=user["id"])
+    user_id = user["id"]
+    await state.update_data(user_id=user_id)
+    
+    # Очищаем предыдущие ответы пользователя
+    db.delete_answers_by_user_id(user_id)
+    
+    # Сбрасываем индексы вопросов
+    await state.update_data(current_demo_question_index=0, current_strength_question_index=0)
     
     # Начинаем опрос заново
     await state.set_state(QuestionnaireStates.started)
@@ -151,7 +162,9 @@ async def ask_next_strength_question(message: Message, state: FSMContext):
         options_labels = get_strength_options_labels()
         
         for option in question["options"]:
-            callback_data = f"strength_{question['id']}_{option}"
+            # Извлекаем только номер вопроса из его ID (например, "1" из "strength_1")
+            question_number = question["id"].split("_")[1]
+            callback_data = f"strength_{question_number}_{option}"
             label = f"{option} - {options_labels[option]}"
             builder.button(text=label, callback_data=callback_data)
         
@@ -202,7 +215,8 @@ async def process_strength_answer(callback: CallbackQuery, state: FSMContext):
         await callback.answer("Ошибка обработки ответа. Попробуйте еще раз.")
         return
     
-    question_id = parts[1]
+    # Формируем правильный идентификатор вопроса: strength_номер
+    question_id = f"strength_{parts[1]}"
     answer = parts[2]
     
     # Получаем данные из состояния
@@ -364,13 +378,21 @@ async def build_profile(user_id: int, answers: List[Dict[str, Any]]) -> Dict[str
     # Считаем средний балл по каждой категории сильных сторон
     strength_scores = {}
     strength_categories = {
-        "analytical": ["strength_2", "strength_3", "strength_5", "strength_14", "strength_18", "strength_19"],
-        "creative": ["strength_15", "strength_26", "strength_28", "strength_30", "strength_31"],
-        "leadership": ["strength_9", "strength_13", "strength_17", "strength_22", "strength_25"],
-        "social": ["strength_1", "strength_7", "strength_10", "strength_12", "strength_16", "strength_20"],
-        "organized": ["strength_6", "strength_8", "strength_23", "strength_27", "strength_29", "strength_32"],
-        "resilient": ["strength_4", "strength_11", "strength_21", "strength_24", "strength_33", "strength_34"]
+        "analytical": [],
+        "creative": [],
+        "leadership": [],
+        "social": [],
+        "organized": [],
+        "resilient": []
     }
+    
+    # Заполняем категории на основе вопросов
+    strength_questions = get_strength_questions()
+    for question in strength_questions:
+        question_id = question["id"]
+        category = question.get("category")
+        if category and category in strength_categories:
+            strength_categories[category].append(question_id)
     
     # Инициализация счетчиков для каждой категории
     for category in strength_categories:
@@ -387,7 +409,10 @@ async def build_profile(user_id: int, answers: List[Dict[str, Any]]) -> Dict[str
     final_scores = {}
     for category, data in strength_scores.items():
         if data["count"] > 0:
-            final_scores[category] = round(data["total"] / data["count"], 2)
+            # Вычисляем среднее значение баллов
+            avg_score = data["total"] / data["count"]
+            # Округляем до одного знака после запятой
+            final_scores[category] = round(avg_score, 1)
         else:
             final_scores[category] = 0
     
