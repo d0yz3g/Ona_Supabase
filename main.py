@@ -3,6 +3,7 @@ import logging
 import os
 import signal
 import sys
+import time
 from dotenv import load_dotenv
 
 from aiogram import Bot, Dispatcher
@@ -73,19 +74,27 @@ async def main():
             logger.info("Соединение с Telegram API установлено успешно")
         except Exception as e:
             logger.error(f"Ошибка при подключении к Telegram API: {e}")
-            return
+            # Пробуем еще раз через 5 секунд
+            await asyncio.sleep(5)
+            await bot.get_me()
+            logger.info("Соединение с Telegram API установлено со второй попытки")
         
         # Игнорируем старые обновления для предотвращения конфликтов
         await bot.delete_webhook(drop_pending_updates=True)
         
-        # Обработка только SIGINT (Ctrl+C), игнорируем SIGTERM чтобы бот продолжал работать
+        # Обработка сигналов
+        # Игнорируем SIGTERM чтобы бот продолжал работать при мягкой остановке контейнера
         def signal_handler(sig, frame):
             if sig == signal.SIGINT:
                 logger.info("Получен сигнал SIGINT (Ctrl+C), останавливаем бота...")
+                asyncio.create_task(bot.session.close())
                 asyncio.create_task(dp.stop_polling())
+            elif sig == signal.SIGTERM:
+                logger.info("Получен сигнал SIGTERM, игнорируем для предотвращения остановки")
         
-        # Регистрируем обработчик только для SIGINT
+        # Регистрируем обработчики сигналов
         signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
         
         # Запуск поллинга с параметрами для непрерывной работы
         await dp.start_polling(
@@ -100,7 +109,11 @@ async def main():
         # Добавляем повторный запуск бота при критической ошибке
         logger.info("Попытка перезапуска бота через 5 секунд...")
         await asyncio.sleep(5)
-        await main()  # Рекурсивный перезапуск
+        try:
+            await main()  # Рекурсивный перезапуск
+        except Exception as restart_error:
+            logger.error(f"Не удалось перезапустить бота: {restart_error}")
+            raise
 
 if __name__ == "__main__":
     # Обрабатываем исключения на верхнем уровне для предотвращения остановки бота
@@ -111,4 +124,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Критическая ошибка: {e}")
         print("Перезапуск бота...")
+        time.sleep(3)
         os.execv(sys.executable, [sys.executable] + sys.argv) 
