@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libffi-dev \
     libssl-dev \
     libc-dev \
+    procps \
     && rm -rf /var/lib/apt/lists/*
 
 # Обновим pip
@@ -26,6 +27,9 @@ RUN pip install --no-cache-dir aiogram==3.2.0
 RUN pip install --no-cache-dir openai==1.3.5
 RUN pip install --no-cache-dir ephem elevenlabs aiofiles apscheduler
 
+# Явная установка psutil с нужными зависимостями
+RUN pip install --no-cache-dir --force-reinstall psutil==5.9.5
+
 # Копируем остальные файлы
 COPY . .
 
@@ -40,6 +44,9 @@ ENV PYTHONUNBUFFERED=1
 RUN echo "Ona2.0 Telegram Bot - Railway Deployment" > /app/railway_info.txt
 RUN echo "Build date: $(date)" >> /app/railway_info.txt
 RUN echo "Python version: $(python --version)" >> /app/railway_info.txt
+
+# Проверка наличия psutil перед запуском
+RUN python -c "import psutil; print('psutil успешно установлен, версия:', psutil.__version__)" >> /app/railway_info.txt
 
 # Запуск с выводом информации для Railway
 CMD echo "=== ONA2.0 TELEGRAM BOT STARTING ===" && \

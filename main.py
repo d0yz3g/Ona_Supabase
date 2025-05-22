@@ -5,12 +5,20 @@ import signal
 import sys
 import time
 import socket
-import psutil
 from dotenv import load_dotenv
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+# Проверка доступности psutil
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+    print("Библиотека psutil успешно импортирована")
+except ImportError:
+    PSUTIL_AVAILABLE = False
+    print("ВНИМАНИЕ: Библиотека psutil не установлена, некоторые функции будут недоступны")
 
 # Импорт основного модуля бота (все обработчики и логика перенесены в button_bot.py)
 from button_bot import (
@@ -78,6 +86,11 @@ def kill_other_bot_instances():
     """
     Попытка завершить другие экземпляры бота
     """
+    if not PSUTIL_AVAILABLE:
+        logger.warning("Библиотека psutil не доступна, невозможно завершить другие экземпляры бота")
+        print("ПРЕДУПРЕЖДЕНИЕ: Невозможно завершить другие экземпляры бота (psutil не установлен)")
+        return
+
     current_pid = os.getpid()
     logger.info(f"Текущий PID: {current_pid}")
     print(f"Текущий PID процесса: {current_pid}")
@@ -107,12 +120,16 @@ async def main():
     try:
         # Проверяем, запущен ли уже бот
         if is_bot_already_running():
-            # Пытаемся завершить другие экземпляры
-            kill_other_bot_instances()
-            logger.warning("Возможен конфликт с другим экземпляром бота. Проверьте процессы.")
-            print("ПРЕДУПРЕЖДЕНИЕ: Возможен конфликт с другим запущенным ботом.")
-            # Делаем паузу, чтобы другие процессы успели завершиться
-            await asyncio.sleep(5)
+            # Пытаемся завершить другие экземпляры, если доступен psutil
+            if PSUTIL_AVAILABLE:
+                kill_other_bot_instances()
+                logger.warning("Возможен конфликт с другим экземпляром бота. Проверьте процессы.")
+                print("ПРЕДУПРЕЖДЕНИЕ: Возможен конфликт с другим запущенным ботом.")
+                # Делаем паузу, чтобы другие процессы успели завершиться
+                await asyncio.sleep(5)
+            else:
+                logger.warning("Обнаружен конфликт с другим экземпляром бота, но psutil не доступен для его завершения")
+                print("ПРЕДУПРЕЖДЕНИЕ: Конфликт с другим ботом, но нет возможности его завершить")
         
         # Инициализация хранилища и бота
         storage = MemoryStorage()

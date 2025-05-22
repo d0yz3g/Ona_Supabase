@@ -30,6 +30,17 @@ print("RESTART MONITOR: Запуск монитора перезапуска Tel
 print(f"Текущее время: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 print("=" * 50)
 
+# Проверка наличия psutil
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+    logger.info("Библиотека psutil успешно импортирована")
+    print("psutil импортирован успешно")
+except ImportError:
+    PSUTIL_AVAILABLE = False
+    logger.warning("Библиотека psutil не установлена, возможности мониторинга процессов ограничены")
+    print("ВНИМАНИЕ: psutil не доступен, некоторые функции отключены")
+
 # Путь к Python интерпретатору
 PYTHON_EXECUTABLE = sys.executable
 # Путь к основному скрипту бота
@@ -81,10 +92,39 @@ class BotRunner:
         print("Монитор перезапуска завершает работу")
         sys.exit(0)
     
+    def check_environment(self):
+        """Проверка окружения перед запуском бота."""
+        print(f"Система: {sys.platform}")
+        print(f"Python: {sys.version}")
+        print(f"Рабочая директория: {os.getcwd()}")
+        print(f"Скрипт бота: {BOT_SCRIPT}")
+        
+        # Проверка наличия зависимостей
+        try:
+            import aiogram
+            print(f"aiogram версия: {aiogram.__version__}")
+        except ImportError:
+            logger.error("aiogram не установлен!")
+            print("КРИТИЧЕСКАЯ ОШИБКА: aiogram не установлен")
+        
+        # Проверка наличия файла бота
+        if not os.path.exists(BOT_SCRIPT):
+            logger.error(f"Файл бота {BOT_SCRIPT} не найден!")
+            print(f"КРИТИЧЕСКАЯ ОШИБКА: Файл {BOT_SCRIPT} не существует")
+            return False
+            
+        return True
+    
     def run(self):
         """Запустить бота и перезапускать его при остановке."""
         logger.info("Запуск скрипта автоматического перезапуска")
         print("МОНИТОР: Начало работы монитора автоматического перезапуска")
+        
+        # Проверка окружения
+        if not self.check_environment():
+            logger.error("Проверка окружения не пройдена, монитор завершает работу")
+            print("КРИТИЧЕСКАЯ ОШИБКА: Невозможно запустить бота из-за проблем с окружением")
+            return
         
         while True:
             # Проверка лимита перезапусков
@@ -171,12 +211,6 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--debug":
         print("МОНИТОР: Запуск в режиме отладки")
         logging.getLogger().setLevel(logging.DEBUG)
-    
-    # Вывод информации о системе
-    print(f"Система: {sys.platform}")
-    print(f"Python: {sys.version}")
-    print(f"Рабочая директория: {os.getcwd()}")
-    print(f"Скрипт бота: {BOT_SCRIPT}")
     
     # Запуск монитора
     runner = BotRunner()
