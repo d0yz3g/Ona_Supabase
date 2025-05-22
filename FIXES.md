@@ -101,3 +101,35 @@ def make_natal_chart(date_str: str, city: str, name: str = None) -> Dict[str, An
   ```
   python restart_bot.py --debug
   ``` 
+
+## Исправление предупреждений о буферизации в бинарном режиме
+
+### Проблема
+После деплоя на Railway в логах появились следующие предупреждения:
+```
+/usr/local/lib/python3.11/subprocess.py:1016: RuntimeWarning: line buffering (buffering=1) isn't supported in binary mode, the default buffer size will be used
+  self.stdout = io.open(c2pread, 'rb', bufsize)
+
+/usr/local/lib/python3.11/subprocess.py:1021: RuntimeWarning: line buffering (buffering=1) isn't supported in binary mode, the default buffer size will be used
+  self.stderr = io.open(errread, 'rb', bufsize)
+```
+
+Эти предупреждения возникают, потому что в файле `restart_bot.py` при создании процесса используется построчная буферизация (`bufsize=1`) в сочетании с бинарным режимом (`universal_newlines=False`), что не поддерживается в Python.
+
+### Решение
+Изменен параметр `bufsize` с `1` на `0` в функции `subprocess.Popen()` в файле `restart_bot.py`:
+
+```python
+self.process = subprocess.Popen(
+    [PYTHON_EXECUTABLE, BOT_SCRIPT],
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    bufsize=0,  # Отключаем буферизацию для бинарного режима
+    universal_newlines=False  # Бинарный режим для совместимости
+)
+```
+
+Значение `bufsize=0` полностью отключает буферизацию, что идеально подходит для перенаправления вывода в реальном времени и устраняет предупреждения.
+
+### Как проверить
+После деплоя на Railway предупреждения о буферизации должны исчезнуть из логов, а перенаправление вывода бота будет работать так же эффективно или даже лучше благодаря отсутствию буферизации. 

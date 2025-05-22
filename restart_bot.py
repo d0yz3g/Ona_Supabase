@@ -117,7 +117,7 @@ class BotRunner:
                     [PYTHON_EXECUTABLE, BOT_SCRIPT],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
-                    bufsize=1,  # Построчная буферизация
+                    bufsize=0,  # Отключаем буферизацию для бинарного режима
                     universal_newlines=False  # Бинарный режим для совместимости
                 )
                 
