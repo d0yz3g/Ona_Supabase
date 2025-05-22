@@ -32,5 +32,17 @@ COPY . .
 # Создаем директорию для временных файлов
 RUN mkdir -p tmp
 
-# Используем restart_bot.py вместо main.py для обеспечения непрерывной работы
-CMD ["python", "restart_bot.py"] 
+# Настройка вывода логов для контейнера
+# Обеспечиваем правильное перенаправление stdout и stderr
+ENV PYTHONUNBUFFERED=1
+
+# Дополнительная информация для логов
+RUN echo "Ona2.0 Telegram Bot - Railway Deployment" > /app/railway_info.txt
+RUN echo "Build date: $(date)" >> /app/railway_info.txt
+RUN echo "Python version: $(python --version)" >> /app/railway_info.txt
+
+# Запуск с выводом информации для Railway
+CMD echo "=== ONA2.0 TELEGRAM BOT STARTING ===" && \
+    echo "$(cat /app/railway_info.txt)" && \
+    echo "=== STARTING RESTART MONITOR ===" && \
+    python restart_bot.py 

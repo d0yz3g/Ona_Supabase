@@ -11,17 +11,24 @@ import os
 import logging
 import signal
 import datetime
+import threading
 
-# Настройка логирования
+# Настройка логирования с приоритетом на вывод в консоль для Railway
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    format="%(asctime)s - [RESTART] - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler("restart.log"),
-        logging.StreamHandler()
+        logging.StreamHandler(sys.stdout),  # Вывод в stdout для Railway
+        logging.FileHandler("restart.log")  # Файл для локальной отладки
     ]
 )
 logger = logging.getLogger("restart_bot")
+
+# Явный вывод для Railway
+print("=" * 50)
+print("RESTART MONITOR: Запуск монитора перезапуска Telegram бота")
+print(f"Текущее время: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+print("=" * 50)
 
 # Путь к Python интерпретатору
 PYTHON_EXECUTABLE = sys.executable
@@ -36,6 +43,15 @@ def get_today():
     """Получить текущую дату в формате строки."""
     return datetime.datetime.now().strftime("%Y-%m-%d")
 
+def stream_output(stream, prefix):
+    """Функция для чтения и вывода потока в реальном времени."""
+    for line in iter(stream.readline, b''):
+        if line:
+            decoded_line = line.decode('utf-8', errors='replace').strip()
+            if decoded_line:  # Проверка на пустую строку
+                print(f"{prefix}: {decoded_line}")
+                sys.stdout.flush()  # Принудительный сброс буфера для Railway
+
 class BotRunner:
     def __init__(self):
         self.restart_count = 0
@@ -47,18 +63,28 @@ class BotRunner:
     
     def handle_signal(self, sig, frame):
         """Обработчик сигналов для корректной остановки."""
-        logger.info(f"Получен сигнал {sig}, останавливаем бота...")
+        signal_name = "SIGINT" if sig == signal.SIGINT else "SIGTERM"
+        logger.info(f"Получен сигнал {signal_name}, останавливаем бота...")
+        print(f"СИГНАЛ: Получен {signal_name}, завершение работы монитора...")
+        
         if self.process:
             try:
+                print(f"Отправляем сигнал остановки процессу бота (PID: {self.process.pid})...")
                 self.process.terminate()
                 self.process.wait(timeout=5)
+                print("Процесс бота успешно завершен")
             except subprocess.TimeoutExpired:
+                print("Процесс не завершился вовремя, принудительное завершение...")
                 self.process.kill()
+                print("Процесс бота принудительно завершен")
+        
+        print("Монитор перезапуска завершает работу")
         sys.exit(0)
     
     def run(self):
         """Запустить бота и перезапускать его при остановке."""
         logger.info("Запуск скрипта автоматического перезапуска")
+        print("МОНИТОР: Начало работы монитора автоматического перезапуска")
         
         while True:
             # Проверка лимита перезапусков
@@ -66,48 +92,92 @@ class BotRunner:
             if current_date != self.last_restart_date:
                 self.restart_count = 0
                 self.last_restart_date = current_date
+                print(f"МОНИТОР: Сброс счетчика перезапусков. Новая дата: {current_date}")
             
             if self.restart_count >= MAX_RESTARTS_PER_DAY:
-                logger.error(f"Достигнут лимит перезапусков за день ({MAX_RESTARTS_PER_DAY}). Ожидание до следующего дня.")
+                error_msg = f"Достигнут лимит перезапусков за день ({MAX_RESTARTS_PER_DAY}). Ожидание до следующего дня."
+                logger.error(error_msg)
+                print(f"ОШИБКА: {error_msg}")
+                
                 # Ждем до следующего дня
                 tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
                 tomorrow = tomorrow.replace(hour=0, minute=0, second=0, microsecond=0)
                 seconds_until_tomorrow = (tomorrow - datetime.datetime.now()).total_seconds()
+                print(f"МОНИТОР: Ожидание {seconds_until_tomorrow} секунд до сброса счетчика...")
                 time.sleep(seconds_until_tomorrow)
                 continue
             
             # Запуск процесса бота
             try:
                 logger.info(f"Запуск бота (попытка {self.restart_count + 1})")
+                print(f"МОНИТОР: Запуск бота (попытка {self.restart_count + 1} из {MAX_RESTARTS_PER_DAY})")
+                
+                # Запуск процесса с перенаправлением вывода для чтения в реальном времени
                 self.process = subprocess.Popen(
                     [PYTHON_EXECUTABLE, BOT_SCRIPT],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
-                    universal_newlines=True
+                    bufsize=1,  # Построчная буферизация
+                    universal_newlines=False  # Бинарный режим для совместимости
                 )
+                
+                print(f"МОНИТОР: Бот запущен с PID {self.process.pid}")
+                
+                # Запуск потоков для чтения вывода в реальном времени
+                stdout_thread = threading.Thread(
+                    target=stream_output, 
+                    args=(self.process.stdout, "БОТ"),
+                    daemon=True
+                )
+                stderr_thread = threading.Thread(
+                    target=stream_output, 
+                    args=(self.process.stderr, "ОШИБКА"),
+                    daemon=True
+                )
+                
+                stdout_thread.start()
+                stderr_thread.start()
                 
                 # Увеличиваем счетчик перезапусков
                 self.restart_count += 1
                 
                 # Ждем завершения процесса
-                stdout, stderr = self.process.communicate()
+                return_code = self.process.wait()
+                
+                # Ждем завершения потоков вывода
+                stdout_thread.join(timeout=1)
+                stderr_thread.join(timeout=1)
                 
                 # Если процесс завершился с ошибкой, записываем ее в лог
-                if self.process.returncode != 0:
-                    logger.error(f"Бот завершился с кодом {self.process.returncode}")
-                    if stderr:
-                        logger.error(f"Ошибка: {stderr}")
+                if return_code != 0:
+                    logger.error(f"Бот завершился с кодом {return_code}")
+                    print(f"МОНИТОР: Бот завершился с кодом ошибки {return_code}")
                 else:
                     logger.info("Бот завершился корректно")
+                    print("МОНИТОР: Бот завершился штатно")
                 
                 # Ждем перед перезапуском
                 logger.info(f"Ожидание {RESTART_INTERVAL} секунд перед перезапуском...")
+                print(f"МОНИТОР: Пауза {RESTART_INTERVAL} секунд перед следующим запуском...")
                 time.sleep(RESTART_INTERVAL)
                 
             except Exception as e:
                 logger.error(f"Ошибка при управлении процессом бота: {e}")
+                print(f"МОНИТОР ОШИБКА: {e}")
                 time.sleep(RESTART_INTERVAL)
 
 if __name__ == "__main__":
+    # Обработка аргументов командной строки
+    if len(sys.argv) > 1 and sys.argv[1] == "--debug":
+        print("МОНИТОР: Запуск в режиме отладки")
+        logging.getLogger().setLevel(logging.DEBUG)
+    
+    # Вывод информации о системе
+    print(f"Система: {sys.platform}")
+    print(f"Python: {sys.version}")
+    print(f"Рабочая директория: {os.getcwd()}")
+    print(f"Скрипт бота: {BOT_SCRIPT}")
+    
+    # Запуск монитора
     runner = BotRunner()
     runner.run() 
