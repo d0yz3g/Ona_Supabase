@@ -237,7 +237,7 @@ except ImportError:
     STRENGTH_CATEGORIES = {}
     CATEGORY_QUESTIONS = {}
 
-# Создаем роутеры
+# Создаем роутеры для разных частей бота
 main_router = Router(name="main")
 profile_router = Router(name="profile")
 reflect_router = Router(name="reflect")
@@ -1725,9 +1725,6 @@ async def process_text_message(message: Message, state: FSMContext):
     await message.bot.send_chat_action(chat_id=message.chat.id, action="typing")
     
     try:
-        # Импортируем функцию для генерации ответа из services/recs.py
-        from services.recs import generate_response as generate_ai_response
-        
         # Генерируем контекстуальный ответ
         response = await generate_ai_response(
             text=message.text,
@@ -1761,10 +1758,6 @@ async def process_voice_message_handler(message: Message, state: FSMContext):
     processing_message = await message.answer("Обрабатываю ваше голосовое сообщение...")
     
     try:
-        # Импортируем функции для обработки голосовых сообщений
-        from services.stt import process_voice_message
-        from services.recs import generate_response as generate_ai_response
-        
         # Отправляем индикатор набора текста
         await message.bot.send_chat_action(chat_id=message.chat.id, action="typing")
         
