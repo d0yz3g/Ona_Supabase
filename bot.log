@@ -1885,3 +1885,977 @@ OSError: [Errno 10048] error while attempting to bind on address ('0.0.0.0', 808
 2025-05-21 20:12:56,400 - aiogram.event - INFO - Update id=566537813 is handled. Duration 250 ms by bot id=7935736491
 2025-05-21 20:12:57,748 - handlers.meditate - INFO - Отправлена справка по медитациям пользователю 895018115
 2025-05-21 20:12:57,748 - aiogram.event - INFO - Update id=566537814 is handled. Duration 155 ms by bot id=7935736491
+2025-05-21 20:32:59,718 - db - INFO - База данных инициализирована
+2025-05-21 20:32:59,719 - __main__ - INFO - Инициализация бота...
+2025-05-21 20:33:00,051 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-21 20:33:00,053 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-21 20:33:00,053 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-21 20:33:00,053 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-21 20:33:00,054 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-21 20:33:00,055 - __main__ - INFO - Веб-сервер запущен на порту 8080
+2025-05-21 20:33:00,055 - __main__ - INFO - Бот запущен, ожидание сообщений...
+2025-05-21 20:33:00,055 - aiogram.dispatcher - INFO - Start polling
+2025-05-21 20:33:00,657 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-21 20:33:04,827 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:33:04,827 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7935736491)
+2025-05-21 20:33:10,141 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:33:10,141 - aiogram.dispatcher - WARNING - Sleep for 1.062796 seconds and try again... (tryings = 1, bot id = 7935736491)
+2025-05-21 20:33:15,811 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:33:15,811 - aiogram.dispatcher - WARNING - Sleep for 1.305083 seconds and try again... (tryings = 2, bot id = 7935736491)
+2025-05-21 20:33:22,141 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:33:22,142 - aiogram.dispatcher - WARNING - Sleep for 1.717735 seconds and try again... (tryings = 3, bot id = 7935736491)
+2025-05-21 20:33:29,635 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:33:29,645 - aiogram.dispatcher - WARNING - Sleep for 2.309767 seconds and try again... (tryings = 4, bot id = 7935736491)
+2025-05-21 20:33:35,444 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:33:35,444 - aiogram.dispatcher - WARNING - Sleep for 2.861655 seconds and try again... (tryings = 5, bot id = 7935736491)
+2025-05-21 20:33:42,737 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:33:42,737 - aiogram.dispatcher - WARNING - Sleep for 3.821070 seconds and try again... (tryings = 6, bot id = 7935736491)
+2025-05-21 20:33:51,808 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:33:51,809 - aiogram.dispatcher - WARNING - Sleep for 4.862864 seconds and try again... (tryings = 7, bot id = 7935736491)
+2025-05-21 20:34:01,729 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:34:01,730 - aiogram.dispatcher - WARNING - Sleep for 4.938396 seconds and try again... (tryings = 8, bot id = 7935736491)
+2025-05-21 20:34:11,764 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:34:11,765 - aiogram.dispatcher - WARNING - Sleep for 4.986119 seconds and try again... (tryings = 9, bot id = 7935736491)
+2025-05-21 20:34:22,079 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:34:22,079 - aiogram.dispatcher - WARNING - Sleep for 5.154019 seconds and try again... (tryings = 10, bot id = 7935736491)
+2025-05-21 20:34:32,375 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:34:32,377 - aiogram.dispatcher - WARNING - Sleep for 4.974022 seconds and try again... (tryings = 11, bot id = 7935736491)
+2025-05-21 20:34:42,562 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:34:42,563 - aiogram.dispatcher - WARNING - Sleep for 5.158828 seconds and try again... (tryings = 12, bot id = 7935736491)
+2025-05-21 20:34:52,817 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:34:52,818 - aiogram.dispatcher - WARNING - Sleep for 4.853382 seconds and try again... (tryings = 13, bot id = 7935736491)
+2025-05-21 20:35:02,918 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:35:02,918 - aiogram.dispatcher - WARNING - Sleep for 4.972693 seconds and try again... (tryings = 14, bot id = 7935736491)
+2025-05-21 20:35:13,009 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:35:13,010 - aiogram.dispatcher - WARNING - Sleep for 5.038670 seconds and try again... (tryings = 15, bot id = 7935736491)
+2025-05-21 20:35:22,202 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:35:22,202 - aiogram.dispatcher - WARNING - Sleep for 4.983355 seconds and try again... (tryings = 16, bot id = 7935736491)
+2025-05-21 20:35:31,477 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:35:31,478 - aiogram.dispatcher - WARNING - Sleep for 5.060924 seconds and try again... (tryings = 17, bot id = 7935736491)
+2025-05-21 20:35:41,269 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:35:41,270 - aiogram.dispatcher - WARNING - Sleep for 5.000387 seconds and try again... (tryings = 18, bot id = 7935736491)
+2025-05-21 20:35:51,440 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:35:51,440 - aiogram.dispatcher - WARNING - Sleep for 4.816718 seconds and try again... (tryings = 19, bot id = 7935736491)
+2025-05-21 20:36:02,056 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-05-21 20:36:02,056 - aiogram.dispatcher - WARNING - Sleep for 4.931167 seconds and try again... (tryings = 20, bot id = 7935736491)
+2025-05-21 20:36:17,289 - aiogram.dispatcher - INFO - Connection established (tryings = 21, bot id = 7935736491)
+2025-05-22 11:01:36,557 - db - INFO - База данных инициализирована
+2025-05-22 11:01:36,559 - __main__ - INFO - Инициализация бота...
+2025-05-22 11:01:36,840 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-22 11:01:36,855 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-22 11:01:36,856 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-22 11:01:36,856 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-22 11:01:36,856 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-22 11:01:36,859 - __main__ - INFO - Веб-сервер запущен на порту 8080
+2025-05-22 11:01:36,859 - __main__ - INFO - Бот запущен, ожидание сообщений...
+2025-05-22 11:01:36,859 - aiogram.dispatcher - INFO - Start polling
+2025-05-22 11:01:37,355 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-22 11:01:54,715 - aiogram.event - INFO - Update id=566537888 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-22 11:02:03,102 - aiogram.event - INFO - Update id=566537889 is handled. Duration 421 ms by bot id=7935736491
+2025-05-22 11:02:13,302 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:02:13,317 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-22 11:02:13,596 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-22 11:02:13,596 - aiogram.event - INFO - Update id=566537890 is handled. Duration 5875 ms by bot id=7935736491
+2025-05-22 11:02:16,829 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:02:16,832 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-22 11:02:17,007 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-22 11:02:17,007 - aiogram.event - INFO - Update id=566537891 is handled. Duration 1625 ms by bot id=7935736491
+2025-05-22 11:02:26,899 - services.stt - INFO - Голосовое сообщение скачано: C:\Users\Robert\AppData\Local\Temp\tmpkksl7tz6.ogg
+2025-05-22 11:02:28,994 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2025-05-22 11:02:28,998 - services.stt - INFO - Голосовое сообщение успешно транскрибировано
+2025-05-22 11:02:30,909 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:02:30,911 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-22 11:02:31,091 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе голосового сообщения
+2025-05-22 11:02:31,092 - aiogram.event - INFO - Update id=566537892 is handled. Duration 4750 ms by bot id=7935736491
+2025-05-22 11:02:41,649 - services.stt - INFO - Голосовое сообщение скачано: C:\Users\Robert\AppData\Local\Temp\tmp3y29zm8l.ogg
+2025-05-22 11:02:43,169 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2025-05-22 11:02:43,170 - services.stt - INFO - Голосовое сообщение успешно транскрибировано
+2025-05-22 11:02:44,939 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:02:44,941 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-22 11:02:45,167 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе голосового сообщения
+2025-05-22 11:02:45,168 - aiogram.event - INFO - Update id=566537893 is handled. Duration 4046 ms by bot id=7935736491
+2025-05-22 11:16:02,069 - __main__ - INFO - Пользователь 895018115 запросил помощь
+2025-05-22 11:16:02,069 - aiogram.event - INFO - Update id=566537894 is handled. Duration 437 ms by bot id=7935736491
+2025-05-22 11:16:11,708 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:16:11,710 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-22 11:16:11,879 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-22 11:16:11,880 - aiogram.event - INFO - Update id=566537895 is handled. Duration 1719 ms by bot id=7935736491
+2025-05-22 11:16:24,336 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:16:24,340 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-22 11:16:24,489 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-22 11:16:24,489 - aiogram.event - INFO - Update id=566537896 is handled. Duration 2155 ms by bot id=7935736491
+2025-05-22 11:18:43,529 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:18:43,531 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-22 11:18:43,958 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-22 11:18:43,959 - aiogram.event - INFO - Update id=566537897 is handled. Duration 2578 ms by bot id=7935736491
+2025-05-22 11:19:06,034 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:19:06,035 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-22 11:19:06,444 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-22 11:19:06,445 - aiogram.event - INFO - Update id=566537898 is handled. Duration 2046 ms by bot id=7935736491
+2025-05-22 11:19:19,413 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:19:19,415 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'relationship'
+2025-05-22 11:19:19,574 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-22 11:19:19,575 - aiogram.event - INFO - Update id=566537899 is handled. Duration 1312 ms by bot id=7935736491
+2025-05-22 11:19:30,604 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:19:30,605 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'relationship'
+2025-05-22 11:19:30,773 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-22 11:19:30,774 - aiogram.event - INFO - Update id=566537900 is handled. Duration 1437 ms by bot id=7935736491
+2025-05-22 11:20:21,619 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:20:21,621 - services.recs - INFO - Сгенерирована рекомендация для пользователя 895018115 с фокусом 'default'
+2025-05-22 11:20:22,024 - handlers.general - INFO - Отправлена рекомендация пользователю 895018115 на основе текстового сообщения
+2025-05-22 11:20:22,024 - aiogram.event - INFO - Update id=566537901 is handled. Duration 2547 ms by bot id=7935736491
+2025-05-22 11:21:34,319 - aiogram.event - INFO - Update id=566537902 is handled. Duration 625 ms by bot id=7935736491
+2025-05-22 11:21:38,125 - handlers.survey - INFO - Пользователь 895018115 перезапустил опрос
+2025-05-22 11:21:38,126 - aiogram.event - INFO - Update id=566537903 is handled. Duration 453 ms by bot id=7935736491
+2025-05-22 11:21:41,724 - db - INFO - Сохранен ответ на вопрос name для пользователя 1
+2025-05-22 11:21:41,724 - handlers.survey - INFO - Сохранен ответ на демо-вопрос name: dfghjk
+2025-05-22 11:21:41,891 - aiogram.event - INFO - Update id=566537904 is handled. Duration 171 ms by bot id=7935736491
+2025-05-22 11:21:43,812 - db - INFO - Сохранен ответ на вопрос age для пользователя 1
+2025-05-22 11:21:43,812 - handlers.survey - INFO - Сохранен ответ на демо-вопрос age: 31
+2025-05-22 11:21:43,990 - aiogram.event - INFO - Update id=566537905 is handled. Duration 203 ms by bot id=7935736491
+2025-05-22 11:21:47,404 - db - INFO - Сохранен ответ на вопрос birthdate для пользователя 1
+2025-05-22 11:21:47,405 - handlers.survey - INFO - Сохранен ответ на демо-вопрос birthdate: 20.01.2006
+2025-05-22 11:21:47,562 - aiogram.event - INFO - Update id=566537906 is handled. Duration 171 ms by bot id=7935736491
+2025-05-22 11:22:01,241 - db - INFO - Сохранен ответ на вопрос birthplace для пользователя 1
+2025-05-22 11:22:01,242 - handlers.survey - INFO - Сохранен ответ на демо-вопрос birthplace: Бишкек, Киргизия
+2025-05-22 11:22:01,427 - aiogram.event - INFO - Update id=566537907 is handled. Duration 203 ms by bot id=7935736491
+2025-05-22 11:22:11,678 - db - INFO - Сохранен ответ на вопрос timezone для пользователя 1
+2025-05-22 11:22:11,679 - handlers.survey - INFO - Сохранен ответ на демо-вопрос timezone: +2
+2025-05-22 11:22:12,097 - aiogram.event - INFO - Update id=566537908 is handled. Duration 468 ms by bot id=7935736491
+2025-05-22 11:22:14,584 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:14,584 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 1
+2025-05-22 11:22:14,899 - aiogram.event - INFO - Update id=566537909 is handled. Duration 407 ms by bot id=7935736491
+2025-05-22 11:22:15,518 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:15,518 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 2
+2025-05-22 11:22:15,847 - aiogram.event - INFO - Update id=566537910 is handled. Duration 343 ms by bot id=7935736491
+2025-05-22 11:22:16,567 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:16,567 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 3
+2025-05-22 11:22:16,936 - aiogram.event - INFO - Update id=566537911 is handled. Duration 375 ms by bot id=7935736491
+2025-05-22 11:22:17,520 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:17,520 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 4
+2025-05-22 11:22:17,811 - aiogram.event - INFO - Update id=566537912 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:22:18,434 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:18,434 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 5
+2025-05-22 11:22:18,792 - aiogram.event - INFO - Update id=566537913 is handled. Duration 375 ms by bot id=7935736491
+2025-05-22 11:22:22,429 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:22,430 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 6
+2025-05-22 11:22:22,723 - aiogram.event - INFO - Update id=566537914 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:22:31,456 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:31,456 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 7
+2025-05-22 11:22:31,756 - aiogram.event - INFO - Update id=566537915 is handled. Duration 406 ms by bot id=7935736491
+2025-05-22 11:22:32,374 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:32,375 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 8
+2025-05-22 11:22:32,661 - aiogram.event - INFO - Update id=566537916 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:22:33,273 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:33,274 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 9
+2025-05-22 11:22:33,554 - aiogram.event - INFO - Update id=566537917 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:22:34,197 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:34,197 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 10
+2025-05-22 11:22:34,495 - aiogram.event - INFO - Update id=566537918 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:22:35,104 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:35,105 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 11
+2025-05-22 11:22:35,400 - aiogram.event - INFO - Update id=566537919 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:22:39,156 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:39,157 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 12
+2025-05-22 11:22:39,454 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:39,454 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 12
+2025-05-22 11:22:39,456 - aiogram.event - INFO - Update id=566537920 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:22:40,046 - aiogram.event - INFO - Update id=566537921 is handled. Duration 592 ms by bot id=7935736491
+2025-05-22 11:22:40,819 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:40,820 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 14
+2025-05-22 11:22:41,128 - aiogram.event - INFO - Update id=566537922 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 11:22:41,845 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:41,845 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 15
+2025-05-22 11:22:42,241 - aiogram.event - INFO - Update id=566537923 is handled. Duration 405 ms by bot id=7935736491
+2025-05-22 11:22:42,975 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:42,976 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 16
+2025-05-22 11:22:43,385 - aiogram.event - INFO - Update id=566537924 is handled. Duration 421 ms by bot id=7935736491
+2025-05-22 11:22:47,191 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:47,192 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 17
+2025-05-22 11:22:47,476 - aiogram.event - INFO - Update id=566537925 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:22:48,086 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:48,086 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 18
+2025-05-22 11:22:48,414 - aiogram.event - INFO - Update id=566537926 is handled. Duration 342 ms by bot id=7935736491
+2025-05-22 11:22:49,166 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:49,167 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 19
+2025-05-22 11:22:49,469 - aiogram.event - INFO - Update id=566537927 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:22:50,079 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:50,079 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 20
+2025-05-22 11:22:50,367 - aiogram.event - INFO - Update id=566537928 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:22:50,949 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:50,949 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 21
+2025-05-22 11:22:51,243 - aiogram.event - INFO - Update id=566537929 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:22:53,117 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:53,117 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 22
+2025-05-22 11:22:53,444 - aiogram.event - INFO - Update id=566537930 is handled. Duration 344 ms by bot id=7935736491
+2025-05-22 11:22:54,213 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:54,213 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 23
+2025-05-22 11:22:54,643 - aiogram.event - INFO - Update id=566537931 is handled. Duration 453 ms by bot id=7935736491
+2025-05-22 11:22:54,852 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:54,852 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 23
+2025-05-22 11:22:55,006 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:55,006 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 22
+2025-05-22 11:22:55,191 - aiogram.event - INFO - Update id=566537932 is handled. Duration 359 ms by bot id=7935736491
+2025-05-22 11:22:55,549 - aiogram.event - INFO - Update id=566537933 is handled. Duration 546 ms by bot id=7935736491
+2025-05-22 11:22:55,985 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:55,986 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 26
+2025-05-22 11:22:56,308 - aiogram.event - INFO - Update id=566537934 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 11:22:58,427 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:58,427 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 27
+2025-05-22 11:22:58,815 - aiogram.event - INFO - Update id=566537935 is handled. Duration 391 ms by bot id=7935736491
+2025-05-22 11:22:59,682 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:22:59,683 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 28
+2025-05-22 11:23:00,230 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:23:00,230 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 27
+2025-05-22 11:23:00,307 - aiogram.event - INFO - Update id=566537936 is handled. Duration 641 ms by bot id=7935736491
+2025-05-22 11:23:00,597 - aiogram.event - INFO - Update id=566537937 is handled. Duration 390 ms by bot id=7935736491
+2025-05-22 11:23:01,838 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:23:01,839 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 30
+2025-05-22 11:23:02,010 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:23:02,011 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 30
+2025-05-22 11:23:02,165 - aiogram.event - INFO - Update id=566537938 is handled. Duration 375 ms by bot id=7935736491
+2025-05-22 11:23:02,334 - aiogram.event - INFO - Update id=566537939 is handled. Duration 344 ms by bot id=7935736491
+2025-05-22 11:23:06,253 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:23:06,253 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 31
+2025-05-22 11:23:06,423 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:23:06,423 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 31
+2025-05-22 11:23:06,540 - aiogram.event - INFO - Update id=566537940 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:23:06,723 - aiogram.event - INFO - Update id=566537941 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:23:09,738 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:23:09,738 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 33
+2025-05-22 11:23:10,041 - aiogram.event - INFO - Update id=566537942 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:23:11,448 - db - INFO - Сохранен ответ на вопрос strength для пользователя 1
+2025-05-22 11:23:11,448 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 34
+2025-05-22 11:23:11,824 - db - INFO - Обновлены данные натальной карты для пользователя 1
+2025-05-22 11:23:11,825 - handlers.survey - INFO - Создана натальная карта для пользователя 1
+2025-05-22 11:23:14,108 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:23:14,110 - services.ai_client - INFO - Успешно сгенерирован профиль пользователя
+2025-05-22 11:23:14,121 - db - INFO - Обновлены данные психологического профиля для пользователя 1
+2025-05-22 11:23:14,121 - handlers.survey - INFO - Создан психологический профиль для пользователя 1
+2025-05-22 11:23:14,133 - db - INFO - Создан/обновлен профиль для пользователя 1
+2025-05-22 11:23:14,758 - handlers.survey - INFO - Опрос завершен для пользователя 1, создан профиль 1
+2025-05-22 11:23:14,758 - aiogram.event - INFO - Update id=566537943 is handled. Duration 3328 ms by bot id=7935736491
+2025-05-22 11:28:19,667 - __main__ - INFO - Пользователь 895018115 запросил профиль
+2025-05-22 11:28:19,668 - aiogram.event - INFO - Update id=566537944 is handled. Duration 983 ms by bot id=7935736491
+2025-05-22 11:28:27,703 - __main__ - INFO - Пользователь 895018115 запросил помощь
+2025-05-22 11:28:27,703 - aiogram.event - INFO - Update id=566537945 is handled. Duration 171 ms by bot id=7935736491
+2025-05-22 11:28:33,886 - aiogram.event - INFO - Update id=566537946 is handled. Duration 608 ms by bot id=7935736491
+2025-05-22 11:28:35,458 - db - INFO - Обновлены данные натальной карты для пользователя 1
+2025-05-22 11:28:35,458 - handlers.survey - INFO - Создана натальная карта для пользователя 1
+2025-05-22 11:28:37,589 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:28:37,590 - services.ai_client - INFO - Успешно сгенерирован профиль пользователя
+2025-05-22 11:28:37,604 - db - INFO - Обновлены данные психологического профиля для пользователя 1
+2025-05-22 11:28:37,604 - handlers.survey - INFO - Создан психологический профиль для пользователя 1
+2025-05-22 11:28:37,617 - db - INFO - Создан/обновлен профиль для пользователя 1
+2025-05-22 11:28:38,269 - handlers.survey - INFO - Опрос завершен для пользователя 1, создан профиль 1
+2025-05-22 11:28:38,411 - handlers.survey - INFO - Пользователь 895018115 перезапустил опрос
+2025-05-22 11:28:38,411 - aiogram.event - INFO - Update id=566537947 is handled. Duration 3452 ms by bot id=7935736491
+2025-05-22 11:28:52,623 - aiogram.event - INFO - Update id=566537948 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:28:55,288 - db - INFO - Обновлены данные натальной карты для пользователя 1
+2025-05-22 11:28:55,288 - handlers.survey - INFO - Создана натальная карта для пользователя 1
+2025-05-22 11:28:57,903 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:28:57,905 - services.ai_client - INFO - Успешно сгенерирован профиль пользователя
+2025-05-22 11:28:57,919 - db - INFO - Обновлены данные психологического профиля для пользователя 1
+2025-05-22 11:28:57,919 - handlers.survey - INFO - Создан психологический профиль для пользователя 1
+2025-05-22 11:28:57,930 - db - INFO - Создан/обновлен профиль для пользователя 1
+2025-05-22 11:28:58,662 - handlers.survey - INFO - Опрос завершен для пользователя 1, создан профиль 1
+2025-05-22 11:28:58,832 - handlers.survey - INFO - Пользователь 895018115 перезапустил опрос
+2025-05-22 11:28:58,832 - aiogram.event - INFO - Update id=566537949 is handled. Duration 4094 ms by bot id=7935736491
+2025-05-22 11:30:57,939 - __main__ - INFO - Пользователь 895018115 (db_id: 1) запустил бота
+2025-05-22 11:30:58,367 - aiogram.event - INFO - Update id=566537950 is handled. Duration 437 ms by bot id=7935736491
+2025-05-22 11:31:03,315 - __main__ - INFO - Пользователь 895018115 запросил помощь
+2025-05-22 11:31:03,316 - aiogram.event - INFO - Update id=566537951 is handled. Duration 171 ms by bot id=7935736491
+2025-05-22 11:31:09,030 - aiogram.event - INFO - Update id=566537952 is handled. Duration 375 ms by bot id=7935736491
+2025-05-22 11:31:12,169 - db - INFO - Обновлены данные натальной карты для пользователя 1
+2025-05-22 11:31:12,169 - handlers.survey - INFO - Создана натальная карта для пользователя 1
+2025-05-22 11:31:15,446 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:31:15,447 - services.ai_client - INFO - Успешно сгенерирован профиль пользователя
+2025-05-22 11:31:15,459 - db - INFO - Обновлены данные психологического профиля для пользователя 1
+2025-05-22 11:31:15,460 - handlers.survey - INFO - Создан психологический профиль для пользователя 1
+2025-05-22 11:31:15,472 - db - INFO - Создан/обновлен профиль для пользователя 1
+2025-05-22 11:31:16,369 - handlers.survey - INFO - Опрос завершен для пользователя 1, создан профиль 1
+2025-05-22 11:31:16,594 - handlers.survey - INFO - Пользователь 895018115 перезапустил опрос
+2025-05-22 11:31:16,595 - aiogram.event - INFO - Update id=566537953 is handled. Duration 4906 ms by bot id=7935736491
+2025-05-22 11:37:21,872 - __main__ - INFO - Пользователь 895018115 запросил профиль
+2025-05-22 11:37:21,887 - aiogram.event - INFO - Update id=566537954 is handled. Duration 921 ms by bot id=7935736491
+2025-05-22 11:37:25,456 - db - INFO - Обновлены данные натальной карты для пользователя 1
+2025-05-22 11:37:25,457 - handlers.survey - INFO - Создана натальная карта для пользователя 1
+2025-05-22 11:37:28,137 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:37:28,139 - services.ai_client - INFO - Успешно сгенерирован профиль пользователя
+2025-05-22 11:37:28,151 - db - INFO - Обновлены данные психологического профиля для пользователя 1
+2025-05-22 11:37:28,152 - handlers.survey - INFO - Создан психологический профиль для пользователя 1
+2025-05-22 11:37:28,162 - db - INFO - Создан/обновлен профиль для пользователя 1
+2025-05-22 11:37:29,017 - handlers.survey - INFO - Опрос завершен для пользователя 1, создан профиль 1
+2025-05-22 11:37:29,213 - handlers.survey - INFO - Пользователь 895018115 перезапустил опрос
+2025-05-22 11:37:29,213 - aiogram.event - INFO - Update id=566537955 is handled. Duration 4265 ms by bot id=7935736491
+2025-05-22 11:50:38,714 - db - INFO - Добавлен новый пользователь с ID 3 (tg_id: 7253935048)
+2025-05-22 11:50:39,661 - handlers.survey - INFO - Пользователь 7253935048 начал опрос
+2025-05-22 11:50:39,661 - aiogram.event - INFO - Update id=566537956 is handled. Duration 967 ms by bot id=7935736491
+2025-05-22 11:50:42,211 - db - INFO - Сохранен ответ на вопрос name для пользователя 3
+2025-05-22 11:50:42,212 - handlers.survey - INFO - Сохранен ответ на демо-вопрос name: рпасвч
+2025-05-22 11:50:42,417 - aiogram.event - INFO - Update id=566537957 is handled. Duration 217 ms by bot id=7935736491
+2025-05-22 11:50:43,776 - db - INFO - Сохранен ответ на вопрос age для пользователя 3
+2025-05-22 11:50:43,776 - handlers.survey - INFO - Сохранен ответ на демо-вопрос age: 21
+2025-05-22 11:50:43,923 - aiogram.event - INFO - Update id=566537958 is handled. Duration 155 ms by bot id=7935736491
+2025-05-22 11:50:46,555 - db - INFO - Сохранен ответ на вопрос birthdate для пользователя 3
+2025-05-22 11:50:46,555 - handlers.survey - INFO - Сохранен ответ на демо-вопрос birthdate: 20.01.0123
+2025-05-22 11:50:46,707 - aiogram.event - INFO - Update id=566537959 is handled. Duration 172 ms by bot id=7935736491
+2025-05-22 11:50:52,010 - db - INFO - Сохранен ответ на вопрос birthplace для пользователя 3
+2025-05-22 11:50:52,011 - handlers.survey - INFO - Сохранен ответ на демо-вопрос birthplace: Алматы. КЗ
+2025-05-22 11:50:52,148 - aiogram.event - INFO - Update id=566537960 is handled. Duration 157 ms by bot id=7935736491
+2025-05-22 11:50:54,024 - db - INFO - Сохранен ответ на вопрос timezone для пользователя 3
+2025-05-22 11:50:54,025 - handlers.survey - INFO - Сохранен ответ на демо-вопрос timezone: +1
+2025-05-22 11:50:54,319 - aiogram.event - INFO - Update id=566537961 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:50:56,435 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:50:56,435 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 1
+2025-05-22 11:50:56,709 - aiogram.event - INFO - Update id=566537962 is handled. Duration 297 ms by bot id=7935736491
+2025-05-22 11:50:57,987 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:50:57,987 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 2
+2025-05-22 11:50:58,291 - aiogram.event - INFO - Update id=566537963 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:50:58,338 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:50:58,338 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 2
+2025-05-22 11:50:58,647 - aiogram.event - INFO - Update id=566537964 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 11:50:59,480 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:50:59,480 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 4
+2025-05-22 11:50:59,786 - aiogram.event - INFO - Update id=566537965 is handled. Duration 327 ms by bot id=7935736491
+2025-05-22 11:50:59,870 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:50:59,871 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 4
+2025-05-22 11:51:00,203 - aiogram.event - INFO - Update id=566537966 is handled. Duration 344 ms by bot id=7935736491
+2025-05-22 11:51:01,512 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:01,513 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 6
+2025-05-22 11:51:01,796 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:01,796 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 6
+2025-05-22 11:51:01,869 - aiogram.event - INFO - Update id=566537967 is handled. Duration 375 ms by bot id=7935736491
+2025-05-22 11:51:02,463 - aiogram.event - INFO - Update id=566537968 is handled. Duration 687 ms by bot id=7935736491
+2025-05-22 11:51:03,535 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:03,535 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 4
+2025-05-22 11:51:03,699 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:03,699 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 8
+2025-05-22 11:51:03,819 - aiogram.event - INFO - Update id=566537969 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:51:03,914 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:03,915 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 8
+2025-05-22 11:51:04,008 - aiogram.event - INFO - Update id=566537970 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 11:51:04,220 - aiogram.event - INFO - Update id=566537971 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:51:07,401 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:07,402 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 11
+2025-05-22 11:51:07,668 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:07,669 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 8
+2025-05-22 11:51:07,806 - aiogram.event - INFO - Update id=566537972 is handled. Duration 421 ms by bot id=7935736491
+2025-05-22 11:51:07,876 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:07,876 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 6
+2025-05-22 11:51:08,008 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:08,009 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 11
+2025-05-22 11:51:08,012 - aiogram.event - INFO - Update id=566537973 is handled. Duration 358 ms by bot id=7935736491
+2025-05-22 11:51:08,213 - aiogram.event - INFO - Update id=566537974 is handled. Duration 344 ms by bot id=7935736491
+2025-05-22 11:51:08,226 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:08,227 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 11
+2025-05-22 11:51:08,601 - aiogram.event - INFO - Update id=566537976 is handled. Duration 390 ms by bot id=7935736491
+2025-05-22 11:51:08,706 - aiogram.event - INFO - Update id=566537975 is handled. Duration 719 ms by bot id=7935736491
+2025-05-22 11:51:13,313 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:13,314 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 11
+2025-05-22 11:51:13,587 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:13,587 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 15
+2025-05-22 11:51:13,755 - aiogram.event - INFO - Update id=566537977 is handled. Duration 469 ms by bot id=7935736491
+2025-05-22 11:51:13,767 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:13,767 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 15
+2025-05-22 11:51:13,934 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:13,934 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 15
+2025-05-22 11:51:13,963 - aiogram.event - INFO - Update id=566537978 is handled. Duration 390 ms by bot id=7935736491
+2025-05-22 11:51:14,109 - aiogram.event - INFO - Update id=566537979 is handled. Duration 343 ms by bot id=7935736491
+2025-05-22 11:51:14,144 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:14,145 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 15
+2025-05-22 11:51:14,227 - aiogram.event - INFO - Update id=566537980 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:51:14,451 - aiogram.event - INFO - Update id=566537981 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:51:19,396 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:19,396 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 15
+2025-05-22 11:51:19,525 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:19,525 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 11
+2025-05-22 11:51:19,658 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:19,658 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 19
+2025-05-22 11:51:19,689 - aiogram.event - INFO - Update id=566537982 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:51:19,808 - aiogram.event - INFO - Update id=566537983 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:51:19,854 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:19,855 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 19
+2025-05-22 11:51:19,928 - aiogram.event - INFO - Update id=566537984 is handled. Duration 280 ms by bot id=7935736491
+2025-05-22 11:51:20,135 - aiogram.event - INFO - Update id=566537985 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:51:20,204 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:20,204 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 19
+2025-05-22 11:51:20,492 - aiogram.event - INFO - Update id=566537986 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:51:25,407 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:25,407 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 23
+2025-05-22 11:51:25,654 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:25,654 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 19
+2025-05-22 11:51:25,882 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:25,883 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 19
+2025-05-22 11:51:25,896 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:25,896 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 23
+2025-05-22 11:51:25,911 - aiogram.event - INFO - Update id=566537987 is handled. Duration 530 ms by bot id=7935736491
+2025-05-22 11:51:26,031 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:26,031 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 23
+2025-05-22 11:51:26,238 - aiogram.event - INFO - Update id=566537988 is handled. Duration 608 ms by bot id=7935736491
+2025-05-22 11:51:26,444 - aiogram.event - INFO - Update id=566537989 is handled. Duration 578 ms by bot id=7935736491
+2025-05-22 11:51:26,566 - aiogram.event - INFO - Update id=566537991 is handled. Duration 546 ms by bot id=7935736491
+2025-05-22 11:51:26,622 - aiogram.event - INFO - Update id=566537990 is handled. Duration 750 ms by bot id=7935736491
+2025-05-22 11:51:31,248 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:31,248 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 26
+2025-05-22 11:51:31,471 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:31,471 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 23
+2025-05-22 11:51:31,513 - aiogram.event - INFO - Update id=566537992 is handled. Duration 281 ms by bot id=7935736491
+2025-05-22 11:51:31,722 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:31,722 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 23
+2025-05-22 11:51:31,760 - aiogram.event - INFO - Update id=566537993 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:51:31,848 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:31,848 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 26
+2025-05-22 11:51:31,980 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:31,980 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 26
+2025-05-22 11:51:31,996 - aiogram.event - INFO - Update id=566537994 is handled. Duration 280 ms by bot id=7935736491
+2025-05-22 11:51:32,155 - aiogram.event - INFO - Update id=566537995 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:51:32,297 - aiogram.event - INFO - Update id=566537996 is handled. Duration 327 ms by bot id=7935736491
+2025-05-22 11:51:37,409 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:37,409 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 26
+2025-05-22 11:51:37,648 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:37,649 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 30
+2025-05-22 11:51:37,859 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:37,859 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 30
+2025-05-22 11:51:37,871 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:37,871 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 30
+2025-05-22 11:51:37,942 - aiogram.event - INFO - Update id=566537998 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:51:37,968 - aiogram.event - INFO - Update id=566537997 is handled. Duration 562 ms by bot id=7935736491
+2025-05-22 11:51:38,107 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:38,107 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 30
+2025-05-22 11:51:38,127 - aiogram.event - INFO - Update id=566537999 is handled. Duration 265 ms by bot id=7935736491
+2025-05-22 11:51:38,169 - aiogram.event - INFO - Update id=566538000 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:51:38,386 - aiogram.event - INFO - Update id=566538001 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 11:51:43,445 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:43,446 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 33
+2025-05-22 11:51:43,654 - db - INFO - Сохранен ответ на вопрос strength для пользователя 3
+2025-05-22 11:51:43,655 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength: 26
+2025-05-22 11:51:43,752 - aiogram.event - INFO - Update id=566538002 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 11:51:44,126 - db - INFO - Создан/обновлен профиль для пользователя 3
+2025-05-22 11:51:44,126 - handlers.survey - INFO - Создана натальная карта для пользователя 3
+2025-05-22 11:51:46,615 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 11:51:46,617 - services.ai_client - INFO - Успешно сгенерирован профиль пользователя
+2025-05-22 11:51:46,633 - db - INFO - Обновлены данные психологического профиля для пользователя 3
+2025-05-22 11:51:46,634 - handlers.survey - INFO - Создан психологический профиль для пользователя 3
+2025-05-22 11:51:46,647 - db - INFO - Создан/обновлен профиль для пользователя 3
+2025-05-22 11:51:49,059 - handlers.survey - INFO - Опрос завершен для пользователя 3, создан профиль 8
+2025-05-22 11:51:49,060 - aiogram.event - INFO - Update id=566538003 is handled. Duration 5405 ms by bot id=7935736491
+2025-05-22 11:53:42,705 - __main__ - INFO - Пользователь 895018115 запросил профиль
+2025-05-22 11:53:42,705 - aiogram.event - INFO - Update id=566538004 is handled. Duration 750 ms by bot id=7935736491
+2025-05-22 11:55:27,225 - aiogram.event - INFO - Update id=566538005 is not handled. Duration 0 ms by bot id=7935736491
+2025-05-22 11:55:31,508 - aiogram.event - INFO - Update id=566538006 is handled. Duration 0 ms by bot id=7935736491
+2025-05-22 11:55:33,156 - aiogram.event - INFO - Update id=566538007 is handled. Duration 0 ms by bot id=7935736491
+2025-05-22 11:55:33,969 - aiogram.event - INFO - Update id=566538008 is handled. Duration 0 ms by bot id=7935736491
+2025-05-22 11:55:42,499 - __main__ - INFO - Пользователь 895018115 (db_id: 1) запустил бота
+2025-05-22 11:55:43,171 - aiogram.event - INFO - Update id=566538009 is handled. Duration 671 ms by bot id=7935736491
+2025-05-22 11:55:46,772 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-22 11:55:47,033 - services.scheduler - INFO - Планировщик напоминаний остановлен
+2025-05-22 11:55:47,034 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-05-22 11:55:47,035 - __main__ - INFO - Планировщик напоминаний и веб-сервер остановлены
+2025-05-22 11:55:47,035 - aiogram.dispatcher - INFO - Polling stopped for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-22 11:55:47,037 - __main__ - INFO - Бот остановлен вручную
+2025-05-22 11:55:47,038 - db - INFO - Соединение с базой данных закрыто
+2025-05-22 11:55:47,038 - __main__ - INFO - Соединение с базой данных закрыто
+2025-05-22 12:03:18,881 - db - INFO - База данных инициализирована
+2025-05-22 12:03:18,882 - __main__ - INFO - Инициализация бота...
+2025-05-22 12:03:19,133 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-22 12:03:19,134 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-22 12:03:19,134 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-22 12:03:19,135 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-22 12:03:19,135 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-22 12:03:19,137 - __main__ - INFO - Веб-сервер запущен на порту 8080
+2025-05-22 12:03:19,137 - __main__ - INFO - Бот запущен, ожидание сообщений...
+2025-05-22 12:03:19,137 - aiogram.dispatcher - INFO - Start polling
+2025-05-22 12:03:19,559 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-22 12:03:19,702 - __main__ - INFO - Пользователь 895018115 (db_id: 1) запустил бота
+2025-05-22 12:03:20,217 - aiogram.event - INFO - Update id=566538010 is handled. Duration 515 ms by bot id=7935736491
+2025-05-22 12:03:59,801 - __main__ - INFO - Пользователь 895018115 запросил профиль
+2025-05-22 12:03:59,801 - aiogram.event - INFO - Update id=566538011 is handled. Duration 453 ms by bot id=7935736491
+2025-05-22 12:04:02,583 - db - INFO - Удалены все ответы пользователя 1
+2025-05-22 12:04:03,024 - handlers.survey - INFO - Пользователь 895018115 начал опрос
+2025-05-22 12:04:03,024 - aiogram.event - INFO - Update id=566538012 is handled. Duration 437 ms by bot id=7935736491
+2025-05-22 12:04:07,442 - db - INFO - Сохранен ответ на вопрос name для пользователя 1
+2025-05-22 12:04:07,442 - handlers.survey - INFO - Сохранен ответ на демо-вопрос name: Роберт
+2025-05-22 12:04:07,665 - aiogram.event - INFO - Update id=566538013 is handled. Duration 233 ms by bot id=7935736491
+2025-05-22 12:04:09,767 - db - INFO - Сохранен ответ на вопрос age для пользователя 1
+2025-05-22 12:04:09,768 - handlers.survey - INFO - Сохранен ответ на демо-вопрос age: 21
+2025-05-22 12:04:09,953 - aiogram.event - INFO - Update id=566538014 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 12:04:14,219 - db - INFO - Сохранен ответ на вопрос birthdate для пользователя 1
+2025-05-22 12:04:14,219 - handlers.survey - INFO - Сохранен ответ на демо-вопрос birthdate: 20.01.2004
+2025-05-22 12:04:14,377 - aiogram.event - INFO - Update id=566538015 is handled. Duration 171 ms by bot id=7935736491
+2025-05-22 12:04:20,711 - db - INFO - Сохранен ответ на вопрос birthplace для пользователя 1
+2025-05-22 12:04:20,712 - handlers.survey - INFO - Сохранен ответ на демо-вопрос birthplace: Алматы, Казахстан
+2025-05-22 12:04:20,927 - aiogram.event - INFO - Update id=566538016 is handled. Duration 233 ms by bot id=7935736491
+2025-05-22 12:04:32,805 - db - INFO - Сохранен ответ на вопрос timezone для пользователя 1
+2025-05-22 12:04:32,806 - handlers.survey - INFO - Сохранен ответ на демо-вопрос timezone: +2
+2025-05-22 12:04:33,261 - aiogram.event - INFO - Update id=566538017 is handled. Duration 469 ms by bot id=7935736491
+2025-05-22 12:04:35,059 - db - INFO - Сохранен ответ на вопрос strength_strength для пользователя 1
+2025-05-22 12:04:35,059 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_strength: 1
+2025-05-22 12:04:35,373 - aiogram.event - INFO - Update id=566538018 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 12:04:36,077 - db - INFO - Сохранен ответ на вопрос strength_strength для пользователя 1
+2025-05-22 12:04:36,079 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_strength: 2
+2025-05-22 12:04:36,392 - aiogram.event - INFO - Update id=566538019 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 12:04:36,978 - db - INFO - Сохранен ответ на вопрос strength_strength для пользователя 1
+2025-05-22 12:04:36,978 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_strength: 3
+2025-05-22 12:04:37,346 - aiogram.event - INFO - Update id=566538020 is handled. Duration 375 ms by bot id=7935736491
+2025-05-22 12:04:37,917 - db - INFO - Сохранен ответ на вопрос strength_strength для пользователя 1
+2025-05-22 12:04:37,917 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_strength: 4
+2025-05-22 12:04:38,210 - aiogram.event - INFO - Update id=566538021 is handled. Duration 297 ms by bot id=7935736491
+2025-05-22 12:04:38,888 - db - INFO - Сохранен ответ на вопрос strength_strength для пользователя 1
+2025-05-22 12:04:38,888 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_strength: 5
+2025-05-22 12:04:39,444 - aiogram.event - INFO - Update id=566538022 is handled. Duration 578 ms by bot id=7935736491
+2025-05-22 12:04:40,319 - db - INFO - Сохранен ответ на вопрос strength_strength для пользователя 1
+2025-05-22 12:04:40,319 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_strength: 6
+2025-05-22 12:04:40,601 - aiogram.event - INFO - Update id=566538023 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 12:04:41,443 - db - INFO - Сохранен ответ на вопрос strength_strength для пользователя 1
+2025-05-22 12:04:41,443 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_strength: 7
+2025-05-22 12:04:41,743 - aiogram.event - INFO - Update id=566538024 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:04:42,458 - db - INFO - Сохранен ответ на вопрос strength_strength для пользователя 1
+2025-05-22 12:04:42,459 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_strength: 8
+2025-05-22 12:04:42,805 - aiogram.event - INFO - Update id=566538025 is handled. Duration 358 ms by bot id=7935736491
+2025-05-22 12:04:43,623 - db - INFO - Сохранен ответ на вопрос strength_strength для пользователя 1
+2025-05-22 12:04:43,623 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_strength: 9
+2025-05-22 12:04:43,926 - aiogram.event - INFO - Update id=566538026 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 12:04:44,692 - db - INFO - Сохранен ответ на вопрос strength_strength для пользователя 1
+2025-05-22 12:04:44,692 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_strength: 10
+2025-05-22 12:04:52,717 - db - INFO - База данных инициализирована
+2025-05-22 12:04:52,718 - __main__ - INFO - Инициализация бота...
+2025-05-22 12:04:52,969 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-22 12:04:52,970 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-22 12:04:52,970 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-22 12:04:52,971 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-22 12:04:52,971 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-22 12:04:52,971 - __main__ - INFO - Веб-сервер запущен на порту 8080
+2025-05-22 12:04:52,972 - __main__ - INFO - Бот запущен, ожидание сообщений...
+2025-05-22 12:04:52,972 - aiogram.dispatcher - INFO - Start polling
+2025-05-22 12:04:53,386 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-22 12:04:53,529 - handlers.survey - ERROR - Нет user_id в состоянии для пользователя 895018115
+2025-05-22 12:04:53,540 - db - INFO - Сохранен ответ на вопрос strength_strength для пользователя 1
+2025-05-22 12:04:53,540 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_strength: 10
+2025-05-22 12:04:53,551 - db - INFO - Сохранен ответ на вопрос strength_strength для пользователя 1
+2025-05-22 12:04:53,553 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_strength: 10
+2025-05-22 12:04:54,279 - aiogram.event - INFO - Update id=566538028 is handled. Duration 750 ms by bot id=7935736491
+2025-05-22 12:04:54,295 - aiogram.event - INFO - Update id=566538029 is handled. Duration 764 ms by bot id=7935736491
+2025-05-22 12:04:56,130 - db - INFO - Сохранен ответ на вопрос strength_1 для пользователя 1
+2025-05-22 12:04:56,131 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_1: 5
+2025-05-22 12:04:56,539 - aiogram.event - INFO - Update id=566538030 is handled. Duration 421 ms by bot id=7935736491
+2025-05-22 12:04:57,624 - db - INFO - Сохранен ответ на вопрос strength_2 для пользователя 1
+2025-05-22 12:04:57,624 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_2: 2
+2025-05-22 12:04:57,947 - aiogram.event - INFO - Update id=566538031 is handled. Duration 344 ms by bot id=7935736491
+2025-05-22 12:04:58,544 - db - INFO - Сохранен ответ на вопрос strength_3 для пользователя 1
+2025-05-22 12:04:58,545 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_3: 3
+2025-05-22 12:04:58,872 - aiogram.event - INFO - Update id=566538032 is handled. Duration 342 ms by bot id=7935736491
+2025-05-22 12:04:59,474 - db - INFO - Сохранен ответ на вопрос strength_4 для пользователя 1
+2025-05-22 12:04:59,474 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_4: 4
+2025-05-22 12:04:59,772 - aiogram.event - INFO - Update id=566538033 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:05:00,350 - db - INFO - Сохранен ответ на вопрос strength_5 для пользователя 1
+2025-05-22 12:05:00,350 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_5: 5
+2025-05-22 12:05:00,659 - aiogram.event - INFO - Update id=566538034 is handled. Duration 327 ms by bot id=7935736491
+2025-05-22 12:05:01,165 - db - INFO - Сохранен ответ на вопрос strength_6 для пользователя 1
+2025-05-22 12:05:01,165 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_6: 4
+2025-05-22 12:05:01,516 - aiogram.event - INFO - Update id=566538035 is handled. Duration 358 ms by bot id=7935736491
+2025-05-22 12:05:02,091 - db - INFO - Сохранен ответ на вопрос strength_7 для пользователя 1
+2025-05-22 12:05:02,094 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_7: 4
+2025-05-22 12:05:02,561 - aiogram.event - INFO - Update id=566538036 is handled. Duration 483 ms by bot id=7935736491
+2025-05-22 12:05:09,128 - db - INFO - Сохранен ответ на вопрос strength_8 для пользователя 1
+2025-05-22 12:05:09,128 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_8: 5
+2025-05-22 12:05:09,603 - aiogram.event - INFO - Update id=566538037 is handled. Duration 500 ms by bot id=7935736491
+2025-05-22 12:05:10,097 - db - INFO - Сохранен ответ на вопрос strength_9 для пользователя 1
+2025-05-22 12:05:10,097 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_9: 4
+2025-05-22 12:05:10,505 - aiogram.event - INFO - Update id=566538038 is handled. Duration 421 ms by bot id=7935736491
+2025-05-22 12:05:11,077 - db - INFO - Сохранен ответ на вопрос strength_10 для пользователя 1
+2025-05-22 12:05:11,078 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_10: 4
+2025-05-22 12:05:11,428 - aiogram.event - INFO - Update id=566538039 is handled. Duration 375 ms by bot id=7935736491
+2025-05-22 12:05:11,976 - db - INFO - Сохранен ответ на вопрос strength_11 для пользователя 1
+2025-05-22 12:05:11,976 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_11: 5
+2025-05-22 12:05:12,292 - aiogram.event - INFO - Update id=566538040 is handled. Duration 327 ms by bot id=7935736491
+2025-05-22 12:05:12,441 - db - INFO - Сохранен ответ на вопрос strength_11 для пользователя 1
+2025-05-22 12:05:12,441 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_11: 5
+2025-05-22 12:05:12,829 - aiogram.event - INFO - Update id=566538041 is handled. Duration 391 ms by bot id=7935736491
+2025-05-22 12:05:14,312 - db - INFO - Сохранен ответ на вопрос strength_13 для пользователя 1
+2025-05-22 12:05:14,312 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_13: 5
+2025-05-22 12:05:14,454 - db - INFO - Сохранен ответ на вопрос strength_13 для пользователя 1
+2025-05-22 12:05:14,454 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_13: 5
+2025-05-22 12:05:14,601 - db - INFO - Сохранен ответ на вопрос strength_13 для пользователя 1
+2025-05-22 12:05:14,601 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_13: 5
+2025-05-22 12:05:14,744 - aiogram.event - INFO - Update id=566538042 is handled. Duration 453 ms by bot id=7935736491
+2025-05-22 12:05:14,923 - db - INFO - Сохранен ответ на вопрос strength_13 для пользователя 1
+2025-05-22 12:05:14,923 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_13: 3
+2025-05-22 12:05:15,062 - db - INFO - Сохранен ответ на вопрос strength_13 для пользователя 1
+2025-05-22 12:05:15,062 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_13: 2
+2025-05-22 12:05:15,243 - aiogram.event - INFO - Update id=566538043 is handled. Duration 796 ms by bot id=7935736491
+2025-05-22 12:05:15,352 - aiogram.event - INFO - Update id=566538044 is handled. Duration 765 ms by bot id=7935736491
+2025-05-22 12:05:15,429 - aiogram.event - INFO - Update id=566538045 is handled. Duration 530 ms by bot id=7935736491
+2025-05-22 12:05:15,699 - aiogram.event - INFO - Update id=566538046 is handled. Duration 641 ms by bot id=7935736491
+2025-05-22 12:05:22,252 - db - INFO - Сохранен ответ на вопрос strength_16 для пользователя 1
+2025-05-22 12:05:22,253 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_16: 4
+2025-05-22 12:05:22,568 - aiogram.event - INFO - Update id=566538047 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 12:05:23,737 - db - INFO - Сохранен ответ на вопрос strength_17 для пользователя 1
+2025-05-22 12:05:23,737 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_17: 3
+2025-05-22 12:05:24,059 - aiogram.event - INFO - Update id=566538048 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 12:05:25,778 - db - INFO - Сохранен ответ на вопрос strength_18 для пользователя 1
+2025-05-22 12:05:25,778 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_18: 5
+2025-05-22 12:05:26,109 - aiogram.event - INFO - Update id=566538049 is handled. Duration 343 ms by bot id=7935736491
+2025-05-22 12:05:26,987 - db - INFO - Сохранен ответ на вопрос strength_19 для пользователя 1
+2025-05-22 12:05:26,988 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_19: 5
+2025-05-22 12:05:27,294 - aiogram.event - INFO - Update id=566538050 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:05:28,125 - db - INFO - Сохранен ответ на вопрос strength_20 для пользователя 1
+2025-05-22 12:05:28,125 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_20: 4
+2025-05-22 12:05:28,426 - aiogram.event - INFO - Update id=566538051 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 12:05:28,958 - db - INFO - Сохранен ответ на вопрос strength_21 для пользователя 1
+2025-05-22 12:05:28,958 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_21: 5
+2025-05-22 12:05:29,263 - aiogram.event - INFO - Update id=566538052 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 12:05:29,899 - db - INFO - Сохранен ответ на вопрос strength_22 для пользователя 1
+2025-05-22 12:05:29,899 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_22: 5
+2025-05-22 12:05:30,185 - aiogram.event - INFO - Update id=566538053 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 12:05:30,729 - db - INFO - Сохранен ответ на вопрос strength_23 для пользователя 1
+2025-05-22 12:05:30,730 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_23: 5
+2025-05-22 12:05:31,029 - aiogram.event - INFO - Update id=566538054 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:05:31,640 - db - INFO - Сохранен ответ на вопрос strength_24 для пользователя 1
+2025-05-22 12:05:31,640 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_24: 5
+2025-05-22 12:05:31,949 - aiogram.event - INFO - Update id=566538055 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 12:05:33,541 - db - INFO - Сохранен ответ на вопрос strength_25 для пользователя 1
+2025-05-22 12:05:33,541 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_25: 5
+2025-05-22 12:05:33,835 - aiogram.event - INFO - Update id=566538056 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:05:35,122 - db - INFO - Сохранен ответ на вопрос strength_26 для пользователя 1
+2025-05-22 12:05:35,123 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_26: 3
+2025-05-22 12:05:35,422 - aiogram.event - INFO - Update id=566538057 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:05:36,081 - db - INFO - Сохранен ответ на вопрос strength_27 для пользователя 1
+2025-05-22 12:05:36,081 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_27: 4
+2025-05-22 12:05:36,367 - aiogram.event - INFO - Update id=566538058 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 12:05:36,981 - db - INFO - Сохранен ответ на вопрос strength_28 для пользователя 1
+2025-05-22 12:05:36,981 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_28: 5
+2025-05-22 12:05:37,350 - aiogram.event - INFO - Update id=566538059 is handled. Duration 390 ms by bot id=7935736491
+2025-05-22 12:05:37,961 - db - INFO - Сохранен ответ на вопрос strength_29 для пользователя 1
+2025-05-22 12:05:37,961 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_29: 4
+2025-05-22 12:05:38,443 - aiogram.event - INFO - Update id=566538060 is handled. Duration 500 ms by bot id=7935736491
+2025-05-22 12:05:38,974 - db - INFO - Сохранен ответ на вопрос strength_30 для пользователя 1
+2025-05-22 12:05:38,974 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_30: 5
+2025-05-22 12:05:39,455 - aiogram.event - INFO - Update id=566538061 is handled. Duration 484 ms by bot id=7935736491
+2025-05-22 12:05:40,034 - db - INFO - Сохранен ответ на вопрос strength_31 для пользователя 1
+2025-05-22 12:05:40,034 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_31: 4
+2025-05-22 12:05:40,370 - aiogram.event - INFO - Update id=566538062 is handled. Duration 358 ms by bot id=7935736491
+2025-05-22 12:05:40,957 - db - INFO - Сохранен ответ на вопрос strength_32 для пользователя 1
+2025-05-22 12:05:40,957 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_32: 5
+2025-05-22 12:05:41,261 - aiogram.event - INFO - Update id=566538063 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 12:05:41,956 - db - INFO - Сохранен ответ на вопрос strength_33 для пользователя 1
+2025-05-22 12:05:41,956 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_33: 5
+2025-05-22 12:05:42,255 - aiogram.event - INFO - Update id=566538064 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 12:05:43,369 - db - INFO - Сохранен ответ на вопрос strength_34 для пользователя 1
+2025-05-22 12:05:43,372 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_34: 5
+2025-05-22 12:05:43,733 - db - INFO - Создан/обновлен профиль для пользователя 1
+2025-05-22 12:05:43,733 - handlers.survey - INFO - Создана натальная карта для пользователя 1
+2025-05-22 12:05:47,713 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:05:47,731 - services.ai_client - INFO - Успешно сгенерирован профиль пользователя
+2025-05-22 12:05:47,743 - db - INFO - Обновлены данные психологического профиля для пользователя 1
+2025-05-22 12:05:47,744 - handlers.survey - INFO - Создан психологический профиль для пользователя 1
+2025-05-22 12:05:47,754 - db - INFO - Создан/обновлен профиль для пользователя 1
+2025-05-22 12:05:48,417 - handlers.survey - INFO - Опрос завершен для пользователя 1, создан профиль 10
+2025-05-22 12:05:48,419 - aiogram.event - INFO - Update id=566538065 is handled. Duration 5187 ms by bot id=7935736491
+2025-05-22 12:06:11,317 - aiogram.event - INFO - Update id=566538066 is handled. Duration 0 ms by bot id=7935736491
+2025-05-22 12:06:17,354 - aiogram.event - INFO - Update id=566538067 is handled. Duration 0 ms by bot id=7935736491
+2025-05-22 12:06:22,508 - aiogram.event - INFO - Update id=566538068 is handled. Duration 0 ms by bot id=7935736491
+2025-05-22 12:06:26,136 - __main__ - INFO - Пользователь 895018115 запросил профиль
+2025-05-22 12:06:26,136 - aiogram.event - INFO - Update id=566538069 is handled. Duration 858 ms by bot id=7935736491
+2025-05-22 12:06:31,204 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-22 12:06:31,467 - services.scheduler - INFO - Планировщик напоминаний остановлен
+2025-05-22 12:06:31,468 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-05-22 12:06:31,468 - __main__ - INFO - Планировщик напоминаний и веб-сервер остановлены
+2025-05-22 12:06:31,469 - aiogram.dispatcher - INFO - Polling stopped for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-22 12:06:31,470 - __main__ - INFO - Бот остановлен вручную
+2025-05-22 12:06:31,470 - db - INFO - Соединение с базой данных закрыто
+2025-05-22 12:06:31,470 - __main__ - INFO - Соединение с базой данных закрыто
+2025-05-22 12:07:36,855 - db - INFO - База данных инициализирована
+2025-05-22 12:07:36,856 - __main__ - INFO - Инициализация бота...
+2025-05-22 12:07:37,128 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-22 12:07:37,128 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-22 12:07:37,128 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-22 12:07:37,128 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-22 12:07:37,128 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-22 12:07:37,128 - __main__ - INFO - Веб-сервер запущен на порту 8080
+2025-05-22 12:07:37,128 - __main__ - INFO - Бот запущен, ожидание сообщений...
+2025-05-22 12:07:37,128 - aiogram.dispatcher - INFO - Start polling
+2025-05-22 12:07:37,523 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-22 12:07:44,296 - __main__ - INFO - Пользователь 895018115 запросил помощь
+2025-05-22 12:07:44,298 - aiogram.event - INFO - Update id=566538070 is handled. Duration 421 ms by bot id=7935736491
+2025-05-22 12:07:47,680 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:07:47,692 - services.recs - INFO - Определено намерение: greeting с уверенностью 0.9. Фокус: default
+2025-05-22 12:07:49,351 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:07:49,353 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'greeting' и фокусом 'default'
+2025-05-22 12:07:49,507 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 12:07:49,509 - aiogram.event - INFO - Update id=566538071 is handled. Duration 3219 ms by bot id=7935736491
+2025-05-22 12:09:15,806 - db - INFO - База данных инициализирована
+2025-05-22 12:09:15,807 - __main__ - INFO - Инициализация бота...
+2025-05-22 12:09:16,066 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-22 12:09:16,067 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-22 12:09:16,067 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-22 12:09:16,067 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-22 12:09:16,067 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-22 12:09:16,068 - __main__ - INFO - Веб-сервер запущен на порту 8080
+2025-05-22 12:09:16,068 - __main__ - INFO - Бот запущен, ожидание сообщений...
+2025-05-22 12:09:16,068 - aiogram.dispatcher - INFO - Start polling
+2025-05-22 12:09:16,493 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-22 12:09:17,671 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:09:17,763 - services.recs - INFO - Определено намерение: greeting с уверенностью 0.9. Фокус: default
+2025-05-22 12:09:18,695 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:09:18,697 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'greeting' и фокусом 'default'
+2025-05-22 12:09:19,144 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 12:09:19,145 - aiogram.event - INFO - Update id=566538072 is handled. Duration 2532 ms by bot id=7935736491
+2025-05-22 12:09:28,000 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:09:28,004 - services.recs - INFO - Определено намерение: greeting с уверенностью 0.9. Фокус: default
+2025-05-22 12:09:28,721 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:09:28,724 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'greeting' и фокусом 'default'
+2025-05-22 12:09:28,889 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 12:09:28,890 - aiogram.event - INFO - Update id=566538073 is handled. Duration 1781 ms by bot id=7935736491
+2025-05-22 12:09:37,939 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:09:37,940 - services.recs - INFO - Определено намерение: meditation с уверенностью 0.9. Фокус: default
+2025-05-22 12:09:40,004 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:09:40,005 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'meditation' и фокусом 'default'
+2025-05-22 12:09:40,161 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 12:09:40,162 - aiogram.event - INFO - Update id=566538074 is handled. Duration 2921 ms by bot id=7935736491
+2025-05-22 12:09:57,273 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:09:57,278 - services.recs - INFO - Определено намерение: question с уверенностью 0.9. Фокус: default
+2025-05-22 12:09:59,298 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:09:59,300 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'question' и фокусом 'default'
+2025-05-22 12:09:59,744 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 12:09:59,744 - aiogram.event - INFO - Update id=566538075 is handled. Duration 3733 ms by bot id=7935736491
+2025-05-22 12:10:05,841 - __main__ - INFO - Пользователь 895018115 запросил помощь
+2025-05-22 12:10:05,842 - aiogram.event - INFO - Update id=566538076 is handled. Duration 172 ms by bot id=7935736491
+2025-05-22 12:10:08,350 - __main__ - INFO - Пользователь 895018115 запросил профиль
+2025-05-22 12:10:08,350 - aiogram.event - INFO - Update id=566538077 is handled. Duration 530 ms by bot id=7935736491
+2025-05-22 12:10:12,393 - aiogram.event - INFO - Update id=566538078 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:10:13,346 - db - INFO - Удалены все ответы пользователя 1
+2025-05-22 12:10:13,838 - handlers.survey - INFO - Пользователь 895018115 перезапустил опрос
+2025-05-22 12:10:13,838 - aiogram.event - INFO - Update id=566538079 is handled. Duration 500 ms by bot id=7935736491
+2025-05-22 12:10:16,240 - db - INFO - Сохранен ответ на вопрос name для пользователя 1
+2025-05-22 12:10:16,240 - handlers.survey - INFO - Сохранен ответ на демо-вопрос name: Роберт
+2025-05-22 12:10:16,408 - aiogram.event - INFO - Update id=566538080 is handled. Duration 172 ms by bot id=7935736491
+2025-05-22 12:10:17,777 - db - INFO - Сохранен ответ на вопрос age для пользователя 1
+2025-05-22 12:10:17,778 - handlers.survey - INFO - Сохранен ответ на демо-вопрос age: 20123
+2025-05-22 12:10:18,024 - aiogram.event - INFO - Update id=566538081 is handled. Duration 266 ms by bot id=7935736491
+2025-05-22 12:10:19,430 - db - INFO - Сохранен ответ на вопрос birthdate для пользователя 1
+2025-05-22 12:10:19,431 - handlers.survey - INFO - Сохранен ответ на демо-вопрос birthdate: 201230
+2025-05-22 12:10:19,588 - aiogram.event - INFO - Update id=566538082 is handled. Duration 172 ms by bot id=7935736491
+2025-05-22 12:10:21,367 - db - INFO - Сохранен ответ на вопрос birthplace для пользователя 1
+2025-05-22 12:10:21,367 - handlers.survey - INFO - Сохранен ответ на демо-вопрос birthplace: афыва
+2025-05-22 12:10:21,519 - aiogram.event - INFO - Update id=566538083 is handled. Duration 172 ms by bot id=7935736491
+2025-05-22 12:10:22,664 - db - INFO - Сохранен ответ на вопрос timezone для пользователя 1
+2025-05-22 12:10:22,664 - handlers.survey - INFO - Сохранен ответ на демо-вопрос timezone: йц
+2025-05-22 12:10:22,972 - aiogram.event - INFO - Update id=566538084 is handled. Duration 327 ms by bot id=7935736491
+2025-05-22 12:10:24,629 - db - INFO - Сохранен ответ на вопрос strength_1 для пользователя 1
+2025-05-22 12:10:24,629 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_1: 3
+2025-05-22 12:10:24,960 - aiogram.event - INFO - Update id=566538085 is handled. Duration 344 ms by bot id=7935736491
+2025-05-22 12:10:25,514 - db - INFO - Сохранен ответ на вопрос strength_2 для пользователя 1
+2025-05-22 12:10:25,515 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_2: 4
+2025-05-22 12:10:25,811 - aiogram.event - INFO - Update id=566538086 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:10:25,926 - db - INFO - Сохранен ответ на вопрос strength_2 для пользователя 1
+2025-05-22 12:10:25,927 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_2: 4
+2025-05-22 12:10:26,297 - db - INFO - Сохранен ответ на вопрос strength_3 для пользователя 1
+2025-05-22 12:10:26,297 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_3: 4
+2025-05-22 12:10:26,434 - aiogram.event - INFO - Update id=566538087 is handled. Duration 516 ms by bot id=7935736491
+2025-05-22 12:10:26,838 - db - INFO - Сохранен ответ на вопрос strength_4 для пользователя 1
+2025-05-22 12:10:26,839 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_4: 4
+2025-05-22 12:10:26,894 - aiogram.event - INFO - Update id=566538088 is handled. Duration 625 ms by bot id=7935736491
+2025-05-22 12:10:27,139 - aiogram.event - INFO - Update id=566538089 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:10:30,709 - db - INFO - Сохранен ответ на вопрос strength_6 для пользователя 1
+2025-05-22 12:10:30,709 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_6: 4
+2025-05-22 12:10:30,997 - aiogram.event - INFO - Update id=566538090 is handled. Duration 296 ms by bot id=7935736491
+2025-05-22 12:10:31,153 - db - INFO - Сохранен ответ на вопрос strength_6 для пользователя 1
+2025-05-22 12:10:31,154 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_6: 5
+2025-05-22 12:10:31,447 - aiogram.event - INFO - Update id=566538091 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:10:31,732 - db - INFO - Сохранен ответ на вопрос strength_6 для пользователя 1
+2025-05-22 12:10:31,732 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_6: 1
+2025-05-22 12:10:32,013 - db - INFO - Сохранен ответ на вопрос strength_6 для пользователя 1
+2025-05-22 12:10:32,013 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_6: 2
+2025-05-22 12:10:32,051 - aiogram.event - INFO - Update id=566538092 is handled. Duration 343 ms by bot id=7935736491
+2025-05-22 12:10:32,300 - aiogram.event - INFO - Update id=566538093 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:10:32,326 - db - INFO - Сохранен ответ на вопрос strength_6 для пользователя 1
+2025-05-22 12:10:32,327 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_6: 3
+2025-05-22 12:10:32,617 - aiogram.event - INFO - Update id=566538094 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:10:36,551 - db - INFO - Сохранен ответ на вопрос strength_11 для пользователя 1
+2025-05-22 12:10:36,551 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_11: 5
+2025-05-22 12:10:36,836 - db - INFO - Сохранен ответ на вопрос strength_11 для пользователя 1
+2025-05-22 12:10:36,837 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_11: 4
+2025-05-22 12:10:36,838 - aiogram.event - INFO - Update id=566538095 is handled. Duration 297 ms by bot id=7935736491
+2025-05-22 12:10:37,135 - db - INFO - Сохранен ответ на вопрос strength_11 для пользователя 1
+2025-05-22 12:10:37,135 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_11: 3
+2025-05-22 12:10:37,137 - aiogram.event - INFO - Update id=566538096 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:10:37,407 - db - INFO - Сохранен ответ на вопрос strength_11 для пользователя 1
+2025-05-22 12:10:37,407 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_11: 2
+2025-05-22 12:10:37,443 - aiogram.event - INFO - Update id=566538097 is handled. Duration 328 ms by bot id=7935736491
+2025-05-22 12:10:37,729 - aiogram.event - INFO - Update id=566538098 is handled. Duration 327 ms by bot id=7935736491
+2025-05-22 12:10:38,036 - db - INFO - Сохранен ответ на вопрос strength_11 для пользователя 1
+2025-05-22 12:10:38,036 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_11: 1
+2025-05-22 12:10:38,337 - aiogram.event - INFO - Update id=566538099 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:10:41,990 - db - INFO - Сохранен ответ на вопрос strength_16 для пользователя 1
+2025-05-22 12:10:41,991 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_16: 4
+2025-05-22 12:10:42,260 - db - INFO - Сохранен ответ на вопрос strength_16 для пользователя 1
+2025-05-22 12:10:42,260 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_16: 3
+2025-05-22 12:10:42,367 - aiogram.event - INFO - Update id=566538100 is handled. Duration 390 ms by bot id=7935736491
+2025-05-22 12:10:42,643 - aiogram.event - INFO - Update id=566538101 is handled. Duration 391 ms by bot id=7935736491
+2025-05-22 12:10:43,511 - db - INFO - Сохранен ответ на вопрос strength_18 для пользователя 1
+2025-05-22 12:10:43,512 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_18: 1
+2025-05-22 12:10:43,631 - db - INFO - Сохранен ответ на вопрос strength_15 для пользователя 1
+2025-05-22 12:10:43,631 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_15: 4
+2025-05-22 12:10:43,881 - aiogram.event - INFO - Update id=566538102 is handled. Duration 391 ms by bot id=7935736491
+2025-05-22 12:10:43,916 - db - INFO - Сохранен ответ на вопрос strength_15 для пользователя 1
+2025-05-22 12:10:43,917 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_15: 5
+2025-05-22 12:10:44,034 - aiogram.event - INFO - Update id=566538103 is handled. Duration 421 ms by bot id=7935736491
+2025-05-22 12:10:44,252 - aiogram.event - INFO - Update id=566538104 is handled. Duration 342 ms by bot id=7935736491
+2025-05-22 12:10:48,157 - db - INFO - Сохранен ответ на вопрос strength_18 для пользователя 1
+2025-05-22 12:10:48,157 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_18: 2
+2025-05-22 12:10:48,444 - aiogram.event - INFO - Update id=566538105 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:10:48,937 - db - INFO - Сохранен ответ на вопрос strength_20 для пользователя 1
+2025-05-22 12:10:48,937 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_20: 5
+2025-05-22 12:10:49,231 - aiogram.event - INFO - Update id=566538106 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:10:49,310 - db - INFO - Сохранен ответ на вопрос strength_20 для пользователя 1
+2025-05-22 12:10:49,310 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_20: 3
+2025-05-22 12:10:49,603 - aiogram.event - INFO - Update id=566538107 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:10:50,426 - db - INFO - Сохранен ответ на вопрос strength_23 для пользователя 1
+2025-05-22 12:10:50,426 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_23: 3
+2025-05-22 12:10:50,703 - aiogram.event - INFO - Update id=566538108 is handled. Duration 282 ms by bot id=7935736491
+2025-05-22 12:10:51,953 - db - INFO - Сохранен ответ на вопрос strength_24 для пользователя 1
+2025-05-22 12:10:51,953 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_24: 4
+2025-05-22 12:10:52,608 - aiogram.event - INFO - Update id=566538109 is handled. Duration 671 ms by bot id=7935736491
+2025-05-22 12:10:53,978 - db - INFO - Сохранен ответ на вопрос strength_25 для пользователя 1
+2025-05-22 12:10:53,978 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_25: 2
+2025-05-22 12:10:54,266 - db - INFO - Сохранен ответ на вопрос strength_25 для пользователя 1
+2025-05-22 12:10:54,266 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_25: 3
+2025-05-22 12:10:54,506 - aiogram.event - INFO - Update id=566538110 is handled. Duration 546 ms by bot id=7935736491
+2025-05-22 12:10:54,524 - db - INFO - Сохранен ответ на вопрос strength_25 для пользователя 1
+2025-05-22 12:10:54,524 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_25: 4
+2025-05-22 12:10:54,852 - aiogram.event - INFO - Update id=566538111 is handled. Duration 593 ms by bot id=7935736491
+2025-05-22 12:10:55,080 - aiogram.event - INFO - Update id=566538112 is handled. Duration 562 ms by bot id=7935736491
+2025-05-22 12:10:55,734 - db - INFO - Сохранен ответ на вопрос strength_24 для пользователя 1
+2025-05-22 12:10:55,735 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_24: 1
+2025-05-22 12:10:56,159 - db - INFO - Сохранен ответ на вопрос strength_27 для пользователя 1
+2025-05-22 12:10:56,159 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_27: 4
+2025-05-22 12:10:56,316 - aiogram.event - INFO - Update id=566538113 is handled. Duration 594 ms by bot id=7935736491
+2025-05-22 12:10:56,809 - aiogram.event - INFO - Update id=566538114 is handled. Duration 655 ms by bot id=7935736491
+2025-05-22 12:11:01,243 - db - INFO - Сохранен ответ на вопрос strength_29 для пользователя 1
+2025-05-22 12:11:01,243 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_29: 1
+2025-05-22 12:11:01,665 - aiogram.event - INFO - Update id=566538115 is handled. Duration 437 ms by bot id=7935736491
+2025-05-22 12:11:02,730 - db - INFO - Сохранен ответ на вопрос strength_30 для пользователя 1
+2025-05-22 12:11:02,731 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_30: 3
+2025-05-22 12:11:03,109 - db - INFO - Сохранен ответ на вопрос strength_30 для пользователя 1
+2025-05-22 12:11:03,109 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_30: 4
+2025-05-22 12:11:03,266 - aiogram.event - INFO - Update id=566538116 is handled. Duration 546 ms by bot id=7935736491
+2025-05-22 12:11:03,646 - aiogram.event - INFO - Update id=566538117 is handled. Duration 547 ms by bot id=7935736491
+2025-05-22 12:11:03,732 - db - INFO - Сохранен ответ на вопрос strength_31 для пользователя 1
+2025-05-22 12:11:03,733 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_31: 5
+2025-05-22 12:11:04,207 - aiogram.event - INFO - Update id=566538118 is handled. Duration 500 ms by bot id=7935736491
+2025-05-22 12:11:05,369 - db - INFO - Сохранен ответ на вопрос strength_33 для пользователя 1
+2025-05-22 12:11:05,369 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_33: 1
+2025-05-22 12:11:05,661 - aiogram.event - INFO - Update id=566538119 is handled. Duration 312 ms by bot id=7935736491
+2025-05-22 12:11:06,278 - db - INFO - Сохранен ответ на вопрос strength_34 для пользователя 1
+2025-05-22 12:11:06,278 - handlers.survey - INFO - Сохранен ответ на вопрос о сильных сторонах strength_34: 3
+2025-05-22 12:11:09,354 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:11:09,355 - services.ai_client - INFO - Успешно сгенерирован профиль пользователя
+2025-05-22 12:11:09,367 - db - INFO - Обновлены данные психологического профиля для пользователя 1
+2025-05-22 12:11:09,368 - handlers.survey - INFO - Создан психологический профиль для пользователя 1
+2025-05-22 12:11:09,379 - db - INFO - Создан/обновлен профиль для пользователя 1
+2025-05-22 12:11:09,828 - handlers.survey - INFO - Опрос завершен для пользователя 1, создан профиль 10
+2025-05-22 12:11:09,840 - aiogram.event - INFO - Update id=566538120 is handled. Duration 3578 ms by bot id=7935736491
+2025-05-22 12:11:21,913 - services.stt - INFO - Голосовое сообщение скачано: C:\Users\Robert\AppData\Local\Temp\tmpr43t_gwr.ogg
+2025-05-22 12:11:24,912 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2025-05-22 12:11:24,914 - services.stt - INFO - Голосовое сообщение успешно транскрибировано
+2025-05-22 12:11:25,827 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:11:25,828 - services.recs - INFO - Определено намерение: meditation с уверенностью 0.9. Фокус: default
+2025-05-22 12:11:29,574 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 12:11:29,575 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'meditation' и фокусом 'default'
+2025-05-22 12:11:29,725 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе голосового сообщения
+2025-05-22 12:11:29,726 - aiogram.event - INFO - Update id=566538121 is handled. Duration 8359 ms by bot id=7935736491
+2025-05-22 12:11:56,838 - db - INFO - База данных инициализирована
+2025-05-22 12:11:56,843 - __main__ - INFO - Инициализация бота...
+2025-05-22 12:11:57,110 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-22 12:11:57,110 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-22 12:11:57,110 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-22 12:11:57,110 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-22 12:11:57,110 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-22 12:11:57,125 - __main__ - INFO - Веб-сервер запущен на порту 8080
+2025-05-22 12:11:57,125 - __main__ - INFO - Бот запущен, ожидание сообщений...
+2025-05-22 12:11:57,125 - aiogram.dispatcher - INFO - Start polling
+2025-05-22 12:11:58,865 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-22 12:12:03,382 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-22 12:12:03,561 - aiogram.dispatcher - INFO - Polling stopped for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-22 12:12:03,561 - services.scheduler - INFO - Планировщик напоминаний остановлен
+2025-05-22 12:12:03,561 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-05-22 12:12:03,561 - __main__ - INFO - Планировщик напоминаний и веб-сервер остановлены
+2025-05-22 12:12:03,561 - __main__ - INFO - Бот остановлен вручную
+2025-05-22 12:12:03,561 - db - INFO - Соединение с базой данных закрыто
+2025-05-22 12:12:03,561 - __main__ - INFO - Соединение с базой данных закрыто
+2025-05-22 14:50:07,905 - db - INFO - База данных инициализирована
+2025-05-22 14:50:07,906 - __main__ - INFO - Инициализация бота...
+2025-05-22 14:50:08,184 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-05-22 14:50:08,186 - apscheduler.scheduler - INFO - Added job "Ежедневные напоминания в 20:00" to job store "default"
+2025-05-22 14:50:08,186 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-22 14:50:08,186 - services.scheduler - INFO - Планировщик напоминаний запущен, задание настроено на 20:00
+2025-05-22 14:50:08,186 - __main__ - INFO - Планировщик напоминаний запущен
+2025-05-22 14:50:08,188 - __main__ - INFO - Веб-сервер запущен на порту 8080
+2025-05-22 14:50:08,188 - __main__ - INFO - Бот запущен, ожидание сообщений...
+2025-05-22 14:50:08,189 - aiogram.dispatcher - INFO - Start polling
+2025-05-22 14:50:08,641 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-22 14:50:10,828 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:10,898 - services.recs - INFO - Определено намерение: feedback с уверенностью 0.9. Фокус: default
+2025-05-22 14:50:11,936 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:11,938 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'feedback' и фокусом 'default'
+2025-05-22 14:50:12,429 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 14:50:12,429 - aiogram.event - INFO - Update id=566538471 is handled. Duration 3625 ms by bot id=7935736491
+2025-05-22 14:50:20,944 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:20,950 - services.recs - INFO - Определено намерение: greeting с уверенностью 0.9. Фокус: default
+2025-05-22 14:50:21,731 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:21,731 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'greeting' и фокусом 'default'
+2025-05-22 14:50:21,921 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 14:50:21,921 - aiogram.event - INFO - Update id=566538472 is handled. Duration 2389 ms by bot id=7935736491
+2025-05-22 14:50:24,148 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:24,149 - services.recs - INFO - Определено намерение: analysis с уверенностью 0.9. Фокус: default
+2025-05-22 14:50:25,144 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:25,146 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'analysis' и фокусом 'default'
+2025-05-22 14:50:25,332 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 14:50:25,333 - aiogram.event - INFO - Update id=566538473 is handled. Duration 1703 ms by bot id=7935736491
+2025-05-22 14:50:29,612 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:29,614 - services.recs - INFO - Определено намерение: feedback с уверенностью 0.9. Фокус: default
+2025-05-22 14:50:30,796 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:30,803 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'feedback' и фокусом 'default'
+2025-05-22 14:50:30,942 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 14:50:30,943 - aiogram.event - INFO - Update id=566538474 is handled. Duration 1844 ms by bot id=7935736491
+2025-05-22 14:50:34,167 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:34,169 - services.recs - INFO - Определено намерение: help с уверенностью 0.9. Фокус: default
+2025-05-22 14:50:37,608 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:37,610 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'help' и фокусом 'default'
+2025-05-22 14:50:37,896 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 14:50:37,897 - aiogram.event - INFO - Update id=566538475 is handled. Duration 4312 ms by bot id=7935736491
+2025-05-22 14:50:38,755 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:38,767 - services.recs - INFO - Определено намерение: meditation с уверенностью 0.9. Фокус: default
+2025-05-22 14:50:41,119 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:41,125 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'meditation' и фокусом 'default'
+2025-05-22 14:50:41,287 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 14:50:41,288 - aiogram.event - INFO - Update id=566538476 is handled. Duration 3077 ms by bot id=7935736491
+2025-05-22 14:50:44,287 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:44,289 - services.recs - INFO - Определено намерение: greeting с уверенностью 0.9. Фокус: default
+2025-05-22 14:50:44,916 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:44,918 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'greeting' и фокусом 'default'
+2025-05-22 14:50:45,065 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 14:50:45,065 - aiogram.event - INFO - Update id=566538477 is handled. Duration 1407 ms by bot id=7935736491
+2025-05-22 14:50:47,240 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:47,242 - services.recs - INFO - Определено намерение: help с уверенностью 0.9. Фокус: default
+2025-05-22 14:50:49,433 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:50:49,436 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'help' и фокусом 'default'
+2025-05-22 14:50:49,626 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 14:50:49,626 - aiogram.event - INFO - Update id=566538478 is handled. Duration 2905 ms by bot id=7935736491
+2025-05-22 14:51:08,743 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:51:08,744 - services.recs - INFO - Определено намерение: feedback с уверенностью 0.9. Фокус: default
+2025-05-22 14:51:09,831 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-22 14:51:09,833 - services.recs - INFO - Сгенерирован ответ для пользователя 895018115 с намерением 'feedback' и фокусом 'default'
+2025-05-22 14:51:10,383 - handlers.general - INFO - Отправлен ответ пользователю 895018115 на основе текстового сообщения
+2025-05-22 14:51:10,383 - aiogram.event - INFO - Update id=566538479 is handled. Duration 2421 ms by bot id=7935736491
+2025-05-22 14:51:12,054 - __main__ - INFO - Получен сигнал 2, завершаем работу...
+2025-05-22 14:51:12,057 - db - INFO - Соединение с базой данных закрыто
+2025-05-22 14:51:12,057 - __main__ - INFO - Соединение с базой данных закрыто
+2025-05-22 14:51:12,058 - aiogram.dispatcher - INFO - Polling stopped for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-22 14:51:12,058 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-22 14:51:12,249 - __main__ - INFO - Получен сигнал 2, завершаем работу...
+2025-05-22 14:51:12,249 - __main__ - INFO - Соединение с базой данных закрыто
+2025-05-22 14:51:12,250 - __main__ - INFO - Соединение с базой данных закрыто
+2025-05-22 14:51:12,337 - asyncio - ERROR - Task was destroyed but it is pending!
+task: <Task cancelling name='Task-1' coro=<main() done, defined at C:\Users\Robert\Desktop\Ona_aiogram 1.0\main.py:338> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]> cb=[gather.<locals>._done_callback() at C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\tasks.py:764]>
