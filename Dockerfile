@@ -29,4 +29,8 @@ RUN pip install --no-cache-dir ephem elevenlabs aiofiles apscheduler
 # Копируем остальные файлы
 COPY . .
 
-CMD ["python", "main.py"] 
+# Создаем директорию для временных файлов
+RUN mkdir -p tmp
+
+# Используем restart_bot.py вместо main.py для обеспечения непрерывной работы
+CMD ["python", "restart_bot.py"] 

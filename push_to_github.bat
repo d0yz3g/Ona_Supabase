@@ -50,7 +50,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 :: Отправляем изменения в GitHub
 echo Отправка изменений в GitHub...
-git push -u origin master --force
+git push -u origin main --force
 if %ERRORLEVEL% NEQ 0 (
     echo Ошибка при отправке изменений!
     echo Возможно, вам нужно авторизоваться. Выполните следующие команды вручную:

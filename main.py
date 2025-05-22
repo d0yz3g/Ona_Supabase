@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 import signal
+import sys
 from dotenv import load_dotenv
 
 from aiogram import Bot, Dispatcher
@@ -77,30 +78,37 @@ async def main():
         # Игнорируем старые обновления для предотвращения конфликтов
         await bot.delete_webhook(drop_pending_updates=True)
         
-        # Добавляем обработку сигналов для корректного завершения
+        # Обработка только SIGINT (Ctrl+C), игнорируем SIGTERM чтобы бот продолжал работать
         def signal_handler(sig, frame):
-            logger.info("Получен сигнал завершения, останавливаем бота...")
-            asyncio.create_task(dp.stop_polling())
+            if sig == signal.SIGINT:
+                logger.info("Получен сигнал SIGINT (Ctrl+C), останавливаем бота...")
+                asyncio.create_task(dp.stop_polling())
         
-        # Регистрируем обработчик сигналов
-        for sig in (signal.SIGINT, signal.SIGTERM):
-            signal.signal(sig, signal_handler)
+        # Регистрируем обработчик только для SIGINT
+        signal.signal(signal.SIGINT, signal_handler)
         
-        # Запуск поллинга
+        # Запуск поллинга с параметрами для непрерывной работы
         await dp.start_polling(
             bot, 
             allowed_updates=allowed_updates,
-            polling_timeout=30,
-            handle_signals=True,
+            polling_timeout=60,  # Увеличиваем таймаут
+            handle_signals=False,  # Отключаем встроенную обработку сигналов
             close_bot_session=True
         )
     except Exception as e:
         logger.error(f"Критическая ошибка при запуске бота: {e}")
-        # В случае ошибки, пытаемся закрыть сессию
-        try:
-            await bot.session.close()
-        except:
-            pass
+        # Добавляем повторный запуск бота при критической ошибке
+        logger.info("Попытка перезапуска бота через 5 секунд...")
+        await asyncio.sleep(5)
+        await main()  # Рекурсивный перезапуск
 
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    # Обрабатываем исключения на верхнем уровне для предотвращения остановки бота
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("Бот остановлен вручную")
+    except Exception as e:
+        print(f"Критическая ошибка: {e}")
+        print("Перезапуск бота...")
+        os.execv(sys.executable, [sys.executable] + sys.argv) 
