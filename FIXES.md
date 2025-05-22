@@ -133,3 +133,39 @@ self.process = subprocess.Popen(
 
 ### Как проверить
 После деплоя на Railway предупреждения о буферизации должны исчезнуть из логов, а перенаправление вывода бота будет работать так же эффективно или даже лучше благодаря отсутствию буферизации. 
+
+## Исправление ошибки конфликта экземпляров бота (TelegramConflictError)
+
+### Проблема
+При деплое на Railway возникала ошибка `TelegramConflictError: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running`. Эта ошибка указывает на то, что несколько экземпляров бота пытаются одновременно получать обновления от Telegram API.
+
+### Решение
+Добавлен механизм обнаружения и предотвращения запуска нескольких экземпляров бота:
+
+1. Использование сокета для блокировки порта:
+   ```python
+   def is_bot_already_running():
+       try:
+           sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+           sock.bind(('127.0.0.1', LOCK_PORT))
+           sock.listen(1)
+           return False
+       except socket.error:
+           return True
+   ```
+
+2. Функция для завершения других экземпляров бота:
+   ```python
+   def kill_other_bot_instances():
+       current_pid = os.getpid()
+       for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+           # Ищем другие процессы Python, запущенные с main.py
+           # И пытаемся их завершить
+   ```
+
+3. Перемещение удаления webhook перед проверкой соединения с Telegram API, чтобы гарантировать очистку перед запуском поллинга.
+
+4. Добавление паузы после обнаружения других экземпляров, чтобы дать им время завершиться перед запуском текущего экземпляра.
+
+### Как проверить
+После деплоя этих изменений на Railway в логах не должны появляться ошибки `TelegramConflictError`, и бот должен стабильно работать даже при перезапуске контейнера. 

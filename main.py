@@ -4,6 +4,8 @@ import os
 import signal
 import sys
 import time
+import socket
+import psutil
 from dotenv import load_dotenv
 
 from aiogram import Bot, Dispatcher
@@ -51,8 +53,67 @@ if not BOT_TOKEN:
 else:
     print("BOT_TOKEN найден успешно")
 
+# Файл блокировки для предотвращения запуска нескольких экземпляров
+LOCK_PORT = 44223  # Уникальный порт для блокировки
+
+def is_bot_already_running():
+    """
+    Проверяет, запущен ли уже экземпляр бота, используя TCP сокет.
+    Возвращает True, если бот уже запущен, иначе False.
+    """
+    try:
+        # Пытаемся создать серверный сокет на указанном порту
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.bind(('127.0.0.1', LOCK_PORT))
+        sock.listen(1)
+        # Если успешно - значит бот не запущен
+        return False
+    except socket.error:
+        # Если ошибка - порт занят, значит бот уже запущен
+        logger.warning(f"Порт {LOCK_PORT} уже занят, возможно бот уже запущен")
+        print(f"ПРЕДУПРЕЖДЕНИЕ: Возможно, бот уже запущен (порт {LOCK_PORT} занят)")
+        return True
+
+def kill_other_bot_instances():
+    """
+    Попытка завершить другие экземпляры бота
+    """
+    current_pid = os.getpid()
+    logger.info(f"Текущий PID: {current_pid}")
+    print(f"Текущий PID процесса: {current_pid}")
+    
+    # Ищем другие Python процессы, запущенные с main.py
+    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        try:
+            # Проверяем, что это Python процесс, запускающий main.py, но не текущий процесс
+            if proc.info['pid'] != current_pid and proc.info['name'] == 'python':
+                cmdline = proc.info['cmdline']
+                if cmdline and any('main.py' in cmd for cmd in cmdline):
+                    logger.warning(f"Найден другой экземпляр бота: PID {proc.info['pid']}")
+                    print(f"ВНИМАНИЕ: Найден другой экземпляр бота с PID {proc.info['pid']}")
+                    
+                    # Завершаем процесс
+                    try:
+                        proc.terminate()
+                        logger.info(f"Процесс с PID {proc.info['pid']} успешно завершен")
+                        print(f"Процесс с PID {proc.info['pid']} завершен")
+                    except Exception as e:
+                        logger.error(f"Не удалось завершить процесс: {e}")
+                        print(f"Ошибка при завершении процесса: {e}")
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+
 async def main():
     try:
+        # Проверяем, запущен ли уже бот
+        if is_bot_already_running():
+            # Пытаемся завершить другие экземпляры
+            kill_other_bot_instances()
+            logger.warning("Возможен конфликт с другим экземпляром бота. Проверьте процессы.")
+            print("ПРЕДУПРЕЖДЕНИЕ: Возможен конфликт с другим запущенным ботом.")
+            # Делаем паузу, чтобы другие процессы успели завершиться
+            await asyncio.sleep(5)
+        
         # Инициализация хранилища и бота
         storage = MemoryStorage()
         bot = Bot(token=BOT_TOKEN)
@@ -78,6 +139,11 @@ async def main():
         # Устанавливаем allowed_updates для оптимизации работы
         allowed_updates = ["message", "callback_query"]
         
+        # Сначала сбрасываем webhook и удаляем старые обновления
+        await bot.delete_webhook(drop_pending_updates=True)
+        logger.info("Webhook удален, старые обновления очищены")
+        print("Старые обновления удалены")
+        
         # Проверяем соединение с Telegram API
         try:
             bot_info = await bot.get_me()
@@ -91,9 +157,6 @@ async def main():
             bot_info = await bot.get_me()
             logger.info(f"Соединение с Telegram API установлено со второй попытки. Имя бота: @{bot_info.username}")
             print(f"Повторное подключение успешно: @{bot_info.username}")
-        
-        # Игнорируем старые обновления для предотвращения конфликтов
-        await bot.delete_webhook(drop_pending_updates=True)
         
         # Обработка сигналов
         # Игнорируем SIGTERM чтобы бот продолжал работать при мягкой остановке контейнера
