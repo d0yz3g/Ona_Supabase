@@ -205,8 +205,13 @@ class BotRunner:
                                     if alive:
                                         print(f"Процесс {proc.info['pid']} не завершился, используем принудительное завершение")
                                         proc.kill()
+                                        time.sleep(1)  # Даем время на завершение процесса
                                     else:
                                         print(f"Процесс {proc.info['pid']} успешно завершен")
+                                    # Дополнительная проверка, что процесс точно завершен
+                                    if psutil.pid_exists(proc.info['pid']):
+                                        print(f"Процесс {proc.info['pid']} всё ещё существует, принудительное завершение")
+                                        os.kill(proc.info['pid'], signal.SIGKILL)
                                 except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.Error) as e:
                                     print(f"Ошибка при попытке завершить процесс {proc.info['pid']}: {e}")
                         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.Error):

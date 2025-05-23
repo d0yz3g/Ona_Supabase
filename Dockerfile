@@ -128,9 +128,12 @@ if [ ! -z "$RUNNING_BOTS" ]; then\n\
         if ps -p $pid > /dev/null; then\n\
             echo "Процесс $pid не завершился. Принудительная остановка..."\n\
             kill -9 $pid\n\
+            sleep 1\n\
         fi\n\
     done\n\
     echo "Все процессы бота остановлены"\n\
+    echo "Ожидание 5 секунд для освобождения соединений..."\n\
+    sleep 5\n\
 else\n\
     echo "Запущенных экземпляров бота не найдено"\n\
 fi\n\

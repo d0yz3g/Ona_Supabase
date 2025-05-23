@@ -261,18 +261,35 @@ async def main():
         railway_print("=== ONA BOT ЗАПУЩЕН И ГОТОВ К РАБОТЕ ===", "INFO")
         
         # Запускаем бота с длинным поллингом и параметрами для предотвращения конфликтов
-        await dp.start_polling(bot, fast=True, timeout=30, allowed_updates=None)
+        await dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
     except Exception as e:
         # Проверяем, является ли ошибка конфликтом запросов
         if "Conflict: terminated by other getUpdates" in str(e) or "TelegramConflictError" in str(e):
             logger.error("Обнаружен конфликт запросов Telegram API - другой экземпляр бота уже запущен")
-            railway_print("КОНФЛИКТ: Другой экземпляр бота уже получает обновления. Завершение работы...", "ERROR")
+            railway_print("КОНФЛИКТ: Другой экземпляр бота уже получает обновления. Выполняем повторную попытку через 10 секунд...", "ERROR")
             
-            # Если мы запускаемся из restart_bot.py, повторный запуск будет выполнен автоматически
-            if 'restart_bot.py' in sys.argv[0]:
-                railway_print("Ожидаем перезапуска через монитор...", "INFO")
-            else:
-                railway_print("Рекомендуется запускать бота через restart_bot.py для автоматического перезапуска", "WARNING")
+            # Делаем паузу и пробуем снова
+            await asyncio.sleep(10)
+            railway_print("Повторная попытка запуска после конфликта...", "INFO")
+            
+            try:
+                # Создаем новую сессию
+                if hasattr(bot, "session") and bot.session:
+                    await bot.session.close()
+                bot._session = None
+                
+                # Пробуем запустить снова
+                await dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
+                railway_print("Повторный запуск выполнен успешно!", "INFO")
+            except Exception as retry_error:
+                logger.error(f"Повторная попытка запуска не удалась: {retry_error}")
+                railway_print(f"Повторная попытка не удалась: {str(retry_error)}", "ERROR")
+                
+                # Если мы запускаемся из restart_bot.py, повторный запуск будет выполнен автоматически
+                if 'restart_bot.py' in sys.argv[0]:
+                    railway_print("Ожидаем перезапуска через монитор...", "INFO")
+                else:
+                    railway_print("Рекомендуется запускать бота через restart_bot.py для автоматического перезапуска", "WARNING")
         else:
             logger.error(f"Ошибка запуска бота: {e}")
             railway_print(f"Ошибка запуска: {str(e)}", "ERROR")

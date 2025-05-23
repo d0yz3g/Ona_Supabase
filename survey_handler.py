@@ -9,6 +9,23 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from button_states import SurveyStates, ProfileStates
 from profile_generator import generate_profile, save_profile_to_db
 
+# Импорт функции railway_print для логирования
+try:
+    from railway_logging import railway_print
+except ImportError:
+    # Определяем функцию railway_print, если модуль railway_logging не найден
+    def railway_print(message, level="INFO"):
+        prefix = "ИНФО"
+        if level.upper() == "ERROR":
+            prefix = "ОШИБКА"
+        elif level.upper() == "WARNING":
+            prefix = "ПРЕДУПРЕЖДЕНИЕ"
+        elif level.upper() == "DEBUG":
+            prefix = "ОТЛАДКА"
+        print(f"{prefix}: {message}")
+        import sys
+        sys.stdout.flush()
+
 # Настройка логирования
 logger = logging.getLogger(__name__)
 
@@ -181,7 +198,14 @@ async def process_survey_answer(message: Message, state: FSMContext):
     # Получаем списки вопросов
     demo_questions = get_demo_questions()
     # Используем функцию get_all_vasini_questions вместо прямого объединения
-    vasini_questions = get_all_vasini_questions()
+    try:
+        vasini_questions = get_all_vasini_questions()
+        logger.info(f"Загружено {len(vasini_questions)} вопросов Vasini")
+    except Exception as e:
+        logger.error(f"Ошибка при загрузке вопросов Vasini: {e}")
+        # Создаем пустой список в случае ошибки
+        vasini_questions = []
+        railway_print("ОШИБКА: Не удалось загрузить вопросы Vasini, опрос будет недоступен", "ERROR")
     
     # Определяем текущий вопрос
     if is_demo_questions:
