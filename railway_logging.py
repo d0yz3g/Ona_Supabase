@@ -1,167 +1,137 @@
 #!/usr/bin/env python
 """
 Модуль для настройки логирования в Railway.
-Обеспечивает корректное отображение логов в среде Railway.
+Обеспечивает правильное отображение уровней логирования с русскоязычными префиксами.
 """
 
-import logging
 import sys
-import os
+import logging
+from logging import StreamHandler, Formatter
 from datetime import datetime
 
-class RailwayFormatter(logging.Formatter):
+def get_time():
     """
-    Форматтер логов для Railway с правильными префиксами для разных уровней.
+    Возвращает текущее время в формате для логов.
     """
-    def __init__(self, fmt=None, datefmt=None):
-        super().__init__(fmt, datefmt)
-        self.is_railway = os.environ.get('RAILWAY_ENVIRONMENT', '') != ''
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+class RailwayFormatter(Formatter):
+    """
+    Форматтер для логов в Railway, добавляющий русскоязычные префиксы.
+    """
+    
+    def __init__(self):
+        super().__init__()
         
-        # Маппинг уровней логирования на префиксы
-        self.level_prefixes = {
-            logging.DEBUG: "ОТЛАДКА",
-            logging.INFO: "ИНФО",
-            logging.WARNING: "ПРЕДУПРЕЖДЕНИЕ",
-            logging.ERROR: "ОШИБКА",
-            logging.CRITICAL: "КРИТИЧЕСКАЯ ОШИБКА"
+        # Форматы для разных уровней логирования
+        self.formatters = {
+            logging.DEBUG: Formatter("ОТЛАДКА: %(asctime)s - %(name)s - %(levelname)s - %(message)s"),
+            logging.INFO: Formatter("ИНФО: %(asctime)s - %(name)s - %(levelname)s - %(message)s"),
+            logging.WARNING: Formatter("ПРЕДУПРЕЖДЕНИЕ: %(asctime)s - %(name)s - %(levelname)s - %(message)s"),
+            logging.ERROR: Formatter("ОШИБКА: %(asctime)s - %(name)s - %(levelname)s - %(message)s"),
+            logging.CRITICAL: Formatter("КРИТИЧЕСКАЯ ОШИБКА: %(asctime)s - %(name)s - %(levelname)s - %(message)s"),
         }
     
     def format(self, record):
         """
-        Форматирование записи лога.
-        Добавляет префикс для Railway в зависимости от уровня.
+        Форматирует запись лога в зависимости от уровня.
         """
-        # Получаем стандартное форматирование
-        formatted = super().format(record)
-        
-        # Если сообщение уже имеет префикс, не добавляем еще один
-        if any(formatted.startswith(prefix) for prefix in ["ИНФО:", "ПРЕДУПРЕЖДЕНИЕ:", "ОШИБКА:", "ОТЛАДКА:", "КРИТИЧЕСКАЯ ОШИБКА:"]):
-            return formatted
-        
-        # Добавляем специальные префиксы для видимости в Railway
-        prefix = self.level_prefixes.get(record.levelno, "ИНФО")
-        return f"{prefix}: {formatted}"
+        formatter = self.formatters.get(record.levelno, self.formatters[logging.INFO])
+        return formatter.format(record)
+
+class RailwayHandler(StreamHandler):
+    """
+    Обработчик логов для Railway, который выводит все в stdout
+    и форматирует сообщения с правильными префиксами.
+    """
+    
+    def __init__(self):
+        super().__init__(stream=sys.stdout)
+        self.setFormatter(RailwayFormatter())
+    
+    def emit(self, record):
+        """
+        Выводит запись лога в stdout с принудительным сбросом буфера.
+        """
+        super().emit(record)
+        self.flush()  # Принудительно сбрасываем буфер для Railway
 
 def setup_railway_logging(logger_name=None, level=logging.INFO):
     """
-    Настраивает логирование для Railway с правильными префиксами.
+    Настраивает логирование для Railway.
     
     Args:
         logger_name: Имя логгера
         level: Уровень логирования
-    
+        
     Returns:
-        logging.Logger: Настроенный логгер
+        Logger: Настроенный логгер
     """
-    # Создаем или получаем логгер
-    if logger_name:
-        logger = logging.getLogger(logger_name)
-    else:
-        logger = logging.getLogger()
-    
-    # Устанавливаем уровень логирования
+    # Получаем или создаем логгер
+    logger = logging.getLogger(logger_name)
     logger.setLevel(level)
     
-    # Очищаем существующие обработчики
+    # Удаляем существующие обработчики
     for handler in logger.handlers[:]:
         logger.removeHandler(handler)
     
-    # Создаем новый обработчик для stdout
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(level)
+    # Добавляем наш обработчик для Railway
+    handler = RailwayHandler()
+    logger.addHandler(handler)
     
-    # Настраиваем форматтер
-    formatter = RailwayFormatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
-    )
-    console_handler.setFormatter(formatter)
+    # Настраиваем корневой логгер
+    root_logger = logging.getLogger()
+    for handler in root_logger.handlers[:]:
+        if isinstance(handler, StreamHandler):
+            root_logger.removeHandler(handler)
     
-    # Создаем обработчик для файла логов
-    try:
-        os.makedirs("logs", exist_ok=True)
-        file_handler = logging.FileHandler("logs/bot.log")
-        file_handler.setLevel(level)
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
-    except Exception as e:
-        print(f"ПРЕДУПРЕЖДЕНИЕ: Не удалось создать файловый обработчик логов: {e}")
-    
-    # Добавляем консольный обработчик к логгеру
-    logger.addHandler(console_handler)
-    
-    # Если среда - Railway, добавляем информацию
-    is_railway = os.environ.get('RAILWAY_ENVIRONMENT', '') != ''
-    if is_railway:
-        logger.info(f"Логирование настроено для Railway. Текущее время: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        logger.info(f"Уровень логирования: {logging.getLevelName(level)}")
+    root_handler = RailwayHandler()
+    root_logger.addHandler(root_handler)
     
     return logger
 
-# Функция для преобразования строкового уровня логирования в константу
-def get_log_level(level_str):
-    """
-    Преобразует строковое представление уровня логирования в константу.
-    
-    Args:
-        level_str: Строковое представление уровня логирования
-        
-    Returns:
-        int: Константа уровня логирования
-    """
-    levels = {
-        "debug": logging.DEBUG,
-        "info": logging.INFO,
-        "warning": logging.WARNING,
-        "error": logging.ERROR,
-        "critical": logging.CRITICAL
-    }
-    return levels.get(level_str.lower(), logging.INFO)
-
-# Функция для упрощенного вывода сообщений для Railway
 def railway_print(message, level="INFO"):
     """
-    Функция для удобного вывода сообщений в Railway с правильными префиксами.
+    Выводит сообщение в формате для Railway.
     
     Args:
         message: Сообщение для вывода
         level: Уровень сообщения (INFO, ERROR, WARNING, DEBUG)
     """
-    # Маппинг уровней на префиксы
-    prefixes = {
-        "INFO": "ИНФО",
-        "ERROR": "ОШИБКА",
-        "WARNING": "ПРЕДУПРЕЖДЕНИЕ",
-        "DEBUG": "ОТЛАДКА",
-        "CRITICAL": "КРИТИЧЕСКАЯ ОШИБКА"
-    }
+    prefix = "ИНФО"
+    if level.upper() == "ERROR":
+        prefix = "ОШИБКА"
+    elif level.upper() == "WARNING":
+        prefix = "ПРЕДУПРЕЖДЕНИЕ"
+    elif level.upper() == "DEBUG":
+        prefix = "ОТЛАДКА"
+    elif level.upper() == "CRITICAL":
+        prefix = "КРИТИЧЕСКАЯ ОШИБКА"
     
-    # Получаем префикс или используем ИНФО по умолчанию
-    prefix = prefixes.get(level.upper(), "ИНФО")
-    
-    # Проверяем, не имеет ли сообщение уже префикс
-    if any(message.startswith(f"{p}: ") for p in prefixes.values()):
-        print(message)
-    else:
-        print(f"{prefix}: {message}")
-    
-    sys.stdout.flush()  # Принудительный сброс буфера для Railway
+    print(f"{prefix}: {message}")
+    sys.stdout.flush()  # Принудительно сбрасываем буфер для Railway
 
-# Если модуль запущен напрямую, выполняем тестирование
+# Если запускаем как отдельный скрипт, настраиваем логирование
 if __name__ == "__main__":
-    # Тестируем настройку логирования
-    logger = setup_railway_logging("railway_logging_test", logging.DEBUG)
+    print("=" * 50)
+    print("НАСТРОЙКА ЛОГИРОВАНИЯ ДЛЯ RAILWAY")
+    print("=" * 50)
     
+    # Настраиваем логирование
+    logger = setup_railway_logging("railway_logging_test")
+    
+    # Проверяем разные уровни логирования
     logger.debug("Это отладочное сообщение")
     logger.info("Это информационное сообщение")
     logger.warning("Это предупреждение")
     logger.error("Это сообщение об ошибке")
     logger.critical("Это критическая ошибка")
     
-    # Тестируем функцию railway_print
-    railway_print("Тестовое информационное сообщение")
-    railway_print("Тестовое сообщение об ошибке", "ERROR")
-    railway_print("Тестовое предупреждение", "WARNING")
-    railway_print("Тестовое отладочное сообщение", "DEBUG")
+    # Проверяем функцию railway_print
+    railway_print("Тестовое сообщение через railway_print")
+    railway_print("Предупреждение через railway_print", level="WARNING")
+    railway_print("Ошибка через railway_print", level="ERROR")
     
-    print("Тестирование логирования для Railway завершено успешно") 
+    print("=" * 50)
+    print("ЗАВЕРШЕНИЕ НАСТРОЙКИ ЛОГИРОВАНИЯ")
+    print("=" * 50) 
