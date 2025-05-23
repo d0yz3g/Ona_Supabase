@@ -111,5 +111,33 @@ RUN chmod +x railway_start.sh
 # Настройка логирования для Railway
 RUN touch /app/logs/bot.log /app/logs/restart.log
 
-# Запуск скрипта railway_start.sh для старта бота
-CMD ["/bin/bash", "railway_start.sh"] 
+# Установка psutil отдельно (часто требуется для системных операций)
+RUN pip install psutil
+
+# Добавление скрипта для проверки и остановки запущенных процессов бота
+RUN echo '#!/bin/bash\n\
+# Проверяем наличие запущенных процессов бота\n\
+echo "Проверка наличия запущенных экземпляров бота..."\n\
+RUNNING_BOTS=$(ps aux | grep "python main.py" | grep -v grep | awk "{print \$2}")\n\
+if [ ! -z "$RUNNING_BOTS" ]; then\n\
+    echo "ПРЕДУПРЕЖДЕНИЕ: Найдены запущенные экземпляры бота. Останавливаем..."\n\
+    for pid in $RUNNING_BOTS; do\n\
+        echo "Останавливаем процесс с PID $pid"\n\
+        kill -15 $pid\n\
+        sleep 2\n\
+        if ps -p $pid > /dev/null; then\n\
+            echo "Процесс $pid не завершился. Принудительная остановка..."\n\
+            kill -9 $pid\n\
+        fi\n\
+    done\n\
+    echo "Все процессы бота остановлены"\n\
+else\n\
+    echo "Запущенных экземпляров бота не найдено"\n\
+fi\n\
+\n\
+# Запускаем бота через скрипт перезапуска\n\
+python restart_bot.py\n'\
+> /app/start_container.sh && chmod +x /app/start_container.sh
+
+# Установка entrypoint
+ENTRYPOINT ["/app/start_container.sh"] 

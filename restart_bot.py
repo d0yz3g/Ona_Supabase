@@ -189,6 +189,33 @@ class BotRunner:
         print(f"Рабочая директория: {os.getcwd()}")
         print(f"Скрипт бота: {BOT_SCRIPT}")
         
+        # Проверка и завершение запущенных экземпляров бота
+        if PSUTIL_AVAILABLE:
+            try:
+                print("МОНИТОР: Проверка запущенных экземпляров бота...")
+                for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+                    if proc.info['pid'] != os.getpid():  # Не учитываем текущий процесс
+                        try:
+                            cmd_line = ' '.join(proc.info['cmdline'] or [])
+                            if BOT_SCRIPT in cmd_line:
+                                print(f"ПРЕДУПРЕЖДЕНИЕ: Найден запущенный процесс бота с PID {proc.info['pid']}, завершаем его...")
+                                try:
+                                    proc.terminate()
+                                    gone, alive = psutil.wait_procs([proc], timeout=3)
+                                    if alive:
+                                        print(f"Процесс {proc.info['pid']} не завершился, используем принудительное завершение")
+                                        proc.kill()
+                                    else:
+                                        print(f"Процесс {proc.info['pid']} успешно завершен")
+                                except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.Error) as e:
+                                    print(f"Ошибка при попытке завершить процесс {proc.info['pid']}: {e}")
+                        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.Error):
+                            continue
+                print("МОНИТОР: Проверка запущенных экземпляров завершена")
+            except Exception as e:
+                logger.error(f"Ошибка при поиске запущенных процессов: {e}")
+                print(f"ОШИБКА: Не удалось проверить запущенные процессы: {e}")
+        
         # Проверка наличия зависимостей
         try:
             import aiogram

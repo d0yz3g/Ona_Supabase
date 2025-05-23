@@ -30,6 +30,30 @@ echo "Создание необходимых директорий..."
 mkdir -p logs tmp services
 echo "✓ Директории logs, tmp и services созданы"
 
+# Проверка наличия уже запущенного бота и его остановка
+echo "Проверка наличия запущенных экземпляров бота..."
+RUNNING_BOTS=$(ps aux | grep "python main.py" | grep -v grep | awk '{print $2}')
+if [ ! -z "$RUNNING_BOTS" ]; then
+    echo "ПРЕДУПРЕЖДЕНИЕ: Найдены запущенные экземпляры бота. Останавливаем..."
+    for pid in $RUNNING_BOTS; do
+        echo "Останавливаем процесс с PID $pid"
+        kill -15 $pid
+        sleep 2
+        # Проверяем, завершился ли процесс
+        if ps -p $pid > /dev/null; then
+            echo "Процесс $pid не завершился. Принудительная остановка..."
+            kill -9 $pid
+        fi
+    done
+    echo "Все процессы бота остановлены"
+else
+    echo "Запущенных экземпляров бота не найдено"
+fi
+
+# Дополнительная пауза чтобы дать Telegram API освободить соединение
+echo "Ожидание 5 секунд для освобождения соединений Telegram API..."
+sleep 5
+
 # Проверка наличия файлов бота
 echo "Проверка наличия ключевых файлов бота..."
 REQUIRED_FILES=("main.py" "restart_bot.py" "railway_logging.py" "create_placeholders.py" "fix_imports.py")

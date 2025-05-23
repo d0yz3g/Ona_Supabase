@@ -238,6 +238,17 @@ async def main():
             await bot.delete_webhook()
             logger.info("Webhook удален, старые обновления очищены")
         
+        # Завершаем потенциально запущенные сессии бота (для предотвращения конфликтов)
+        if hasattr(bot, "session") and bot.session:
+            try:
+                await bot.session.close()
+                logger.info("Существующая сессия бота закрыта")
+            except Exception as e:
+                logger.warning(f"Не удалось закрыть существующую сессию: {e}")
+        
+        # Создаем новую сессию
+        bot._session = None  # Сбрасываем текущую сессию, чтобы создать новую
+        
         # Проверяем соединение с Telegram API
         bot_info = await bot.get_me()
         logger.info(f"Соединение с Telegram API установлено успешно. Имя бота: @{bot_info.username}")
@@ -249,19 +260,32 @@ async def main():
         # Сообщение о готовности бота
         railway_print("=== ONA BOT ЗАПУЩЕН И ГОТОВ К РАБОТЕ ===", "INFO")
         
-        # Запускаем бота с длинным поллингом и параметром fast=True для предотвращения конфликтов
-        await dp.start_polling(bot, fast=True)
+        # Запускаем бота с длинным поллингом и параметрами для предотвращения конфликтов
+        await dp.start_polling(bot, fast=True, timeout=30, allowed_updates=None)
     except Exception as e:
-        logger.error(f"Ошибка запуска бота: {e}")
-        railway_print(f"Ошибка запуска: {str(e)}", "ERROR")
+        # Проверяем, является ли ошибка конфликтом запросов
+        if "Conflict: terminated by other getUpdates" in str(e) or "TelegramConflictError" in str(e):
+            logger.error("Обнаружен конфликт запросов Telegram API - другой экземпляр бота уже запущен")
+            railway_print("КОНФЛИКТ: Другой экземпляр бота уже получает обновления. Завершение работы...", "ERROR")
+            
+            # Если мы запускаемся из restart_bot.py, повторный запуск будет выполнен автоматически
+            if 'restart_bot.py' in sys.argv[0]:
+                railway_print("Ожидаем перезапуска через монитор...", "INFO")
+            else:
+                railway_print("Рекомендуется запускать бота через restart_bot.py для автоматического перезапуска", "WARNING")
+        else:
+            logger.error(f"Ошибка запуска бота: {e}")
+            railway_print(f"Ошибка запуска: {str(e)}", "ERROR")
     finally:
         # Останавливаем планировщик заданий при выходе
         if scheduler and scheduler.running:
             scheduler.shutdown()
             logger.info("Планировщик заданий остановлен")
         
-        await bot.session.close()
-        logger.info("Бот остановлен")
+        if hasattr(bot, "session") and bot.session:
+            await bot.session.close()
+            logger.info("Сессия бота закрыта")
+        
         railway_print("Бот завершил работу", "INFO")
 
 if __name__ == "__main__":
