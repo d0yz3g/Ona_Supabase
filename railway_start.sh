@@ -7,72 +7,129 @@ echo "=== ONA2.0 TELEGRAM BOT RAILWAY LAUNCHER ==="
 echo "Дата запуска: $(date)"
 echo "Рабочая директория: $(pwd)"
 
-# Вывод информации о рабочей директории
-echo "Содержимое рабочей директории:"
-ls -la
-
-# Проверка наличия файлов бота
-echo "Проверка наличия ключевых файлов бота..."
-REQUIRED_FILES=("main.py" "restart_bot.py" "railway_helper.py" "railway_logging.py" "create_placeholders.py")
-MISSING_FILES=()
-
-for file in "${REQUIRED_FILES[@]}"; do
+# Функция для проверки и создания файла
+check_and_create() {
+    local file="$1"
+    local content="$2"
+    
     if [ ! -f "$file" ]; then
-        echo "ОШИБКА: Файл $file не найден!"
-        MISSING_FILES+=("$file")
+        echo "ПРЕДУПРЕЖДЕНИЕ: Файл $file не найден, создаем заглушку..."
+        echo "$content" > "$file"
+        echo "✓ Создана заглушка для файла $file"
     else
         echo "✓ Файл $file найден"
     fi
-done
+}
 
-if [ ${#MISSING_FILES[@]} -gt 0 ]; then
-    echo "ВНИМАНИЕ: Отсутствуют некоторые ключевые файлы: ${MISSING_FILES[*]}"
-    echo "Попытка найти файлы в проекте..."
-    
-    # Поиск файлов в проекте
-    for file in "${MISSING_FILES[@]}"; do
-        FOUND_FILE=$(find . -name "$file" -type f | head -n 1)
-        if [ -n "$FOUND_FILE" ]; then
-            echo "Найден файл $file по пути $FOUND_FILE, копирование..."
-            cp "$FOUND_FILE" .
-            echo "✓ Файл $file скопирован в рабочую директорию"
-        else
-            echo "ОШИБКА: Файл $file не найден в проекте!"
-        fi
-    done
-fi
+# Вывод информации о рабочей директории
+echo "Содержимое рабочей директории:"
+ls -la
 
 # Создание необходимых директорий
 echo "Создание необходимых директорий..."
 mkdir -p logs tmp
 echo "✓ Директории logs и tmp созданы"
 
-# Запуск railway_helper.py для инициализации
-echo "Запуск Railway Helper для инициализации..."
-if [ -f "railway_helper.py" ]; then
-    python railway_helper.py
-    echo "✓ Railway Helper выполнен"
+# Проверка наличия файлов бота
+echo "Проверка наличия ключевых файлов бота..."
+REQUIRED_FILES=("main.py" "restart_bot.py" "railway_logging.py" "create_placeholders.py" "fix_imports.py")
+MISSING_FILES=()
+
+for file in "${REQUIRED_FILES[@]}"; do
+    if [ ! -f "$file" ]; then
+        echo "ПРЕДУПРЕЖДЕНИЕ: Файл $file не найден!"
+        MISSING_FILES+=("$file")
+    else
+        echo "✓ Файл $file найден"
+    fi
+done
+
+# Создаем railway_logging.py если не существует
+check_and_create "railway_logging.py" '#!/usr/bin/env python
+"""Модуль для настройки логирования в Railway."""
+import logging
+import sys
+def setup_railway_logging(logger_name=None, level=logging.INFO):
+    logger = logging.getLogger(logger_name or "railway")
+    logger.setLevel(level)
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(logging.Formatter("ИНФО: %(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+    logger.addHandler(handler)
+    return logger
+def railway_print(message, level="INFO"):
+    prefix = "ИНФО"
+    if level.upper() == "ERROR": prefix = "ОШИБКА"
+    elif level.upper() == "WARNING": prefix = "ПРЕДУПРЕЖДЕНИЕ"
+    print(f"{prefix}: {message}")
+    sys.stdout.flush()'
+
+# Создаем базовую заглушку для restart_bot.py если не существует
+check_and_create "restart_bot.py" '#!/usr/bin/env python
+"""Скрипт для автоматического перезапуска бота."""
+import subprocess
+import sys
+import time
+print("ИНФО: Запуск монитора перезапуска")
+# Простой запуск main.py без перезапуска для отладки в Railway
+subprocess.run([sys.executable, "main.py"])'
+
+# Создаем fix_imports.py если не существует
+check_and_create "fix_imports.py" '#!/usr/bin/env python
+"""Скрипт для исправления путей импорта."""
+import os
+import sys
+import importlib
+print("ИНФО: Исправление путей импорта")
+# Добавляем текущую директорию в sys.path
+if os.getcwd() not in sys.path:
+    sys.path.insert(0, os.getcwd())
+    print(f"ИНФО: Путь {os.getcwd()} добавлен в sys.path")
+# Проверяем доступные модули
+print(f"ИНФО: Доступные файлы: {[f for f in os.listdir(\".\") if f.endswith(\".py\")]}")'
+
+# Создаем create_placeholders.py если не существует
+check_and_create "create_placeholders.py" '#!/usr/bin/env python
+"""Скрипт для создания заглушек для отсутствующих модулей."""
+import os
+print("ИНФО: Запуск скрипта создания заглушек")
+modules = ["survey_handler.py", "meditation_handler.py", "conversation_handler.py", "reminder_handler.py", "voice_handler.py"]
+for module in modules:
+    if not os.path.exists(module):
+        with open(module, "w") as f:
+            f.write(f"# Placeholder for {module}\\nfrom aiogram import Router\\n{module.replace(\".py\", \"_router\")} = Router(name=\"{module.replace(\".py\", \"\")}\")")
+        print(f"ИНФО: Создана заглушка для {module}")'
+
+# Запуск скриптов инициализации
+echo "Запуск скриптов инициализации..."
+
+# Запуск скрипта исправления путей импорта
+if [ -f "fix_imports.py" ]; then
+    echo "Запуск fix_imports.py для исправления путей импорта..."
+    python fix_imports.py
+    echo "✓ Скрипт fix_imports.py выполнен"
 else
-    echo "ВНИМАНИЕ: Файл railway_helper.py не найден, пропускаем инициализацию"
-    
-    # Запуск скрипта создания заглушек
-    echo "Запуск скрипта создания заглушек для недостающих модулей..."
-    if [ -f "create_placeholders.py" ]; then
-        python create_placeholders.py
-        echo "✓ Скрипт создания заглушек выполнен"
-    else
-        echo "ВНИМАНИЕ: Файл create_placeholders.py не найден, пропускаем создание заглушек"
-    fi
-    
-    # Запуск скрипта исправления импортов
-    echo "Запуск скрипта исправления импортов..."
-    if [ -f "fix_imports.py" ]; then
-        python fix_imports.py
-        echo "✓ Скрипт исправления импортов выполнен"
-    else
-        echo "ВНИМАНИЕ: Файл fix_imports.py не найден, пропускаем исправление импортов"
-    fi
+    echo "ПРЕДУПРЕЖДЕНИЕ: Файл fix_imports.py не найден, пропускаем исправление путей импорта"
 fi
+
+# Запуск скрипта создания заглушек
+if [ -f "create_placeholders.py" ]; then
+    echo "Запуск create_placeholders.py для создания заглушек..."
+    python create_placeholders.py
+    echo "✓ Скрипт create_placeholders.py выполнен"
+else
+    echo "ПРЕДУПРЕЖДЕНИЕ: Файл create_placeholders.py не найден, пропускаем создание заглушек"
+fi
+
+# Проверка наличия ключевых модулей после создания заглушек
+echo "Проверка ключевых модулей после создания заглушек..."
+for module in "survey_handler.py" "meditation_handler.py" "conversation_handler.py" "reminder_handler.py" "voice_handler.py"; do
+    if [ -f "$module" ]; then
+        echo "✓ Модуль $module найден"
+        wc -l "$module"
+    else
+        echo "ОШИБКА: Модуль $module все еще отсутствует!"
+    fi
+done
 
 # Проверка наличия ключевых переменных окружения
 echo "Проверка переменных окружения..."
@@ -96,4 +153,6 @@ python -c "import sys; print('sys.path =', sys.path); import aiogram; print('aio
 # Запуск бота с перезапуском
 echo "=== ЗАПУСК БОТА С МОНИТОРИНГОМ ПЕРЕЗАПУСКА ==="
 echo "Используется Python: $(python --version)"
+
+# Запуск с отладочным режимом для диагностики
 python restart_bot.py --debug 

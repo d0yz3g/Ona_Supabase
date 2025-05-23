@@ -55,8 +55,14 @@ class RailwayHelper:
             "working_directory": os.getcwd(),
             "sys_path": sys.path,
             "environment_variables": {k: v for k, v in os.environ.items() if not k.startswith('_')},
-            "python_modules": [m for m, _ in pkgutil.iter_modules()]
         }
+        
+        # Безопасное получение списка модулей
+        try:
+            env_info["python_modules"] = [m for m, _ in pkgutil.iter_modules()]
+        except Exception as e:
+            logger.error(f"Ошибка при получении списка модулей: {e}")
+            env_info["python_modules"] = ["Не удалось получить список модулей"]
         
         logger.info(f"Текущая директория: {env_info['working_directory']}")
         logger.info(f"Python версия: {env_info['python_version']}")

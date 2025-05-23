@@ -64,6 +64,16 @@ def parse_log_level(line):
     Returns:
         tuple: (уровень_лога, префикс_вывода)
     """
+    # Уже отформатированные сообщения с префиксами
+    if line.startswith("ИНФО:") or line.startswith("БОТ: ИНФО:"):
+        return "INFO", "ИНФО"
+    elif line.startswith("ПРЕДУПРЕЖДЕНИЕ:") or line.startswith("БОТ: ПРЕДУПРЕЖДЕНИЕ:"):
+        return "WARNING", "ПРЕДУПРЕЖДЕНИЕ"
+    elif line.startswith("ОШИБКА:") or line.startswith("БОТ: ОШИБКА:"):
+        return "ERROR", "ОШИБКА"
+    elif line.startswith("ОТЛАДКА:") or line.startswith("БОТ: ОТЛАДКА:"):
+        return "DEBUG", "ОТЛАДКА"
+    
     # Проверка на INFO
     if " - INFO - " in line:
         return "INFO", "ИНФО"
@@ -98,9 +108,21 @@ def stream_output(stream, default_prefix):
                 # Определяем уровень логирования и соответствующий префикс
                 level, log_prefix = parse_log_level(decoded_line)
                 
-                # Если это stderr, и префикс не определен, используем ОШИБКА
-                if default_prefix == "ОШИБКА" and log_prefix is None:
-                    prefix = "ОШИБКА"
+                # Если сообщение уже имеет префикс (ИНФО:, ОШИБКА: и т.д.), выводим как есть
+                if decoded_line.startswith(("ИНФО:", "ПРЕДУПРЕЖДЕНИЕ:", "ОШИБКА:", "ОТЛАДКА:", "КРИТИЧЕСКАЯ ОШИБКА:")):
+                    print(decoded_line)
+                    sys.stdout.flush()
+                    continue
+                
+                # Если это stderr, и префикс не определен, используем default_prefix
+                # При этом для stderr используем ОШИБКА только для реальных ошибок
+                if stream == sys.stderr and log_prefix is None:
+                    # Проверяем, не является ли это обычным информационным сообщением
+                    if default_prefix == "ОШИБКА" and not any(err_term in decoded_line.lower() 
+                                                            for err_term in ["error", "exception", "ошибка", "исключение"]):
+                        prefix = "БОТ"  # Используем обычный префикс для не-ошибочных сообщений в stderr
+                    else:
+                        prefix = "ОШИБКА"
                 # Если уровень лога определен, используем соответствующий префикс
                 elif log_prefix:
                     prefix = log_prefix

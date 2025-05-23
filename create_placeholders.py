@@ -53,6 +53,18 @@ def get_main_keyboard() -> ReplyKeyboardMarkup:
         resize_keyboard=True
     )
     return keyboard
+
+# Обработчик команды опроса
+@survey_router.message(Command("survey"))
+@survey_router.message(F.text == "📝 Опрос")
+async def cmd_survey(message: Message):
+    """
+    Обработчик команды /survey
+    """
+    await message.answer(
+        "Это заглушка для функции опроса. Реальный модуль не загружен.",
+        reply_markup=get_main_keyboard()
+    )
 """,
 
     "meditation_handler.py": """
@@ -66,6 +78,16 @@ logger = logging.getLogger(__name__)
 
 # Создаем роутер для обработки медитаций
 meditation_router = Router(name="meditation")
+
+@meditation_router.message(Command("meditate"))
+@meditation_router.message(F.text == "🧘 Медитации")
+async def cmd_meditate(message: Message):
+    """
+    Обработчик команды /meditate
+    """
+    await message.answer(
+        "Это заглушка для функции медитации. Реальный модуль не загружен."
+    )
 """,
 
     "conversation_handler.py": """
@@ -79,6 +101,17 @@ logger = logging.getLogger(__name__)
 
 # Создаем роутер для обработки диалогов
 conversation_router = Router(name="conversation")
+
+@conversation_router.message()
+async def handle_message(message: Message):
+    """
+    Обработчик сообщений пользователя
+    """
+    # Заглушка для обработки обычных сообщений
+    if message.text and not message.text.startswith('/') and not message.text.startswith('📝') and not message.text.startswith('👤') and not message.text.startswith('🧘') and not message.text.startswith('⏰') and not message.text.startswith('💡') and not message.text.startswith('💬'):
+        await message.answer(
+            "Это заглушка для функции диалога. Реальный модуль не загружен."
+        )
 """,
 
     "reminder_handler.py": """
@@ -96,6 +129,16 @@ scheduler = AsyncIOScheduler()
 
 # Создаем роутер для обработки напоминаний
 reminder_router = Router(name="reminder")
+
+@reminder_router.message(Command("reminder"))
+@reminder_router.message(F.text == "⏰ Напоминания")
+async def cmd_reminder(message: Message):
+    """
+    Обработчик команды /reminder
+    """
+    await message.answer(
+        "Это заглушка для функции напоминаний. Реальный модуль не загружен."
+    )
 """,
 
     "voice_handler.py": """
@@ -109,6 +152,15 @@ logger = logging.getLogger(__name__)
 
 # Создаем роутер для обработки голосовых сообщений
 voice_router = Router(name="voice")
+
+@voice_router.message(F.voice)
+async def handle_voice(message: Message):
+    """
+    Обработчик голосовых сообщений
+    """
+    await message.answer(
+        "Это заглушка для функции обработки голосовых сообщений. Реальный модуль не загружен."
+    )
 """,
 
     "profile_generator.py": """
@@ -155,16 +207,37 @@ def create_placeholder_files():
             try:
                 logger.info(f"Создание заглушки для {module_file}")
                 
-                with open(module_file, "w") as f:
+                with open(module_file, "w", encoding="utf-8") as f:
                     f.write(f"# Placeholder for {module_file}\n")
                     f.write("# This file was automatically created by create_placeholders.py for Railway deployment\n")
                     f.write(module_content.strip())
                 
                 logger.info(f"Заглушка для {module_file} успешно создана")
+                
+                # Проверка, что файл действительно создан
+                if os.path.exists(module_file):
+                    file_size = os.path.getsize(module_file)
+                    logger.info(f"Заглушка {module_file} создана успешно. Размер файла: {file_size} байт")
+                else:
+                    logger.error(f"Не удалось создать заглушку {module_file} (файл не найден после создания)")
             except Exception as e:
                 logger.error(f"Ошибка при создании заглушки для {module_file}: {e}")
         else:
-            logger.info(f"Файл {module_file} уже существует, создание заглушки не требуется")
+            logger.info(f"Файл {module_file} уже существует, проверка содержимого...")
+            try:
+                # Проверяем размер файла
+                file_size = os.path.getsize(module_file)
+                if file_size == 0:
+                    logger.warning(f"Файл {module_file} существует, но имеет нулевой размер. Создаем заглушку заново.")
+                    with open(module_file, "w", encoding="utf-8") as f:
+                        f.write(f"# Placeholder for {module_file} (re-created due to zero size)\n")
+                        f.write("# This file was automatically created by create_placeholders.py for Railway deployment\n")
+                        f.write(module_content.strip())
+                    logger.info(f"Заглушка для {module_file} повторно создана")
+                else:
+                    logger.info(f"Файл {module_file} уже существует и не пустой (размер: {file_size} байт)")
+            except Exception as e:
+                logger.error(f"Ошибка при проверке существующего файла {module_file}: {e}")
     
     logger.info("Завершено создание заглушек для модулей бота")
 
@@ -175,6 +248,11 @@ if __name__ == "__main__":
     
     logger.info(f"Текущая директория: {os.getcwd()}")
     logger.info(f"Файлы в текущей директории: {[f for f in os.listdir('.') if f.endswith('.py')]}")
+    
+    # Создаем необходимые директории
+    os.makedirs("logs", exist_ok=True)
+    os.makedirs("tmp", exist_ok=True)
+    logger.info("Созданы директории logs и tmp")
     
     create_placeholder_files()
     
