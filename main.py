@@ -249,8 +249,8 @@ async def main():
         # Сообщение о готовности бота
         railway_print("=== ONA BOT ЗАПУЩЕН И ГОТОВ К РАБОТЕ ===", "INFO")
         
-        # Запускаем бота с длинным поллингом
-        await dp.start_polling(bot)
+        # Запускаем бота с длинным поллингом и параметром fast=True для предотвращения конфликтов
+        await dp.start_polling(bot, fast=True)
     except Exception as e:
         logger.error(f"Ошибка запуска бота: {e}")
         railway_print(f"Ошибка запуска: {str(e)}", "ERROR")

@@ -216,6 +216,25 @@ class BotRunner:
             print("КРИТИЧЕСКАЯ ОШИБКА: Невозможно запустить бота из-за проблем с окружением")
             return
         
+        # Проверка на существующие запущенные процессы бота
+        if PSUTIL_AVAILABLE:
+            try:
+                for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+                    if proc.info['name'] and ('python' in proc.info['name'].lower() or 'python3' in proc.info['name'].lower()):
+                        if proc.info['cmdline'] and BOT_SCRIPT in ' '.join(proc.info['cmdline']):
+                            if proc.pid != os.getpid():  # Не учитываем текущий процесс
+                                logger.warning(f"Обнаружен другой запущенный экземпляр бота (PID: {proc.pid}). Попытка остановки...")
+                                print(f"ПРЕДУПРЕЖДЕНИЕ: Найден запущенный процесс бота с PID {proc.pid}, завершаем его...")
+                                try:
+                                    proc.terminate()
+                                    proc.wait(timeout=5)
+                                    print(f"Процесс {proc.pid} успешно завершен")
+                                except (psutil.NoSuchProcess, psutil.TimeoutExpired, psutil.AccessDenied) as e:
+                                    print(f"Ошибка при попытке завершить процесс {proc.pid}: {e}")
+            except Exception as e:
+                logger.error(f"Ошибка при поиске запущенных процессов: {e}")
+                print(f"ОШИБКА: Не удалось проверить запущенные процессы: {e}")
+        
         while True:
             # Проверка лимита перезапусков
             current_date = get_today()
