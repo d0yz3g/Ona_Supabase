@@ -21,6 +21,104 @@ logger = logging.getLogger("placeholders")
 
 # Список модулей, которые должны быть в проекте
 REQUIRED_MODULES = {
+    "button_states.py": """
+from aiogram.fsm.state import State, StatesGroup
+
+class SurveyStates(StatesGroup):
+    \"\"\"
+    Состояния для опроса пользователя.
+    \"\"\"
+    answering_questions = State()  # Пользователь отвечает на вопросы опроса
+
+class ProfileStates(StatesGroup):
+    \"\"\"
+    Состояния для работы с профилем пользователя.
+    \"\"\"
+    viewing = State()  # Пользователь просматривает свой профиль
+    editing = State()  # Пользователь редактирует свой профиль
+
+class MeditationStates(StatesGroup):
+    \"\"\"
+    Состояния для работы с медитациями.
+    \"\"\"
+    selecting_type = State()  # Пользователь выбирает тип медитации
+    waiting_for_generation = State()  # Ожидание генерации аудио-медитации
+
+class ReminderStates(StatesGroup):
+    \"\"\"
+    Состояния для работы с напоминаниями.
+    \"\"\"
+    main_menu = State()      # Главное меню напоминаний
+    selecting_days = State()  # Пользователь выбирает дни для напоминаний
+    selecting_time = State()  # Пользователь выбирает время для напоминаний
+    confirming = State()  # Пользователь подтверждает настройки напоминаний
+""",
+
+    "services/__init__.py": """
+# Инициализация пакета services
+""",
+
+    "services/tts.py": """
+import logging
+import os
+import uuid
+from typing import Optional
+
+logger = logging.getLogger(__name__)
+
+async def generate_voice(text: str, user_id: int, voice_id: str = "default") -> Optional[str]:
+    \"\"\"
+    Генерирует аудиофайл из текста.
+    
+    Args:
+        text: Текст для озвучивания
+        user_id: ID пользователя
+        voice_id: ID голоса в ElevenLabs
+        
+    Returns:
+        Optional[str]: Путь к созданному файлу или None в случае ошибки
+    \"\"\"
+    logger.info(f"Генерация голоса для пользователя {user_id} (заглушка)")
+    
+    try:
+        # Создаем имя файла
+        file_id = str(uuid.uuid4())
+        file_path = f"tmp/{user_id}_{file_id}.mp3"
+        
+        # В заглушке просто создаем пустой файл
+        os.makedirs("tmp", exist_ok=True)
+        with open(file_path, "w") as f:
+            f.write("# Placeholder audio file")
+            
+        logger.info(f"Создан заглушка аудиофайла: {file_path}")
+        return file_path
+    except Exception as e:
+        logger.error(f"Ошибка при создании заглушки аудиофайла: {e}")
+        return None
+""",
+
+    "communication_handler.py": """
+import logging
+from aiogram import Router, F
+from aiogram.types import Message, CallbackQuery
+from aiogram.filters import Command
+
+# Настройка логирования
+logger = logging.getLogger(__name__)
+
+# Создаем роутер для обработки коммуникаций
+communication_handler_router = Router(name="communication_handler")
+
+@communication_handler_router.message(Command("communicate"))
+async def handle_communicate(message: Message):
+    \"\"\"
+    Обработчик команды /communicate
+    \"\"\"
+    await message.answer(
+        "Это заглушка для функции коммуникации. Реальный модуль не загружен."
+    )
+""",
+
     "survey_handler.py": """
 import logging
 from typing import Dict, Any, Optional, List, Tuple
@@ -29,6 +127,8 @@ from aiogram.types import Message, CallbackQuery, ReplyKeyboardMarkup, KeyboardB
 from aiogram.filters import Command
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
+
+from button_states import SurveyStates, ProfileStates
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
@@ -57,7 +157,7 @@ def get_main_keyboard() -> ReplyKeyboardMarkup:
 # Обработчик команды опроса
 @survey_router.message(Command("survey"))
 @survey_router.message(F.text == "📝 Опрос")
-async def cmd_survey(message: Message):
+async def cmd_survey(message: Message, state: FSMContext):
     """
     Обработчик команды /survey
     """
@@ -65,6 +165,19 @@ async def cmd_survey(message: Message):
         "Это заглушка для функции опроса. Реальный модуль не загружен.",
         reply_markup=get_main_keyboard()
     )
+    await state.set_state(SurveyStates.answering_questions)
+
+@survey_router.message(Command("profile"))
+@survey_router.message(F.text == "👤 Профиль")
+async def cmd_profile(message: Message, state: FSMContext):
+    """
+    Обработчик команды /profile
+    """
+    await message.answer(
+        "Это заглушка для функции профиля. Реальный модуль не загружен.",
+        reply_markup=get_main_keyboard()
+    )
+    await state.set_state(ProfileStates.viewing)
 """,
 
     "meditation_handler.py": """
@@ -72,6 +185,17 @@ import logging
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
+from button_states import MeditationStates
+
+# Импорт сервиса TTS
+try:
+    from services.tts import generate_voice
+except ImportError:
+    # Если не удалось импортировать, создаем заглушку
+    async def generate_voice(text, user_id, voice_id="default"):
+        logging.warning("Используется заглушка для generate_voice")
+        return None
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
@@ -81,13 +205,14 @@ meditation_router = Router(name="meditation")
 
 @meditation_router.message(Command("meditate"))
 @meditation_router.message(F.text == "🧘 Медитации")
-async def cmd_meditate(message: Message):
+async def cmd_meditate(message: Message, state: FSMContext):
     """
     Обработчик команды /meditate
     """
     await message.answer(
         "Это заглушка для функции медитации. Реальный модуль не загружен."
     )
+    await state.set_state(MeditationStates.selecting_type)
 """,
 
     "conversation_handler.py": """
@@ -95,6 +220,15 @@ import logging
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command
+
+# Пытаемся импортировать модуль communication_handler
+try:
+    from communication_handler import communication_handler_router
+except ImportError:
+    # Если не удалось импортировать, создаем заглушку
+    logging.warning("Не удалось импортировать communication_handler_router, используется заглушка")
+    from aiogram import Router
+    communication_handler_router = Router(name="communication_handler")
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
@@ -119,6 +253,8 @@ import logging
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
+from button_states import ReminderStates
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 # Настройка логирования
@@ -132,13 +268,14 @@ reminder_router = Router(name="reminder")
 
 @reminder_router.message(Command("reminder"))
 @reminder_router.message(F.text == "⏰ Напоминания")
-async def cmd_reminder(message: Message):
+async def cmd_reminder(message: Message, state: FSMContext):
     """
     Обработчик команды /reminder
     """
     await message.answer(
         "Это заглушка для функции напоминаний. Реальный модуль не загружен."
     )
+    await state.set_state(ReminderStates.main_menu)
 """,
 
     "voice_handler.py": """
@@ -207,6 +344,9 @@ def create_placeholder_files():
             try:
                 logger.info(f"Создание заглушки для {module_file}")
                 
+                # Убедимся, что директория существует
+                os.makedirs(os.path.dirname(module_file) if os.path.dirname(module_file) else '.', exist_ok=True)
+                
                 with open(module_file, "w", encoding="utf-8") as f:
                     f.write(f"# Placeholder for {module_file}\n")
                     f.write("# This file was automatically created by create_placeholders.py for Railway deployment\n")
@@ -234,6 +374,17 @@ def create_placeholder_files():
                         f.write("# This file was automatically created by create_placeholders.py for Railway deployment\n")
                         f.write(module_content.strip())
                     logger.info(f"Заглушка для {module_file} повторно создана")
+                elif 'button_states.py' in module_file:
+                    # Для button_states.py проверяем наличие ProfileStates
+                    with open(module_file, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    if 'class ProfileStates' not in content:
+                        logger.warning(f"Файл {module_file} существует, но не содержит класс ProfileStates. Создаем заглушку заново.")
+                        with open(module_file, "w", encoding="utf-8") as f:
+                            f.write(f"# Placeholder for {module_file} (re-created due to missing ProfileStates)\n")
+                            f.write("# This file was automatically created by create_placeholders.py for Railway deployment\n")
+                            f.write(module_content.strip())
+                        logger.info(f"Заглушка для {module_file} повторно создана")
                 else:
                     logger.info(f"Файл {module_file} уже существует и не пустой (размер: {file_size} байт)")
             except Exception as e:
@@ -252,7 +403,8 @@ if __name__ == "__main__":
     # Создаем необходимые директории
     os.makedirs("logs", exist_ok=True)
     os.makedirs("tmp", exist_ok=True)
-    logger.info("Созданы директории logs и tmp")
+    os.makedirs("services", exist_ok=True)
+    logger.info("Созданы директории logs, tmp и services")
     
     create_placeholder_files()
     
