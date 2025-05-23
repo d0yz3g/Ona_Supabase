@@ -176,11 +176,12 @@ async def process_survey_answer(message: Message, state: FSMContext):
     is_demo_questions = data.get("is_demo_questions", True)
     
     # Импортируем функции для получения вопросов
-    from questions import get_demo_questions, get_all_vasini_questions
+    from questions import get_demo_questions, VASINI_QUESTIONS, VASINI_QUESTIONS_2, get_vasini_questions_3, get_vasini_questions_4, get_vasini_questions_5
     
     # Получаем списки вопросов
     demo_questions = get_demo_questions()
-    vasini_questions = get_all_vasini_questions()
+    # Вместо get_all_vasini_questions соединяем вопросы напрямую
+    vasini_questions = VASINI_QUESTIONS + VASINI_QUESTIONS_2 + get_vasini_questions_3() + get_vasini_questions_4() + get_vasini_questions_5()
     
     # Определяем текущий вопрос
     if is_demo_questions:
