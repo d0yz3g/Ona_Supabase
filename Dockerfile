@@ -65,7 +65,7 @@ RUN python fix_imports.py || echo "ПРЕДУПРЕЖДЕНИЕ: Не удало
 
 # Проверка наличия обязательных файлов после создания заглушек
 RUN echo "Проверка обязательных файлов проекта после создания заглушек..." && \
-    for file in main.py survey_handler.py meditation_handler.py conversation_handler.py reminder_handler.py voice_handler.py railway_logging.py; do \
+    for file in main.py survey_handler.py meditation_handler.py conversation_handler.py reminder_handler.py voice_handler.py railway_logging.py communication_handler.py; do \
         if [ -f "$file" ]; then \
             echo "✓ Файл $file найден"; \
             wc -l "$file"; \
@@ -74,6 +74,24 @@ RUN echo "Проверка обязательных файлов проекта 
             ls -la; \
         fi; \
     done
+
+# Создаем директорию services и базовые файлы если их нет
+RUN mkdir -p services
+RUN if [ ! -f "services/__init__.py" ]; then \
+        echo "# Инициализация пакета services" > services/__init__.py; \
+        echo "from services.recs import generate_response" >> services/__init__.py; \
+        echo "from services.stt import process_voice_message" >> services/__init__.py; \
+        echo "try:" >> services/__init__.py; \
+        echo "    from services.tts import generate_audio" >> services/__init__.py; \
+        echo "except ImportError:" >> services/__init__.py; \
+        echo "    # Заглушка для generate_audio" >> services/__init__.py; \
+        echo "    async def generate_audio(*args, **kwargs):" >> services/__init__.py; \
+        echo "        print(\"ПРЕДУПРЕЖДЕНИЕ: Используется заглушка для generate_audio\")" >> services/__init__.py; \
+        echo "        return None, \"Функция недоступна\"" >> services/__init__.py; \
+        echo "✓ Файл services/__init__.py создан"; \
+    else \
+        echo "✓ Файл services/__init__.py существует"; \
+    fi
 
 # Дополнительная информация для логов
 RUN echo "Ona2.0 Telegram Bot - Railway Deployment" > /app/railway_info.txt

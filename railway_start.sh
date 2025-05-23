@@ -27,8 +27,8 @@ ls -la
 
 # Создание необходимых директорий
 echo "Создание необходимых директорий..."
-mkdir -p logs tmp
-echo "✓ Директории logs и tmp созданы"
+mkdir -p logs tmp services
+echo "✓ Директории logs, tmp и services созданы"
 
 # Проверка наличия файлов бота
 echo "Проверка наличия ключевых файлов бота..."
@@ -98,6 +98,26 @@ for module in modules:
         with open(module, "w") as f:
             f.write(f"# Placeholder for {module}\\nfrom aiogram import Router\\n{module.replace(\".py\", \"_router\")} = Router(name=\"{module.replace(\".py\", \"\")}\")")
         print(f"ИНФО: Создана заглушка для {module}")'
+
+# Создаем services директорию и __init__.py если не существует
+echo "Проверка директории services..."
+mkdir -p services
+if [ ! -f "services/__init__.py" ]; then
+    echo "Создание services/__init__.py..."
+    echo "# Инициализация пакета services
+from services.recs import generate_response
+from services.stt import process_voice_message
+try:
+    from services.tts import generate_audio
+except ImportError:
+    # Заглушка для generate_audio
+    async def generate_audio(*args, **kwargs):
+        print(\"ПРЕДУПРЕЖДЕНИЕ: Используется заглушка для generate_audio\")
+        return None, \"Функция недоступна\"" > services/__init__.py
+    echo "✓ Файл services/__init__.py создан"
+else
+    echo "✓ Файл services/__init__.py существует"
+fi
 
 # Запуск скриптов инициализации
 echo "Запуск скриптов инициализации..."

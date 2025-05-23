@@ -228,6 +228,10 @@ scheduler = None
         Args:
             modules: Список необходимых модулей
         """
+        # Добавляем communication_handler в список модулей если его там нет
+        if "communication_handler" not in modules:
+            modules.append("communication_handler")
+        
         for module_name in modules:
             try:
                 # Пытаемся импортировать модуль

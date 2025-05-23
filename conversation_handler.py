@@ -6,14 +6,22 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from communication_handler import generate_personalized_response, get_personality_type_from_profile
+# Пытаемся импортировать модуль communication_handler
+try:
+    from communication_handler import generate_personalized_response, get_personality_type_from_profile, communication_handler_router
+except ImportError:
+    # Если не удалось импортировать, создаем заглушку
+    logging.warning("Не удалось импортировать communication_handler_router, используется заглушка")
+    from aiogram import Router
+    communication_handler_router = Router(name="communication_handler")
+
 from services.profile_analysis import analyze_profile
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
 
 # Создаем роутер для обработки обычных текстовых сообщений
-conversation_router = Router()
+conversation_router = Router(name="conversation")
 
 # Ключевые фразы для распознавания запросов о профиле
 PROFILE_QUERY_KEYWORDS = [
@@ -179,4 +187,15 @@ async def show_profile(message: Message, state: FSMContext):
                     [{"text": "❌ Нет, позже", "callback_data": "cancel_survey"}]
                 ]
             }
+        )
+
+@conversation_router.message()
+async def handle_message(message: Message):
+    """
+    Обработчик сообщений пользователя
+    """
+    # Заглушка для обработки обычных сообщений
+    if message.text and not message.text.startswith('/') and not message.text.startswith('📝') and not message.text.startswith('👤') and not message.text.startswith('🧘') and not message.text.startswith('⏰') and not message.text.startswith('💡') and not message.text.startswith('💬'):
+        await message.answer(
+            "Это заглушка для функции диалога. Реальный модуль не загружен."
         ) 

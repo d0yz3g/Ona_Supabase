@@ -22,7 +22,8 @@ try:
         "conversation_handler",
         "reminder_handler",
         "voice_handler",
-        "railway_logging"
+        "railway_logging",
+        "communication_handler"
     ])
 except ImportError:
     print("БОТ: Railway Helper не найден, продолжаем без дополнительных проверок")

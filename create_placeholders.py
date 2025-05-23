@@ -56,6 +56,9 @@ class ReminderStates(StatesGroup):
 
     "services/__init__.py": """
 # Инициализация пакета services
+from services.recs import generate_response
+from services.stt import process_voice_message
+from services.tts import generate_audio
 """,
 
     "services/tts.py": """
@@ -117,6 +120,18 @@ async def handle_communicate(message: Message):
     await message.answer(
         "Это заглушка для функции коммуникации. Реальный модуль не загружен."
     )
+
+async def generate_personalized_response(message_text, user_profile, conversation_history=None):
+    \"\"\"
+    Заглушка для генерации персонализированного ответа.
+    \"\"\"
+    return "Это заглушка для персонализированного ответа. Реальный модуль не загружен."
+
+async def get_personality_type_from_profile(profile_text):
+    \"\"\"
+    Заглушка для определения типа личности из профиля.
+    \"\"\"
+    return "Интеллектуальный"
 """,
 
     "survey_handler.py": """

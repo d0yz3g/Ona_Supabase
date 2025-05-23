@@ -117,29 +117,32 @@ def stream_output(stream, default_prefix):
                 # Для сообщений из Railway, которые имеют формат с часами на первом месте
                 if decoded_line.startswith("20") and ":" in decoded_line[:5]:
                     # Пытаемся определить уровень лога по содержимому
-                    if level is None:
-                        if any(term in decoded_line.lower() for term in ["error", "exception", "ошибка", "исключение", "fail", "failed"]):
-                            prefix = "ОШИБКА"
-                        elif any(term in decoded_line.lower() for term in ["warn", "warning", "предупреждение"]):
-                            prefix = "ПРЕДУПРЕЖДЕНИЕ"
-                        else:
-                            prefix = "ИНФО"
-                    else:
+                    if level:
                         prefix = log_prefix
+                    elif any(term in decoded_line.lower() for term in ["error", "exception", "ошибка", "исключение", "fail", "failed"]):
+                        prefix = "ОШИБКА"
+                    elif any(term in decoded_line.lower() for term in ["warn", "warning", "предупреждение"]):
+                        prefix = "ПРЕДУПРЕЖДЕНИЕ"
+                    else:
+                        prefix = "ИНФО"
                     
                     print(f"{prefix}: {decoded_line}")
                     sys.stdout.flush()
                     continue
                     
-                # Если это stderr, и префикс не определен, определяем по содержимому
-                if stream == sys.stderr and log_prefix is None:
+                # Если это stderr, но не обязательно ошибка, определяем по содержимому
+                if stream == sys.stderr:
+                    if level:
+                        # Если уровень лога определен из содержимого, используем его
+                        prefix = log_prefix
                     # Проверяем, не является ли это обычным информационным сообщением
-                    if any(err_term in decoded_line.lower() for err_term in ["error", "exception", "ошибка", "исключение", "fail", "failed"]):
+                    elif any(err_term in decoded_line.lower() for err_term in ["error", "exception", "ошибка", "исключение", "fail", "failed"]):
                         prefix = "ОШИБКА"
                     elif any(warn_term in decoded_line.lower() for warn_term in ["warn", "warning", "предупреждение"]):
                         prefix = "ПРЕДУПРЕЖДЕНИЕ"
                     else:
-                        prefix = "ИНФО"  # Используем информационный префикс для не-ошибочных сообщений
+                        # Отмечаем как предупреждение, а не ошибку, поскольку это stderr, но не явная ошибка
+                        prefix = "ПРЕДУПРЕЖДЕНИЕ" 
                 # Если уровень лога определен, используем соответствующий префикс
                 elif log_prefix:
                     prefix = log_prefix

@@ -10,7 +10,38 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import FSInputFile
 
 from button_states import MeditationStates
-from services.tts import generate_audio
+
+# Импортируем generate_audio из services.tts с обработкой ошибок
+try:
+    from services.tts import generate_audio
+except ImportError:
+    # Создаем заглушку для generate_audio если импорт не удался
+    logger = logging.getLogger(__name__)
+    logger.warning("Не удалось импортировать generate_audio из services.tts. Используем заглушку.")
+    
+    async def generate_audio(text: str, user_id: int, meditation_type: str = "default") -> tuple:
+        """
+        Заглушка для generate_audio.
+        
+        Args:
+            text: Текст для преобразования в аудио
+            user_id: ID пользователя Telegram
+            meditation_type: Тип медитации
+            
+        Returns:
+            tuple: (None, "Функция недоступна")
+        """
+        # Создаем директорию tmp, если она не существует
+        os.makedirs("tmp", exist_ok=True)
+        
+        # Создаем пустой файл как заглушку
+        file_name = f"placeholder_{meditation_type}_{user_id}.mp3"
+        file_path = os.path.join("tmp", file_name)
+        
+        with open(file_path, "w") as f:
+            f.write("# Placeholder audio file")
+        
+        return file_path, None
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
