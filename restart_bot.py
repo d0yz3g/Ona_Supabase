@@ -54,12 +54,60 @@ def get_today():
     """Получить текущую дату в формате строки."""
     return datetime.datetime.now().strftime("%Y-%m-%d")
 
-def stream_output(stream, prefix):
-    """Функция для чтения и вывода потока в реальном времени."""
+def parse_log_level(line):
+    """
+    Определяет уровень логирования из строки сообщения.
+    
+    Args:
+        line: Строка сообщения лога
+        
+    Returns:
+        tuple: (уровень_лога, префикс_вывода)
+    """
+    # Проверка на INFO
+    if " - INFO - " in line:
+        return "INFO", "ИНФО"
+    # Проверка на WARNING
+    elif " - WARNING - " in line or " - WARN - " in line:
+        return "WARNING", "ПРЕДУПРЕЖДЕНИЕ"
+    # Проверка на ERROR
+    elif " - ERROR - " in line:
+        return "ERROR", "ОШИБКА"
+    # Проверка на DEBUG
+    elif " - DEBUG - " in line:
+        return "DEBUG", "ОТЛАДКА"
+    # Проверка на CRITICAL
+    elif " - CRITICAL - " in line:
+        return "CRITICAL", "КРИТИЧЕСКАЯ ОШИБКА"
+    # По умолчанию
+    else:
+        return None, None
+
+def stream_output(stream, default_prefix):
+    """
+    Функция для чтения и вывода потока в реальном времени с определением уровня логирования.
+    
+    Args:
+        stream: Поток для чтения (stdout или stderr)
+        default_prefix: Префикс по умолчанию (БОТ или ОШИБКА)
+    """
     for line in iter(stream.readline, b''):
         if line:
             decoded_line = line.decode('utf-8', errors='replace').strip()
             if decoded_line:  # Проверка на пустую строку
+                # Определяем уровень логирования и соответствующий префикс
+                level, log_prefix = parse_log_level(decoded_line)
+                
+                # Если это stderr, и префикс не определен, используем ОШИБКА
+                if default_prefix == "ОШИБКА" and log_prefix is None:
+                    prefix = "ОШИБКА"
+                # Если уровень лога определен, используем соответствующий префикс
+                elif log_prefix:
+                    prefix = log_prefix
+                # В остальных случаях используем префикс по умолчанию
+                else:
+                    prefix = default_prefix
+                
                 print(f"{prefix}: {decoded_line}")
                 sys.stdout.flush()  # Принудительный сброс буфера для Railway
 

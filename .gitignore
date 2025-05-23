@@ -1,30 +1,53 @@
-# Byte-compiled / optimized / DLL files
+# Виртуальные окружения
+venv/
+.venv/
+env/
+ENV/
+
+# Кэш и компилированные файлы Python
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
 
-# Environments
+# Файлы окружения и секреты
 .env
-venv/
-env/
-ENV/
-.venv/
+env.bak/
+*.env
 
-# Logs
+# Файлы логов
 *.log
+restart.log
 bot.log
+logs/
 
-# Database
+# Временные файлы
+tmp/
+*.mp3
+*.wav
+*.ogg
+*.json
+
+# База данных
 *.db
+*.sqlite
 *.sqlite3
 
-# IDE
+# Файлы IDE
 .idea/
 .vscode/
 *.swp
 *.swo
-
-# Other
 .DS_Store
-tmp/
-.pytest_cache/ 
+
+# Файлы Docker
+.dockerignore
+
+# Локальные файлы конфигурации
+local_settings.py
+
+# Другие временные файлы
+*.bak
+*.tmp
+*.temp 

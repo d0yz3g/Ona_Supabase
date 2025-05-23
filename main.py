@@ -1,227 +1,206 @@
 import asyncio
 import logging
 import os
-import signal
 import sys
-import time
-import socket
+from aiogram import Bot, Dispatcher, F
+from aiogram.types import Message
+from aiogram.filters import Command
+from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 
-from aiogram import Bot, Dispatcher
-from aiogram.fsm.storage.memory import MemoryStorage
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+# Загружаем переменные окружения из .env
+load_dotenv()
 
-# Проверка доступности psutil
+# Импортируем настройку логирования для Railway
+try:
+    from railway_logging import setup_railway_logging, railway_print
+    # Настраиваем логирование для Railway
+    logger = setup_railway_logging("ona_bot", logging.INFO)
+    railway_print("Логирование для Railway настроено успешно", "INFO")
+except ImportError:
+    # Стандартная настройка логирования, если модуль railway_logging не найден
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.StreamHandler(sys.stdout),
+            logging.FileHandler("bot.log")
+        ]
+    )
+    logger = logging.getLogger(__name__)
+    print("БОТ: Используется стандартное логирование (railway_logging не найден)")
+
+# Информация о запуске
+railway_print("=== ONA TELEGRAM BOT STARTING ===", "INFO")
+railway_print(f"Python version: {sys.version}", "INFO")
+railway_print(f"Current working directory: {os.getcwd()}", "INFO")
+
+# Загружаем API токен из .env файла
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+if not BOT_TOKEN:
+    logger.error("BOT_TOKEN не найден в .env файле")
+    railway_print("BOT_TOKEN не найден в .env файле", "ERROR")
+    sys.exit(1)
+else:
+    railway_print("BOT_TOKEN найден успешно", "INFO")
+
+# Проверка наличия psutil
 try:
     import psutil
     PSUTIL_AVAILABLE = True
-    print("Библиотека psutil успешно импортирована")
+    logger.info("Библиотека psutil успешно импортирована")
 except ImportError:
     PSUTIL_AVAILABLE = False
-    print("ВНИМАНИЕ: Библиотека psutil не установлена, некоторые функции будут недоступны")
+    logger.warning("Библиотека psutil не установлена, некоторые функции будут недоступны")
 
-# Импорт основного модуля бота (все обработчики и логика перенесены в button_bot.py)
-from button_bot import (
-    main_router, 
-    profile_router, 
-    reflect_router, 
-    meditate_router, 
-    reminder_router, 
-    survey_router,
-    scheduler,
-    reminder_users,
-    send_reminder
-)
+# Импортируем роутеры
+from survey_handler import survey_router, get_main_keyboard
+from voice_handler import voice_router
+from conversation_handler import conversation_router
+from meditation_handler import meditation_router
+from reminder_handler import reminder_router, scheduler
 
-# Настройка логирования с приоритетом на вывод в консоль для Railway
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - [%(levelname)s] - %(name)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout),  # Вывод в stdout для Railway
-        logging.FileHandler("bot.log")      # Файл для локальной отладки
-    ]
-)
-logger = logging.getLogger("ona_bot")
+# Создаем экземпляр бота и диспетчер
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher(storage=MemoryStorage())
 
-# Явный вывод информации для Railway
-print("=== ONA TELEGRAM BOT STARTING ===")
-print(f"Python version: {sys.version}")
-print(f"Current working directory: {os.getcwd()}")
+# Регистрируем роутеры
+dp.include_router(survey_router)
+dp.include_router(voice_router)
+dp.include_router(meditation_router)
+dp.include_router(reminder_router)
+dp.include_router(conversation_router)
 
-# Загрузка переменных окружения
-load_dotenv()
-
-# Получение токена бота
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-if not BOT_TOKEN:
-    logger.error("BOT_TOKEN не найден в переменных окружения!")
-    print("КРИТИЧЕСКАЯ ОШИБКА: BOT_TOKEN не найден")
-    exit(1)
-else:
-    print("BOT_TOKEN найден успешно")
-
-# Файл блокировки для предотвращения запуска нескольких экземпляров
-LOCK_PORT = 44223  # Уникальный порт для блокировки
-
-def is_bot_already_running():
+# Обработчик команды /start
+@dp.message(Command("start"))
+async def cmd_start(message: Message):
     """
-    Проверяет, запущен ли уже экземпляр бота, используя TCP сокет.
-    Возвращает True, если бот уже запущен, иначе False.
+    Обработчик команды /start
     """
-    try:
-        # Пытаемся создать серверный сокет на указанном порту
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind(('127.0.0.1', LOCK_PORT))
-        sock.listen(1)
-        # Если успешно - значит бот не запущен
-        return False
-    except socket.error:
-        # Если ошибка - порт занят, значит бот уже запущен
-        logger.warning(f"Порт {LOCK_PORT} уже занят, возможно бот уже запущен")
-        print(f"ПРЕДУПРЕЖДЕНИЕ: Возможно, бот уже запущен (порт {LOCK_PORT} занят)")
-        return True
-
-def kill_other_bot_instances():
-    """
-    Попытка завершить другие экземпляры бота
-    """
-    if not PSUTIL_AVAILABLE:
-        logger.warning("Библиотека psutil не доступна, невозможно завершить другие экземпляры бота")
-        print("ПРЕДУПРЕЖДЕНИЕ: Невозможно завершить другие экземпляры бота (psutil не установлен)")
-        return
-
-    current_pid = os.getpid()
-    logger.info(f"Текущий PID: {current_pid}")
-    print(f"Текущий PID процесса: {current_pid}")
+    # Приветственное сообщение
+    greeting_text = (
+        f"👋 Привет, {message.from_user.first_name}!\n\n"
+        "Я <b>ОНА</b> - твой Осознанный Наставник и Аналитик.\n\n"
+        "Я помогу тебе:\n"
+        "• 🧠 Определить твои сильные стороны и таланты\n"
+        "• 💡 Дать персонализированные советы\n"
+        "• 🌱 Поддержать в развитии и росте\n\n"
+        "Чтобы создать твой <b>психологический профиль</b>, нужно пройти опрос из 34 вопросов. "
+        "Это займет около 10-15 минут.\n\n"
+        "Готов начать?"
+    )
     
-    # Ищем другие Python процессы, запущенные с main.py
-    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
-        try:
-            # Проверяем, что это Python процесс, запускающий main.py, но не текущий процесс
-            if proc.info['pid'] != current_pid and proc.info['name'] == 'python':
-                cmdline = proc.info['cmdline']
-                if cmdline and any('main.py' in cmd for cmd in cmdline):
-                    logger.warning(f"Найден другой экземпляр бота: PID {proc.info['pid']}")
-                    print(f"ВНИМАНИЕ: Найден другой экземпляр бота с PID {proc.info['pid']}")
-                    
-                    # Завершаем процесс
-                    try:
-                        proc.terminate()
-                        logger.info(f"Процесс с PID {proc.info['pid']} успешно завершен")
-                        print(f"Процесс с PID {proc.info['pid']} завершен")
-                    except Exception as e:
-                        logger.error(f"Не удалось завершить процесс: {e}")
-                        print(f"Ошибка при завершении процесса: {e}")
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-            pass
+    # Используем единую клавиатуру из survey_handler
+    keyboard = get_main_keyboard()
+    
+    # Отправляем приветственное сообщение
+    await message.answer(
+        greeting_text,
+        parse_mode="HTML",
+        reply_markup=keyboard
+    )
+
+# Обработчик команды /help
+@dp.message(Command("help"))
+@dp.message(F.text == "💬 Помощь")
+async def cmd_help(message: Message):
+    """
+    Обработчик команды /help
+    """
+    help_text = (
+        "🔍 <b>Основные команды и возможности:</b>\n\n"
+        "• /start - Начать работу с ботом\n"
+        "• /survey или 📝 Опрос - Пройти опрос для создания профиля\n"
+        "• /profile или 👤 Профиль - Посмотреть свой психологический профиль\n"
+        "• /meditate или 🧘 Медитации - Получить аудио-медитацию\n"
+        "• /reminders или ⏰ Напоминания - Настроить напоминания о практиках\n"
+        "• /advice или 💡 Советы - Получить персонализированный совет на основе типа личности\n"
+        "• /restart или 🔄 Рестарт - Перезапустить бота\n"
+        "• /cancel или ❌ Отменить - Отменить текущее действие\n\n"
+        "🗣 <b>Как пользоваться ботом:</b>\n\n"
+        "1. Пройдите опрос из 34 вопросов\n"
+        "2. Получите свой психологический профиль\n"
+        "3. Узнайте ваш тип личности (Интеллектуальный, Эмоциональный, Практический или Творческий)\n"
+        "4. Получайте персонализированные советы, соответствующие вашему типу личности\n"
+        "5. Общайтесь со мной текстом или голосовыми сообщениями\n"
+        "6. Я буду отвечать с учетом ваших психологических особенностей\n\n"
+        "💡 <b>Если возникнут вопросы или проблемы:</b>\n"
+        "• Напишите \"Помощь\" или используйте команду /help\n"
+    )
+    
+    await message.answer(
+        help_text,
+        parse_mode="HTML",
+        reply_markup=get_main_keyboard()
+    )
+
+# Обработчик команды /restart
+@dp.message(Command("restart"))
+@dp.message(F.text == "🔄 Рестарт")
+async def cmd_restart(message: Message):
+    """
+    Обработчик команды /restart
+    """
+    # Отправляем сообщение о перезапуске
+    await message.answer(
+        "🔄 <b>Бот перезапущен!</b>\n\n"
+        "Начинаем заново. Если вы хотите сбросить свой профиль, "
+        "воспользуйтесь кнопкой 📝 Опрос и подтвердите перезапуск.",
+        parse_mode="HTML",
+        reply_markup=get_main_keyboard()
+    )
+
+# Функция для инициализации планировщика
+async def start_scheduler():
+    if not scheduler.running:
+        scheduler.start()
+        logger.info("Планировщик заданий запущен")
 
 async def main():
+    """
+    Главная функция запуска бота
+    """
+    # Инициализируем бот
+    logger.info("Бот ОНА запускается...")
+    railway_print("Запуск основного цикла бота...", "INFO")
+    
     try:
-        # Проверяем, запущен ли уже бот
-        if is_bot_already_running():
-            # Пытаемся завершить другие экземпляры, если доступен psutil
-            if PSUTIL_AVAILABLE:
-                kill_other_bot_instances()
-                logger.warning("Возможен конфликт с другим экземпляром бота. Проверьте процессы.")
-                print("ПРЕДУПРЕЖДЕНИЕ: Возможен конфликт с другим запущенным ботом.")
-                # Делаем паузу, чтобы другие процессы успели завершиться
-                await asyncio.sleep(5)
-            else:
-                logger.warning("Обнаружен конфликт с другим экземпляром бота, но psutil не доступен для его завершения")
-                print("ПРЕДУПРЕЖДЕНИЕ: Конфликт с другим ботом, но нет возможности его завершить")
-        
-        # Инициализация хранилища и бота
-        storage = MemoryStorage()
-        bot = Bot(token=BOT_TOKEN)
-        dp = Dispatcher(storage=storage)
-        
-        # Регистрация роутеров
-        dp.include_router(main_router)
-        dp.include_router(profile_router)
-        dp.include_router(reflect_router)
-        dp.include_router(meditate_router)
-        dp.include_router(reminder_router)
-        dp.include_router(survey_router)
-        
-        # Запуск планировщика заданий, если есть активные напоминания
-        if not scheduler.running and reminder_users:
-            scheduler.start()
-            print("Планировщик напоминаний запущен")
-        
-        # Запуск бота
-        logger.info("Бот запущен, ожидание сообщений...")
-        print("=== ONA BOT ЗАПУЩЕН И ГОТОВ К РАБОТЕ ===")
-        
-        # Устанавливаем allowed_updates для оптимизации работы
-        allowed_updates = ["message", "callback_query"]
-        
-        # Сначала сбрасываем webhook и удаляем старые обновления
+        # Удаляем все обновления, которые были пропущены (если бот был отключен)
         await bot.delete_webhook(drop_pending_updates=True)
-        logger.info("Webhook удален, старые обновления очищены")
-        print("Старые обновления удалены")
+        railway_print("Старые обновления удалены", "INFO")
+        
+        # Удаляем webhook (если он был установлен)
+        webhook_info = await bot.get_webhook_info()
+        if webhook_info.url:
+            await bot.delete_webhook()
+            logger.info("Webhook удален, старые обновления очищены")
         
         # Проверяем соединение с Telegram API
-        try:
-            bot_info = await bot.get_me()
-            logger.info(f"Соединение с Telegram API установлено успешно. Имя бота: @{bot_info.username}")
-            print(f"Бот @{bot_info.username} успешно подключен к Telegram API")
-        except Exception as e:
-            logger.error(f"Ошибка при подключении к Telegram API: {e}")
-            print(f"ОШИБКА ПОДКЛЮЧЕНИЯ: {e}")
-            # Пробуем еще раз через 5 секунд
-            await asyncio.sleep(5)
-            bot_info = await bot.get_me()
-            logger.info(f"Соединение с Telegram API установлено со второй попытки. Имя бота: @{bot_info.username}")
-            print(f"Повторное подключение успешно: @{bot_info.username}")
+        bot_info = await bot.get_me()
+        logger.info(f"Соединение с Telegram API установлено успешно. Имя бота: @{bot_info.username}")
+        railway_print(f"Бот @{bot_info.username} успешно подключен к Telegram API", "INFO")
         
-        # Обработка сигналов
-        # Игнорируем SIGTERM чтобы бот продолжал работать при мягкой остановке контейнера
-        def signal_handler(sig, frame):
-            if sig == signal.SIGINT:
-                logger.info("Получен сигнал SIGINT (Ctrl+C), останавливаем бота...")
-                print("Получен сигнал остановки SIGINT, завершение работы...")
-                asyncio.create_task(bot.session.close())
-                asyncio.create_task(dp.stop_polling())
-            elif sig == signal.SIGTERM:
-                logger.info("Получен сигнал SIGTERM, игнорируем для предотвращения остановки")
-                print("Получен сигнал SIGTERM, продолжаем работу...")
+        # Запускаем планировщик заданий
+        await start_scheduler()
         
-        # Регистрируем обработчики сигналов
-        signal.signal(signal.SIGINT, signal_handler)
-        signal.signal(signal.SIGTERM, signal_handler)
+        # Сообщение о готовности бота
+        railway_print("=== ONA BOT ЗАПУЩЕН И ГОТОВ К РАБОТЕ ===", "INFO")
         
-        # Запуск поллинга с параметрами для непрерывной работы
-        await dp.start_polling(
-            bot, 
-            allowed_updates=allowed_updates,
-            polling_timeout=60,  # Увеличиваем таймаут
-            handle_signals=False,  # Отключаем встроенную обработку сигналов
-            close_bot_session=True
-        )
+        # Запускаем бота с длинным поллингом
+        await dp.start_polling(bot)
     except Exception as e:
-        logger.error(f"Критическая ошибка при запуске бота: {e}")
-        print(f"КРИТИЧЕСКАЯ ОШИБКА: {e}")
-        # Добавляем повторный запуск бота при критической ошибке
-        logger.info("Попытка перезапуска бота через 5 секунд...")
-        print("Перезапуск через 5 секунд...")
-        await asyncio.sleep(5)
-        try:
-            await main()  # Рекурсивный перезапуск
-        except Exception as restart_error:
-            logger.error(f"Не удалось перезапустить бота: {restart_error}")
-            print(f"ОШИБКА ПЕРЕЗАПУСКА: {restart_error}")
-            raise
+        logger.error(f"Ошибка запуска бота: {e}")
+        railway_print(f"Ошибка запуска: {str(e)}", "ERROR")
+    finally:
+        # Останавливаем планировщик заданий при выходе
+        if scheduler.running:
+            scheduler.shutdown()
+            logger.info("Планировщик заданий остановлен")
+        
+        await bot.session.close()
+        logger.info("Бот остановлен")
+        railway_print("Бот завершил работу", "INFO")
 
 if __name__ == "__main__":
-    # Обрабатываем исключения на верхнем уровне для предотвращения остановки бота
-    try:
-        print("Запуск основного цикла бота...")
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("Бот остановлен вручную")
-    except Exception as e:
-        print(f"Критическая ошибка: {e}")
-        print("Перезапуск бота...")
-        time.sleep(3)
-        os.execv(sys.executable, [sys.executable] + sys.argv) 
+    # Запускаем бота
+    asyncio.run(main()) 

@@ -39,6 +39,12 @@ RUN mkdir -p tmp
 # Настройка вывода логов для контейнера
 # Обеспечиваем правильное перенаправление stdout и stderr
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONFAULTHANDLER=1
+ENV PYTHONIOENCODING=utf-8
+
+# Проверка файла restart_bot.py
+RUN echo "Проверка файла restart_bot.py..."
+RUN cat restart_bot.py | grep -q "parse_log_level" || echo "ВНИМАНИЕ: функция parse_log_level не найдена в restart_bot.py!"
 
 # Дополнительная информация для логов
 RUN echo "Ona2.0 Telegram Bot - Railway Deployment" > /app/railway_info.txt
@@ -48,8 +54,15 @@ RUN echo "Python version: $(python --version)" >> /app/railway_info.txt
 # Проверка наличия psutil перед запуском
 RUN python -c "import psutil; print('psutil успешно установлен, версия:', psutil.__version__)" >> /app/railway_info.txt
 
-# Запуск с выводом информации для Railway
+# Настройка логирования для Railway
+RUN mkdir -p /app/logs
+RUN touch /app/logs/bot.log /app/logs/restart.log
+
+# Запуск с выводом информации для Railway и включенным режимом отладки
 CMD echo "=== ONA2.0 TELEGRAM BOT STARTING ===" && \
+    echo "" && \
     echo "$(cat /app/railway_info.txt)" && \
+    echo "" && \
     echo "=== STARTING RESTART MONITOR ===" && \
-    python restart_bot.py 
+    echo "" && \
+    python restart_bot.py --debug 
