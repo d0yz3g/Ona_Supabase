@@ -11,6 +11,22 @@ from dotenv import load_dotenv
 # Загружаем переменные окружения из .env
 load_dotenv()
 
+# Проверка наличия railway_helper и его инициализация
+try:
+    from railway_helper import ensure_modules_available, print_railway_info
+    # Проверяем и обеспечиваем наличие необходимых модулей
+    print_railway_info("Инициализация Railway Helper", "INFO")
+    ensure_modules_available([
+        "survey_handler",
+        "meditation_handler",
+        "conversation_handler",
+        "reminder_handler",
+        "voice_handler",
+        "railway_logging"
+    ])
+except ImportError:
+    print("БОТ: Railway Helper не найден, продолжаем без дополнительных проверок")
+
 # Импортируем настройку логирования для Railway
 try:
     from railway_logging import setup_railway_logging, railway_print
@@ -29,11 +45,24 @@ except ImportError:
     )
     logger = logging.getLogger(__name__)
     print("БОТ: Используется стандартное логирование (railway_logging не найден)")
+    
+    # Определяем функцию railway_print, если модуль railway_logging не найден
+    def railway_print(message, level="INFO"):
+        prefix = "ИНФО"
+        if level.upper() == "ERROR":
+            prefix = "ОШИБКА"
+        elif level.upper() == "WARNING":
+            prefix = "ПРЕДУПРЕЖДЕНИЕ"
+        elif level.upper() == "DEBUG":
+            prefix = "ОТЛАДКА"
+        print(f"{prefix}: {message}")
+        sys.stdout.flush()
 
 # Информация о запуске
 railway_print("=== ONA TELEGRAM BOT STARTING ===", "INFO")
 railway_print(f"Python version: {sys.version}", "INFO")
 railway_print(f"Current working directory: {os.getcwd()}", "INFO")
+railway_print(f"Files in directory: {[f for f in os.listdir('.') if f.endswith('.py')]}", "INFO")
 
 # Загружаем API токен из .env файла
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -54,11 +83,44 @@ except ImportError:
     logger.warning("Библиотека psutil не установлена, некоторые функции будут недоступны")
 
 # Импортируем роутеры
-from survey_handler import survey_router, get_main_keyboard
-from voice_handler import voice_router
-from conversation_handler import conversation_router
-from meditation_handler import meditation_router
-from reminder_handler import reminder_router, scheduler
+try:
+    railway_print("Импорт основных модулей бота...", "INFO")
+    from survey_handler import survey_router, get_main_keyboard
+    from voice_handler import voice_router
+    from conversation_handler import conversation_router
+    from meditation_handler import meditation_router
+    from reminder_handler import reminder_router, scheduler
+    railway_print("Все модули успешно импортированы", "INFO")
+except ImportError as e:
+    logger.error(f"Ошибка импорта модулей: {e}")
+    railway_print(f"Ошибка импорта модулей: {e}", "ERROR")
+    railway_print("Попытка аварийной загрузки базовых модулей...", "WARNING")
+    
+    # Попытка аварийной загрузки базовых модулей
+    # Создаем пустые роутеры
+    from aiogram import Router
+    from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+    
+    survey_router = Router(name="survey")
+    voice_router = Router(name="voice")
+    conversation_router = Router(name="conversation")
+    meditation_router = Router(name="meditation")
+    reminder_router = Router(name="reminder")
+    
+    # Создаем базовую клавиатуру
+    def get_main_keyboard():
+        return ReplyKeyboardMarkup(
+            keyboard=[
+                [KeyboardButton(text="📝 Опрос"), KeyboardButton(text="💬 Помощь")]
+            ],
+            resize_keyboard=True
+        )
+    
+    # Создаем пустой планировщик
+    from apscheduler.schedulers.asyncio import AsyncIOScheduler
+    scheduler = AsyncIOScheduler()
+    
+    railway_print("Аварийная загрузка базовых модулей выполнена", "WARNING")
 
 # Создаем экземпляр бота и диспетчер
 bot = Bot(token=BOT_TOKEN)
@@ -152,7 +214,7 @@ async def cmd_restart(message: Message):
 
 # Функция для инициализации планировщика
 async def start_scheduler():
-    if not scheduler.running:
+    if scheduler and not scheduler.running:
         scheduler.start()
         logger.info("Планировщик заданий запущен")
 
@@ -193,7 +255,7 @@ async def main():
         railway_print(f"Ошибка запуска: {str(e)}", "ERROR")
     finally:
         # Останавливаем планировщик заданий при выходе
-        if scheduler.running:
+        if scheduler and scheduler.running:
             scheduler.shutdown()
             logger.info("Планировщик заданий остановлен")
         
