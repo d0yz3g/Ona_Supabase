@@ -1,157 +1,135 @@
 #!/usr/bin/env python
 """
-Скрипт для исправления путей импорта в среде Railway.
-Запускается перед основным скриптом бота для обеспечения корректного импорта модулей.
+Скрипт для исправления путей импорта в Railway.
+Добавляет текущий каталог в sys.path и проверяет доступность всех необходимых модулей.
 """
 
 import os
 import sys
-import shutil
 import importlib
 import logging
+import pkgutil
 from pathlib import Path
 
-# Настройка базового логирования
+# Настройка логирования
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - [IMPORT_FIX] - %(levelname)s - %(message)s",
+    format="%(asctime)s - [FIX_IMPORTS] - %(levelname)s - %(message)s",
     handlers=[
         logging.StreamHandler(sys.stdout)
     ]
 )
 logger = logging.getLogger("fix_imports")
 
-def check_environment():
-    """Проверяет текущее окружение и пути Python."""
-    logger.info(f"Текущая директория: {os.getcwd()}")
-    logger.info(f"Python path: {sys.path}")
-    logger.info(f"Переменные окружения: {os.environ.get('PYTHONPATH', 'Не установлена')}")
-    logger.info(f"Файлы в текущей директории: {[f for f in os.listdir('.') if f.endswith('.py')]}")
-
 def fix_imports():
     """
-    Исправляет пути импорта для корректной работы в Railway.
-    
-    1. Добавляет текущую директорию в sys.path
-    2. Проверяет наличие всех необходимых модулей
-    3. Пытается импортировать основные модули
+    Исправляет проблемы с импортами, добавляя текущий каталог в sys.path.
     """
-    # Добавляем текущую директорию в sys.path
-    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Получаем текущий рабочий каталог
+    current_dir = os.getcwd()
+    logger.info(f"Текущий рабочий каталог: {current_dir}")
+    
+    # Добавляем каталог в sys.path, если его там еще нет
     if current_dir not in sys.path:
         sys.path.insert(0, current_dir)
-        logger.info(f"Добавлен путь {current_dir} в sys.path")
+        logger.info(f"Добавлен каталог {current_dir} в sys.path")
     
-    # Проверка наличия ключевых файлов
-    required_files = [
-        "main.py", 
-        "survey_handler.py", 
-        "meditation_handler.py", 
-        "conversation_handler.py",
-        "reminder_handler.py",
-        "voice_handler.py",
-        "railway_logging.py"
-    ]
+    # Добавляем каталог services, если он существует
+    services_dir = os.path.join(current_dir, "services")
+    if os.path.exists(services_dir) and os.path.isdir(services_dir):
+        if services_dir not in sys.path:
+            sys.path.insert(0, services_dir)
+            logger.info(f"Добавлен каталог {services_dir} в sys.path")
     
-    missing_files = []
-    for file in required_files:
-        if not os.path.exists(file):
-            missing_files.append(file)
+    # Выводим все каталоги в sys.path
+    logger.info(f"sys.path содержит каталоги: {sys.path}")
     
-    if missing_files:
-        logger.error(f"Отсутствуют необходимые файлы: {', '.join(missing_files)}")
-        logger.info("Попытка найти файлы в других директориях...")
-        
-        # Поиск файлов в других директориях
-        for root, dirs, files in os.walk("."):
-            for file in missing_files[:]:
-                if file in files:
-                    src_path = os.path.join(root, file)
-                    logger.info(f"Найден файл {file} в директории {root}")
-                    
-                    # Копируем файл в корневую директорию
-                    try:
-                        shutil.copy2(src_path, file)
-                        logger.info(f"Файл {file} скопирован в корневую директорию")
-                        missing_files.remove(file)
-                    except Exception as e:
-                        logger.error(f"Ошибка при копировании файла {file}: {e}")
+    # Попытка импорта критических модулей
+    check_critical_modules()
     
-    # Проверка оставшихся отсутствующих файлов
-    if missing_files:
-        logger.error(f"Не удалось найти следующие файлы: {', '.join(missing_files)}")
-        create_placeholders_for_missing_files(missing_files)
+    # Выводим все .py файлы в текущем каталоге
+    python_files = [f for f in os.listdir(current_dir) if f.endswith('.py')]
+    logger.info(f"Python-файлы в текущем каталоге: {python_files}")
     
-    # Попытка импорта ключевых модулей
-    try_import_modules()
+    # Выводим все .py файлы в services каталоге, если он существует
+    if os.path.exists(services_dir) and os.path.isdir(services_dir):
+        services_files = [f for f in os.listdir(services_dir) if f.endswith('.py')]
+        logger.info(f"Python-файлы в каталоге services: {services_files}")
 
-def create_placeholders_for_missing_files(missing_files):
-    """Создает заглушки для отсутствующих файлов."""
-    for file in missing_files:
-        try:
-            module_name = file.replace(".py", "")
-            with open(file, "w") as f:
-                f.write(f"""# Placeholder module for {file}
-import logging
-logger = logging.getLogger(__name__)
-logger.warning("This is a placeholder module created by fix_imports.py")
-
-# Базовые импорты для совместимости
-from aiogram import Router
-from aiogram.types import Message, CallbackQuery
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-
-# Создаем роутер
-{module_name}_router = Router(name="{module_name}")
-
-# Базовые функции, необходимые для импорта в main.py
-def get_main_keyboard():
-    \"\"\"Заглушка для функции get_main_keyboard\"\"\"
-    from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-    keyboard = ReplyKeyboardMarkup(
-        keyboard=[
-            [KeyboardButton(text="📝 Опрос"), KeyboardButton(text="👤 Профиль")],
-            [KeyboardButton(text="🧘 Медитации"), KeyboardButton(text="⏰ Напоминания")],
-            [KeyboardButton(text="💡 Советы"), KeyboardButton(text="💬 Помощь")],
-        ],
-        resize_keyboard=True
-    )
-    return keyboard
-
-# Другие переменные, которые могут потребоваться
-scheduler = None
-""")
-            logger.info(f"Создана заглушка для {file}")
-        except Exception as e:
-            logger.error(f"Ошибка при создании заглушки для {file}: {e}")
-
-def try_import_modules():
-    """Пытается импортировать ключевые модули."""
-    modules_to_import = [
-        "survey_handler", 
-        "meditation_handler", 
+def check_critical_modules():
+    """
+    Проверяет, доступны ли критически важные модули.
+    """
+    critical_modules = [
+        "button_states",
+        "survey_handler",
+        "meditation_handler",
         "conversation_handler",
         "reminder_handler",
-        "voice_handler",
-        "railway_logging"
+        "voice_handler"
     ]
     
-    for module_name in modules_to_import:
+    logger.info("Проверка доступности критически важных модулей...")
+    
+    for module_name in critical_modules:
         try:
             module = importlib.import_module(module_name)
-            logger.info(f"Модуль {module_name} успешно импортирован")
+            logger.info(f"✓ Модуль {module_name} успешно импортирован")
         except ImportError as e:
-            logger.error(f"Ошибка импорта модуля {module_name}: {e}")
-        except Exception as e:
-            logger.error(f"Неизвестная ошибка при импорте {module_name}: {e}")
+            logger.error(f"✗ Ошибка импорта модуля {module_name}: {e}")
+            # Здесь можно добавить автосоздание заглушек для отсутствующих модулей
+
+def create_import_test_script():
+    """
+    Создает тестовый скрипт для проверки импортов.
+    """
+    test_file = "test_imports.py"
+    
+    with open(test_file, "w") as f:
+        f.write("""#!/usr/bin/env python
+import sys
+import os
+
+print("\\nТЕСТИРОВАНИЕ ИМПОРТОВ:")
+print(f"Python version: {sys.version}")
+print(f"sys.path: {sys.path}")
+print(f"Текущий каталог: {os.getcwd()}")
+print(f"Файлы в текущем каталоге: {[f for f in os.listdir('.') if f.endswith('.py')]}")
+
+try:
+    from button_states import ProfileStates
+    print("✓ Успешно импортирован ProfileStates из button_states")
+except ImportError as e:
+    print(f"✗ Ошибка импорта ProfileStates: {e}")
+
+try:
+    import survey_handler
+    print("✓ Успешно импортирован survey_handler")
+except ImportError as e:
+    print(f"✗ Ошибка импорта survey_handler: {e}")
+
+try:
+    import meditation_handler
+    print("✓ Успешно импортирован meditation_handler")
+except ImportError as e:
+    print(f"✗ Ошибка импорта meditation_handler: {e}")
+
+try:
+    from services.tts import generate_voice
+    print("✓ Успешно импортирован generate_voice из services.tts")
+except ImportError as e:
+    print(f"✗ Ошибка импорта services.tts: {e}")
+""")
+    
+    logger.info(f"Создан тестовый скрипт импортов: {test_file}")
 
 if __name__ == "__main__":
     print("=" * 50)
-    print("ЗАПУСК СКРИПТА ИСПРАВЛЕНИЯ ИМПОРТОВ ДЛЯ RAILWAY")
+    print("ЗАПУСК СКРИПТА ИСПРАВЛЕНИЯ ИМПОРТОВ")
     print("=" * 50)
     
-    check_environment()
     fix_imports()
+    create_import_test_script()
     
     print("=" * 50)
     print("ЗАВЕРШЕНИЕ СКРИПТА ИСПРАВЛЕНИЯ ИМПОРТОВ")
