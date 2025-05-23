@@ -378,13 +378,16 @@ def create_placeholder_files():
                     # Для button_states.py проверяем наличие ProfileStates
                     with open(module_file, 'r', encoding='utf-8') as f:
                         content = f.read()
-                    if 'class ProfileStates' not in content:
-                        logger.warning(f"Файл {module_file} существует, но не содержит класс ProfileStates. Создаем заглушку заново.")
+                    # Более точная проверка на наличие класса ProfileStates
+                    if 'class ProfileStates' not in content or 'viewing = State()' not in content:
+                        logger.warning(f"Файл {module_file} существует, но не содержит класс ProfileStates или необходимые методы. Создаем заглушку заново.")
                         with open(module_file, "w", encoding="utf-8") as f:
-                            f.write(f"# Placeholder for {module_file} (re-created due to missing ProfileStates)\n")
+                            f.write(f"# Placeholder for {module_file} (re-created due to missing or incomplete ProfileStates)\n")
                             f.write("# This file was automatically created by create_placeholders.py for Railway deployment\n")
                             f.write(module_content.strip())
                         logger.info(f"Заглушка для {module_file} повторно создана")
+                    else:
+                        logger.info(f"Файл {module_file} уже существует и содержит все необходимые классы и методы")
                 else:
                     logger.info(f"Файл {module_file} уже существует и не пустой (размер: {file_size} байт)")
             except Exception as e:
