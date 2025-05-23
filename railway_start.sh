@@ -154,5 +154,10 @@ python -c "import sys; print('sys.path =', sys.path); import aiogram; print('aio
 echo "=== ЗАПУСК БОТА С МОНИТОРИНГОМ ПЕРЕЗАПУСКА ==="
 echo "Используется Python: $(python --version)"
 
-# Запуск с отладочным режимом для диагностики
-python restart_bot.py --debug 
+# Проверка и восстановление button_states.py
+echo "Проверка и восстановление button_states.py..."
+python fix_button_states.py
+
+# Запуск бота с автоматическим перезапуском
+echo "Запуск бота с мониторингом..."
+python restart_bot.py 
