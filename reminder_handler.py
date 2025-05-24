@@ -74,11 +74,11 @@ def get_days_selection_keyboard(selected_days=None) -> InlineKeyboardMarkup:
     ]
     
     for day_name, day_code in days:
-        # Добавляем ✓ к выбранным дням
-        prefix = "✓ " if day_code in selected_days else ""
-        builder.button(text=f"{prefix}{day_name}", callback_data=f"day_{day_code}")
+        # Используем эмодзи для визуального выделения выбранных дней
+        icon = "✅" if day_code in selected_days else "⬜️"
+        builder.button(text=f"{icon} {day_name}", callback_data=f"day_{day_code}")
     
-    builder.button(text="✅ Сохранить", callback_data="days_save")
+    builder.button(text="💾 Сохранить", callback_data="days_save")
     builder.button(text="◀️ Назад", callback_data="reminder_menu")
     
     # Размещаем кнопки по 7 в строке (все дни недели), затем по 1
@@ -330,7 +330,9 @@ async def set_reminder_days(callback: CallbackQuery, state: FSMContext):
     
     await callback.message.edit_text(
         "📅 <b>Выберите дни недели для напоминаний</b>\n\n"
-        "В какие дни вы хотели бы получать напоминания о практиках?",
+        "Нажмите на дни, в которые хотите получать напоминания:\n"
+        "✅ - день выбран, ⬜️ - день не выбран\n\n"
+        "После выбора нажмите кнопку 💾 Сохранить.",
         reply_markup=get_days_selection_keyboard(selected_days),
         parse_mode="HTML"
     )
@@ -363,7 +365,9 @@ async def process_day_selection(callback: CallbackQuery, state: FSMContext):
     # Обновляем клавиатуру с выбранными днями
     await callback.message.edit_text(
         "📅 <b>Выберите дни недели для напоминаний</b>\n\n"
-        "В какие дни вы хотели бы получать напоминания о практиках?",
+        "Нажмите на дни, в которые хотите получать напоминания:\n"
+        "✅ - день выбран, ⬜️ - день не выбран\n\n"
+        "После выбора нажмите кнопку 💾 Сохранить.",
         reply_markup=get_days_selection_keyboard(selected_days),
         parse_mode="HTML"
     )
