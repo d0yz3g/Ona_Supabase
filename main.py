@@ -2,11 +2,119 @@ import asyncio
 import logging
 import os
 import sys
+import tempfile  # Для создания временного файла блокировки
+import socket  # Для получения имени хоста
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
+
+# Импортируем fcntl только для Unix-подобных систем
+if sys.platform != 'win32':
+    try:
+        import fcntl
+    except ImportError:
+        fcntl = None
+else:
+    fcntl = None
+
+# Блокировка для предотвращения запуска нескольких экземпляров
+LOCK_FILE = os.path.join(tempfile.gettempdir(), 'ona_bot.lock')
+lock_socket = None
+lock_file_handle = None
+
+def acquire_lock():
+    """
+    Пытается получить блокировку, предотвращающую запуск нескольких экземпляров.
+    
+    Returns:
+        bool: True, если блокировка получена успешно, False в противном случае
+    """
+    global lock_socket, lock_file_handle
+    
+    try:
+        # Создаем именованный сокет для Windows
+        if sys.platform == 'win32':
+            lock_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            # Пытаемся занять порт 50000 (или любой другой специфичный для вашего приложения)
+            try:
+                lock_socket.bind(('localhost', 50000))
+                print("Блокировка получена (Windows)")
+                return True
+            except socket.error:
+                print("Блокировка уже занята другим процессом (Windows)")
+                return False
+        # Для Unix-подобных систем используем файловую блокировку
+        elif fcntl:
+            lock_file_handle = open(LOCK_FILE, 'w')
+            try:
+                fcntl.lockf(lock_file_handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                print("Блокировка получена (Unix с fcntl)")
+                return True
+            except IOError:
+                print("Блокировка уже занята другим процессом (Unix)")
+                return False
+        # Если fcntl недоступен, используем альтернативный метод
+        else:
+            # Простая проверка на существование PID файла
+            if os.path.exists(LOCK_FILE):
+                with open(LOCK_FILE, 'r') as f:
+                    pid = f.read().strip()
+                    # Проверяем, существует ли процесс с таким PID
+                    try:
+                        pid = int(pid)
+                        # Пытаемся отправить сигнал 0 процессу - это проверка на существование
+                        os.kill(pid, 0)
+                        print(f"Блокировка уже занята процессом {pid}")
+                        return False
+                    except (ValueError, OSError):
+                        # PID невалидный или процесс не существует
+                        pass
+            
+            # Записываем текущий PID в файл
+            with open(LOCK_FILE, 'w') as f:
+                f.write(str(os.getpid()))
+            print("Блокировка получена (PID файл)")
+            return True
+    except Exception as e:
+        print(f"Ошибка при получении блокировки: {e}")
+        return False
+
+def release_lock():
+    """
+    Освобождает блокировку, полученную с помощью acquire_lock().
+    """
+    global lock_socket, lock_file_handle
+    
+    try:
+        # Освобождаем сокет для Windows
+        if lock_socket:
+            try:
+                lock_socket.close()
+                print("Блокировка освобождена (Windows)")
+            except Exception as e:
+                print(f"Ошибка при освобождении сокета: {e}")
+        
+        # Освобождаем файловую блокировку для Unix
+        if lock_file_handle:
+            try:
+                if fcntl:
+                    fcntl.lockf(lock_file_handle, fcntl.LOCK_UN)
+                lock_file_handle.close()
+                print("Блокировка освобождена (Unix)")
+            except Exception as e:
+                print(f"Ошибка при освобождении файловой блокировки: {e}")
+        
+        # Удаляем PID файл, если использовался такой метод
+        if os.path.exists(LOCK_FILE) and sys.platform == 'win32' or not fcntl:
+            try:
+                os.remove(LOCK_FILE)
+                print("PID файл удален")
+            except Exception as e:
+                print(f"Ошибка при удалении PID файла: {e}")
+    except Exception as e:
+        print(f"Ошибка при освобождении блокировки: {e}")
 
 # Загружаем переменные окружения из .env
 load_dotenv()
@@ -232,6 +340,12 @@ async def main():
     """
     Главная функция запуска бота
     """
+    # Проверяем, что нет другого запущенного экземпляра
+    if not acquire_lock():
+        logger.error("Другой экземпляр бота уже запущен. Завершение работы.")
+        railway_print("КРИТИЧЕСКАЯ ОШИБКА: Обнаружен другой запущенный экземпляр бота. Завершение работы.", "ERROR")
+        return
+        
     # Инициализируем бот
     logger.info("Бот ОНА запускается...")
     railway_print("Запуск основного цикла бота...", "INFO")
@@ -303,6 +417,9 @@ async def main():
             logger.error(f"Ошибка запуска бота: {e}")
             railway_print(f"Ошибка запуска: {str(e)}", "ERROR")
     finally:
+        # Освобождаем блокировку при завершении
+        release_lock()
+        
         # Останавливаем планировщик заданий при выходе
         if scheduler and scheduler.running:
             scheduler.shutdown()
