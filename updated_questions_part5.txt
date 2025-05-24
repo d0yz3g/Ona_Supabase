@@ -1,0 +1,146 @@
+def get_personality_type_from_answers(answers: Dict[str, Any]) -> Tuple[Dict[str, int], str, Optional[str]]:
+    """
+    Определяет тип личности по ответам на вопросы Vasini.
+    
+    Args:
+        answers: Словарь с ответами пользователя
+    
+    Returns:
+        Tuple[Dict[str, int], str, Optional[str]]: Кортеж с количеством ответов каждого типа, 
+                                              основным типом личности и дополнительным типом (если есть)
+    """
+    # Счетчики для типов ответов
+    type_counts = {
+        "A": 0,  # Аналитический тип
+        "B": 0,  # Эмпатический тип
+        "C": 0,  # Практический тип
+        "D": 0   # Творческий тип
+    }
+    
+    # Подсчитываем количество ответов каждого типа
+    vasini_count = 0
+    for question_id, answer in answers.items():
+        # Проверяем, что это вопрос Vasini (начинается с 'vasini_')
+        if question_id.startswith('vasini_') and answer in ["A", "B", "C", "D"]:
+            type_counts[answer] += 1
+            vasini_count += 1
+    
+    # Логируем информацию о подсчете
+    logger.info(f"Подсчитано {vasini_count} ответов на вопросы Vasini")
+    logger.info(f"Распределение ответов: A ({type_counts['A']}), B ({type_counts['B']}), C ({type_counts['C']}), D ({type_counts['D']})")
+    
+    # Если ответов на вопросы Vasini нет, возможно структура ответов другая
+    # Проверяем наличие ответов в другом формате
+    if sum(type_counts.values()) == 0:
+        logger.warning("Не найдены ответы в стандартном формате, пробуем альтернативный формат")
+        for key, value in answers.items():
+            if isinstance(value, str) and value.upper() in ["A", "B", "C", "D"]:
+                type_counts[value.upper()] += 1
+    
+    # Находим тип с наибольшим количеством ответов
+    primary_type = max(type_counts, key=type_counts.get)
+    max_count = type_counts[primary_type]
+    
+    # Если все счетчики равны 0, устанавливаем тип по умолчанию
+    if max_count == 0:
+        logger.warning("Не удалось определить тип личности, используется тип по умолчанию")
+        return type_counts, "Аналитический тип", None
+        
+    # Название типа личности
+    personality_types = {
+        "A": "Аналитический тип",
+        "B": "Эмпатический тип",
+        "C": "Практический тип",
+        "D": "Творческий тип"
+    }
+    
+    # Находим второй по частоте тип
+    type_counts_copy = type_counts.copy()
+    type_counts_copy.pop(primary_type)
+    secondary_type = max(type_counts_copy, key=type_counts_copy.get)
+    second_max_count = type_counts_copy[secondary_type]
+    
+    # Если второй тип сильно отстает от первого, не учитываем его
+    if second_max_count < max_count * 0.7:
+        secondary_result = None
+    else:
+        secondary_result = personality_types[secondary_type]
+    
+    logger.info(f"Определен тип личности: {personality_types[primary_type]}" + 
+               (f" с элементами {secondary_result}" if secondary_result else ""))
+    
+    return type_counts, personality_types[primary_type], secondary_result
+
+def generate_profile_prompt(answers: Dict[str, str]) -> str:
+    """
+    Генерирует промт для создания психологического профиля.
+    
+    Args:
+        answers: Словарь с ответами пользователя на вопросы
+    
+    Returns:
+        str: Промт для генерации профиля
+    """
+    # Получаем информацию о типе личности
+    type_counts, primary_type, secondary_type = get_personality_type_from_answers(answers)
+    
+    # Получаем базовую информацию о пользователе
+    name = answers.get("name", "пользователь")
+    age = answers.get("age", "")
+    birthdate = answers.get("birthdate", "")
+    birthplace = answers.get("birthplace", "")
+    timezone = answers.get("timezone", "")
+    
+    # Формируем строку с личными данными пользователя
+    personal_data = f"Личные данные пользователя:\n"
+    personal_data += f"- Имя: {name}\n"
+    
+    if age:
+        personal_data += f"- Возраст: {age}\n"
+    if birthdate:
+        personal_data += f"- Дата рождения: {birthdate}\n"
+    if birthplace:
+        personal_data += f"- Место рождения: {birthplace}\n"
+    if timezone:
+        personal_data += f"- Часовой пояс: {timezone}\n"
+    
+    # Формируем промт
+    prompt = f"""Создай детальный психологический профиль для пользователя.
+
+{personal_data}
+
+Информация о типе личности:
+- Основной тип: {primary_type}
+- Дополнительный тип: {secondary_type if secondary_type else "не выявлен"}
+- Распределение ответов: A ({type_counts['A']}), B ({type_counts['B']}), C ({type_counts['C']}), D ({type_counts['D']})
+
+Структура профиля должна включать три основных раздела:
+
+1. **Сильные стороны личности**
+   Опиши 5-7 ключевых сильных сторон, опираясь на доминирующий тип личности.
+   
+   A (Аналитический тип): логическое мышление, внимание к деталям, системный подход, объективность.
+   B (Эмпатический тип): эмоциональный интеллект, забота о других, гармонизация отношений, глубина переживаний.
+   C (Практический тип): целеустремленность, организованность, эффективность, прагматизм.
+   D (Творческий тип): креативность, оригинальность мышления, инновационный подход, вдохновение.
+
+2. **Стиль мышления и принятия решений**
+   Анализ того, как человек подходит к решению задач и принятию решений.
+   
+   A: через аналитику, логику, причинно-следственные связи.
+   B: через ценности, эмоции, влияние на людей.
+   C: через практичность, эффективность, конкретные результаты.
+   D: через творчество, интуицию, нестандартные решения.
+
+3. **Рекомендации для развития**
+   3-5 конкретных рекомендаций для личностного роста.
+   
+   A: развивать эмоциональный интеллект, учиться неформальному общению.
+   B: развивать структурность, логичность, объективность.
+   C: развивать креативность, гибкость, видение долгосрочной перспективы.
+   D: развивать систематичность, дисциплину, практическое применение идей.
+
+Важно: создай индивидуализированный профиль, учитывая как основной, так и дополнительный тип (если есть). Используй позитивный, поддерживающий тон, подчеркивая уникальные качества личности.
+"""
+    
+    return prompt 

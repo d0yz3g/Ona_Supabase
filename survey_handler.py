@@ -213,7 +213,6 @@ async def process_survey_answer(message: Message, state: FSMContext):
         # Сохраняем ответ на демо-вопрос
         question_id = current_question["id"]
         answers[question_id] = message.text
-        
         # Переходим к следующему вопросу
         question_index += 1
         
@@ -330,6 +329,18 @@ async def process_survey_answer(message: Message, state: FSMContext):
         # Сохраняем ответ на вопрос Vasini
         question_id = current_question["id"]
         answers[question_id] = option
+        
+        # Отправляем интерпретацию ответа пользователю
+        try:
+            interpretation = current_question["interpretations"][option]
+            await message.answer(
+                f"💡 <b>Интерпретация:</b>\n\n{interpretation}",
+                parse_mode="HTML"
+            )
+            # Добавляем небольшую задержку для удобства чтения
+            await message.bot.send_chat_action(chat_id=message.chat.id, action="typing")
+        except Exception as e:
+            logger.error(f"Ошибка при отправке интерпретации: {e}")
         
         # Переходим к следующему вопросу
         question_index += 1
@@ -1082,4 +1093,36 @@ async def start_survey_callback(callback: CallbackQuery, state: FSMContext):
     """
     await callback.message.delete()
     await start_survey(callback.message, state)
-    await callback.answer("Начинаем опрос") 
+    await callback.answer("Начинаем опрос")
+
+# Добавляем функцию для тестирования интерпретаций ответов
+async def test_interpretations():
+    """
+    Тестовая функция для проверки работы интерпретаций ответов.
+    """
+    from questions import get_all_vasini_questions
+    
+    # Получаем списки вопросов
+    vasini_questions = get_all_vasini_questions()
+    
+    # Выбираем первый вопрос для теста
+    test_question = vasini_questions[0]
+    print(f"Тестовый вопрос: {test_question['text']}")
+    
+    # Выводим варианты ответов
+    for option, text in test_question['options'].items():
+        print(f"{option}: {text}")
+    
+    # Тестируем получение интерпретации для варианта A
+    option = "A"
+    try:
+        interpretation = test_question["interpretations"][option]
+        print(f"\nИнтерпретация для варианта {option}:\n{interpretation}")
+        print("\nПроверка успешна! Интерпретации работают корректно.")
+    except Exception as e:
+        print(f"Ошибка при получении интерпретации: {e}")
+
+# Добавляем в конец файла для запуска теста при прямом вызове
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(test_interpretations()) 
