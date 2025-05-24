@@ -50,4 +50,9 @@ local_settings.py
 # Другие временные файлы
 *.bak
 *.tmp
-*.temp 
+*.temp
+
+# Дополнительные файлы для игнорирования
+Ona2.0_export/
+push_to_github.bat
+push_to_github.ps1 

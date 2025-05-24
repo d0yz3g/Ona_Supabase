@@ -2859,3 +2859,715 @@ OSError: [Errno 10048] error while attempting to bind on address ('0.0.0.0', 808
 2025-05-22 14:51:12,250 - __main__ - INFO - РЎРѕРµРґРёРЅРµРЅРёРµ СЃ Р±Р°Р·РѕР№ РґР°РЅРЅС‹С… Р·Р°РєСЂС‹С‚Рѕ
 2025-05-22 14:51:12,337 - asyncio - ERROR - Task was destroyed but it is pending!
 task: <Task cancelling name='Task-1' coro=<main() done, defined at C:\Users\Robert\Desktop\Ona_aiogram 1.0\main.py:338> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]> cb=[gather.<locals>._done_callback() at C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\tasks.py:764]>
+2025-05-23 10:24:50,402 - __main__ - INFO - Бот ОНА запускается...
+2025-05-23 10:24:50,866 - aiogram.dispatcher - INFO - Start polling
+2025-05-23 10:24:50,992 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 10:24:55,590 - aiogram.event - INFO - Update id=566539372 is handled. Duration 609 ms by bot id=7935736491
+2025-05-23 10:25:07,706 - aiogram.event - INFO - Update id=566539373 is handled. Duration 407 ms by bot id=7935736491
+2025-05-23 10:25:10,196 - survey_handler - INFO - Пользователь 895018115 начал опрос
+2025-05-23 10:25:10,196 - aiogram.event - INFO - Update id=566539374 is handled. Duration 405 ms by bot id=7935736491
+2025-05-23 10:25:13,884 - aiogram.event - INFO - Update id=566539375 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:25:15,911 - aiogram.event - INFO - Update id=566539376 is handled. Duration 188 ms by bot id=7935736491
+2025-05-23 10:25:20,338 - aiogram.event - INFO - Update id=566539377 is handled. Duration 282 ms by bot id=7935736491
+2025-05-23 10:25:24,721 - aiogram.event - INFO - Update id=566539378 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:25:26,537 - aiogram.event - INFO - Update id=566539379 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:25:29,825 - aiogram.event - INFO - Update id=566539380 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 10:25:34,976 - aiogram.event - INFO - Update id=566539381 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:25:40,342 - aiogram.event - INFO - Update id=566539382 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:25:41,650 - aiogram.event - INFO - Update id=566539383 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:25:42,355 - aiogram.event - INFO - Update id=566539384 is handled. Duration 140 ms by bot id=7935736491
+2025-05-23 10:25:43,086 - aiogram.event - INFO - Update id=566539385 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:25:43,832 - aiogram.event - INFO - Update id=566539386 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:25:44,858 - aiogram.event - INFO - Update id=566539387 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:25:45,907 - aiogram.event - INFO - Update id=566539388 is handled. Duration 140 ms by bot id=7935736491
+2025-05-23 10:25:46,882 - aiogram.event - INFO - Update id=566539389 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:25:47,566 - aiogram.event - INFO - Update id=566539390 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:25:48,341 - aiogram.event - INFO - Update id=566539391 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:25:49,406 - aiogram.event - INFO - Update id=566539392 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:25:50,230 - aiogram.event - INFO - Update id=566539393 is handled. Duration 217 ms by bot id=7935736491
+2025-05-23 10:25:51,732 - aiogram.event - INFO - Update id=566539394 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:25:52,953 - aiogram.event - INFO - Update id=566539395 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 10:25:53,799 - aiogram.event - INFO - Update id=566539396 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:25:54,549 - aiogram.event - INFO - Update id=566539397 is handled. Duration 188 ms by bot id=7935736491
+2025-05-23 10:25:55,354 - aiogram.event - INFO - Update id=566539398 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:25:56,182 - aiogram.event - INFO - Update id=566539399 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:25:56,890 - aiogram.event - INFO - Update id=566539400 is handled. Duration 188 ms by bot id=7935736491
+2025-05-23 10:25:57,592 - aiogram.event - INFO - Update id=566539401 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:25:58,433 - aiogram.event - INFO - Update id=566539402 is handled. Duration 170 ms by bot id=7935736491
+2025-05-23 10:25:59,195 - aiogram.event - INFO - Update id=566539403 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 10:25:59,912 - aiogram.event - INFO - Update id=566539404 is handled. Duration 203 ms by bot id=7935736491
+2025-05-23 10:26:00,781 - aiogram.event - INFO - Update id=566539405 is handled. Duration 281 ms by bot id=7935736491
+2025-05-23 10:26:01,437 - aiogram.event - INFO - Update id=566539406 is handled. Duration 170 ms by bot id=7935736491
+2025-05-23 10:26:02,216 - aiogram.event - INFO - Update id=566539407 is handled. Duration 187 ms by bot id=7935736491
+2025-05-23 10:26:02,934 - aiogram.event - INFO - Update id=566539408 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:26:04,100 - aiogram.event - INFO - Update id=566539409 is handled. Duration 217 ms by bot id=7935736491
+2025-05-23 10:26:04,942 - aiogram.event - INFO - Update id=566539410 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 10:26:05,852 - aiogram.event - INFO - Update id=566539411 is handled. Duration 217 ms by bot id=7935736491
+2025-05-23 10:26:06,616 - aiogram.event - INFO - Update id=566539412 is handled. Duration 188 ms by bot id=7935736491
+2025-05-23 10:26:07,680 - aiogram.event - INFO - Update id=566539413 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 10:26:12,339 - aiogram.event - INFO - Update id=566539415 is handled. Duration 250 ms by bot id=7935736491
+2025-05-23 10:26:18,011 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:26:18,029 - profile_generator - INFO - Профиль успешно сгенерирован для пользователя Роберт
+2025-05-23 10:26:18,029 - profile_generator - INFO - Профиль сохранен для пользователя 895018115
+2025-05-23 10:26:18,382 - survey_handler - INFO - Пользователь 895018115 успешно завершил опрос и получил профиль
+2025-05-23 10:26:18,383 - aiogram.event - INFO - Update id=566539414 is handled. Duration 10000 ms by bot id=7935736491
+2025-05-23 10:26:20,127 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:26:20,129 - profile_generator - INFO - Профиль успешно сгенерирован для пользователя Роберт
+2025-05-23 10:26:20,129 - profile_generator - INFO - Профиль сохранен для пользователя 895018115
+2025-05-23 10:26:20,465 - survey_handler - INFO - Пользователь 895018115 успешно завершил опрос и получил профиль
+2025-05-23 10:26:20,466 - aiogram.event - INFO - Update id=566539416 is handled. Duration 6546 ms by bot id=7935736491
+2025-05-23 10:26:32,432 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:26:32,581 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115
+2025-05-23 10:26:32,581 - aiogram.event - INFO - Update id=566539417 is handled. Duration 1859 ms by bot id=7935736491
+2025-05-23 10:26:39,783 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:26:40,117 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115
+2025-05-23 10:26:40,119 - aiogram.event - INFO - Update id=566539418 is handled. Duration 1406 ms by bot id=7935736491
+2025-05-23 10:26:59,957 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:27:00,847 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115
+2025-05-23 10:27:00,848 - aiogram.event - INFO - Update id=566539419 is handled. Duration 2983 ms by bot id=7935736491
+2025-05-23 10:27:26,367 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2025-05-23 10:27:28,673 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:27:28,884 - voice_handler - INFO - Голосовое сообщение пользователя 895018115 успешно обработано
+2025-05-23 10:27:28,884 - aiogram.event - INFO - Update id=566539420 is handled. Duration 7843 ms by bot id=7935736491
+2025-05-23 10:27:40,096 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:27:40,298 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115
+2025-05-23 10:27:40,299 - aiogram.event - INFO - Update id=566539421 is handled. Duration 2750 ms by bot id=7935736491
+2025-05-23 10:27:52,471 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:27:52,665 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115
+2025-05-23 10:27:52,666 - aiogram.event - INFO - Update id=566539422 is handled. Duration 4844 ms by bot id=7935736491
+2025-05-23 10:28:01,969 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:28:02,148 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115
+2025-05-23 10:28:02,149 - aiogram.event - INFO - Update id=566539423 is handled. Duration 2297 ms by bot id=7935736491
+2025-05-23 10:28:07,117 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:28:07,319 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115
+2025-05-23 10:28:07,319 - aiogram.event - INFO - Update id=566539424 is handled. Duration 1983 ms by bot id=7935736491
+2025-05-23 10:40:27,004 - __main__ - INFO - Бот ОНА запускается...
+2025-05-23 10:40:27,544 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-23 10:40:27,544 - __main__ - INFO - Планировщик заданий запущен
+2025-05-23 10:40:27,545 - aiogram.dispatcher - INFO - Start polling
+2025-05-23 10:40:27,679 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 10:40:45,552 - aiogram.event - INFO - Update id=566539429 is handled. Duration 452 ms by bot id=7935736491
+2025-05-23 10:40:47,516 - survey_handler - INFO - Пользователь 7935736491 начал опрос
+2025-05-23 10:40:47,677 - aiogram.event - INFO - Update id=566539430 is handled. Duration 545 ms by bot id=7935736491
+2025-05-23 10:40:49,937 - aiogram.event - INFO - Update id=566539431 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 10:40:53,998 - aiogram.event - INFO - Update id=566539432 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:43:26,184 - aiogram.event - INFO - Update id=566539433 is handled. Duration 436 ms by bot id=7935736491
+2025-05-23 10:43:28,749 - aiogram.event - INFO - Update id=566539434 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:43:35,249 - aiogram.event - INFO - Update id=566539435 is handled. Duration 250 ms by bot id=7935736491
+2025-05-23 10:43:37,263 - aiogram.event - INFO - Update id=566539436 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:43:37,893 - aiogram.event - INFO - Update id=566539437 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:43:38,545 - aiogram.event - INFO - Update id=566539438 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:43:39,295 - aiogram.event - INFO - Update id=566539439 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:43:40,020 - aiogram.event - INFO - Update id=566539440 is handled. Duration 250 ms by bot id=7935736491
+2025-05-23 10:43:40,537 - aiogram.event - INFO - Update id=566539441 is handled. Duration 188 ms by bot id=7935736491
+2025-05-23 10:43:41,192 - aiogram.event - INFO - Update id=566539442 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:43:41,864 - aiogram.event - INFO - Update id=566539443 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:43:42,520 - aiogram.event - INFO - Update id=566539444 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:43:43,159 - aiogram.event - INFO - Update id=566539445 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:43:43,819 - aiogram.event - INFO - Update id=566539446 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:43:44,454 - aiogram.event - INFO - Update id=566539447 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:43:45,094 - aiogram.event - INFO - Update id=566539448 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:43:45,609 - aiogram.event - INFO - Update id=566539449 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:43:46,261 - aiogram.event - INFO - Update id=566539450 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:43:46,865 - aiogram.event - INFO - Update id=566539451 is handled. Duration 188 ms by bot id=7935736491
+2025-05-23 10:43:47,380 - aiogram.event - INFO - Update id=566539452 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:43:47,855 - aiogram.event - INFO - Update id=566539453 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:43:48,368 - aiogram.event - INFO - Update id=566539454 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:43:48,983 - aiogram.event - INFO - Update id=566539455 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:43:49,520 - aiogram.event - INFO - Update id=566539456 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:43:53,116 - aiogram.event - INFO - Update id=566539457 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:43:53,879 - aiogram.event - INFO - Update id=566539458 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:43:54,583 - aiogram.event - INFO - Update id=566539459 is handled. Duration 187 ms by bot id=7935736491
+2025-05-23 10:43:55,328 - aiogram.event - INFO - Update id=566539460 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 10:43:55,962 - aiogram.event - INFO - Update id=566539461 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:43:56,677 - aiogram.event - INFO - Update id=566539462 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:43:57,314 - aiogram.event - INFO - Update id=566539463 is handled. Duration 139 ms by bot id=7935736491
+2025-05-23 10:43:58,035 - aiogram.event - INFO - Update id=566539464 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:43:58,873 - aiogram.event - INFO - Update id=566539465 is handled. Duration 141 ms by bot id=7935736491
+2025-05-23 10:43:59,516 - aiogram.event - INFO - Update id=566539466 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:44:00,157 - aiogram.event - INFO - Update id=566539467 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:44:00,790 - aiogram.event - INFO - Update id=566539468 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:44:01,462 - aiogram.event - INFO - Update id=566539469 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:44:02,952 - aiogram.event - INFO - Update id=566539471 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:44:08,243 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:44:08,260 - profile_generator - INFO - Профиль успешно сгенерирован для пользователя 12
+2025-05-23 10:44:08,260 - profile_generator - INFO - Профиль сохранен для пользователя 895018115
+2025-05-23 10:44:08,648 - survey_handler - INFO - Пользователь 895018115 успешно завершил опрос и получил профиль
+2025-05-23 10:44:08,649 - aiogram.event - INFO - Update id=566539470 is handled. Duration 6844 ms by bot id=7935736491
+2025-05-23 10:44:09,170 - aiogram.event - INFO - Update id=566539473 is handled. Duration 688 ms by bot id=7935736491
+2025-05-23 10:44:13,075 - aiogram.event - INFO - Update id=566539474 is handled. Duration 311 ms by bot id=7935736491
+2025-05-23 10:44:13,527 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:44:13,530 - profile_generator - INFO - Профиль успешно сгенерирован для пользователя 12
+2025-05-23 10:44:13,532 - profile_generator - INFO - Профиль сохранен для пользователя 895018115
+2025-05-23 10:44:13,856 - survey_handler - INFO - Пользователь 895018115 успешно завершил опрос и получил профиль
+2025-05-23 10:44:13,857 - aiogram.event - INFO - Update id=566539472 is handled. Duration 8467 ms by bot id=7935736491
+2025-05-23 10:44:29,455 - aiogram.event - INFO - Update id=566539475 is handled. Duration 500 ms by bot id=7935736491
+2025-05-23 10:44:31,369 - services.tts - INFO - Отправка запроса к ElevenLabs API для пользователя 895018115
+2025-05-23 10:44:47,539 - services.tts - INFO - Аудио успешно сгенерировано и сохранено: tmp\relax_895018115_f168293c-0939-46c1-ba90-df3051484c8a.mp3
+2025-05-23 10:44:49,736 - meditation_handler - INFO - Голосовое сообщение успешно отправлено пользователю 895018115
+2025-05-23 10:44:49,737 - meditation_handler - INFO - Временный файл tmp\relax_895018115_f168293c-0939-46c1-ba90-df3051484c8a.mp3 удален
+2025-05-23 10:44:49,738 - meditation_handler - INFO - Пользователь 895018115 получил медитацию для расслабления
+2025-05-23 10:44:49,738 - aiogram.event - INFO - Update id=566539476 is handled. Duration 19000 ms by bot id=7935736491
+2025-05-23 10:45:01,893 - aiogram.event - INFO - Update id=566539477 is handled. Duration 188 ms by bot id=7935736491
+2025-05-23 10:45:12,639 - aiogram.event - INFO - Update id=566539478 is not handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:45:12,640 - aiogram.event - ERROR - Cause exception while process update id=566539478 by bot id=7935736491
+AttributeError: type object 'ReminderStates' has no attribute 'setting_time'
+Traceback (most recent call last):
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 41, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 111, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\Desktop\Ona_aiogram 1.0\reminder_handler.py", line 146, in cmd_reminders
+    await state.set_state(ReminderStates.setting_time)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'ReminderStates' has no attribute 'setting_time'
+2025-05-23 10:45:16,191 - reminder_handler - INFO - Пользователь 895018115 открыл меню выбора времени напоминаний
+2025-05-23 10:45:16,192 - aiogram.event - INFO - Update id=566539479 is handled. Duration 327 ms by bot id=7935736491
+2025-05-23 10:45:18,164 - apscheduler.scheduler - INFO - Added job "send_reminder" to job store "default"
+2025-05-23 10:45:18,487 - reminder_handler - INFO - Пользователь 895018115 установил время напоминаний на 08:00
+2025-05-23 10:45:18,487 - aiogram.event - INFO - Update id=566539480 is handled. Duration 327 ms by bot id=7935736491
+2025-05-23 10:45:22,023 - reminder_handler - INFO - Пользователь 895018115 открыл меню выбора дней недели для напоминаний
+2025-05-23 10:45:22,024 - aiogram.event - INFO - Update id=566539481 is handled. Duration 297 ms by bot id=7935736491
+2025-05-23 10:45:23,424 - aiogram.event - INFO - Update id=566539482 is handled. Duration 297 ms by bot id=7935736491
+2025-05-23 10:45:25,032 - aiogram.event - INFO - Update id=566539483 is handled. Duration 297 ms by bot id=7935736491
+2025-05-23 10:45:26,717 - apscheduler.scheduler - INFO - Removed job reminder_895018115
+2025-05-23 10:45:26,718 - apscheduler.scheduler - INFO - Added job "send_reminder" to job store "default"
+2025-05-23 10:45:27,007 - reminder_handler - INFO - Пользователь 895018115 установил дни напоминаний: ['mon', 'tue', 'wed', 'fri', 'sat', 'sun', 'thu']
+2025-05-23 10:45:27,007 - aiogram.event - INFO - Update id=566539484 is handled. Duration 297 ms by bot id=7935736491
+2025-05-23 10:45:30,323 - aiogram.event - INFO - Update id=566539485 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:45:32,461 - aiogram.event - INFO - Update id=566539486 is handled. Duration 562 ms by bot id=7935736491
+2025-05-23 10:45:33,228 - aiogram.event - INFO - Update id=566539487 is handled. Duration 436 ms by bot id=7935736491
+2025-05-23 10:45:36,628 - aiogram.event - INFO - Update id=566539488 is handled. Duration 313 ms by bot id=7935736491
+2025-05-23 10:45:43,320 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-23 10:45:43,583 - __main__ - INFO - Планировщик заданий остановлен
+2025-05-23 10:45:43,583 - __main__ - INFO - Бот остановлен
+2025-05-23 10:45:43,584 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-05-23 10:45:43,585 - aiogram.dispatcher - INFO - Polling stopped for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 10:46:14,260 - __main__ - INFO - Бот ОНА запускается...
+2025-05-23 10:46:14,677 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-23 10:46:14,677 - __main__ - INFO - Планировщик заданий запущен
+2025-05-23 10:46:14,678 - aiogram.dispatcher - INFO - Start polling
+2025-05-23 10:46:14,814 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 10:46:23,482 - aiogram.event - INFO - Update id=566539489 is handled. Duration 422 ms by bot id=7935736491
+2025-05-23 10:46:25,227 - survey_handler - INFO - Пользователь 7935736491 начал опрос
+2025-05-23 10:46:25,391 - aiogram.event - INFO - Update id=566539490 is handled. Duration 500 ms by bot id=7935736491
+2025-05-23 10:46:28,505 - aiogram.event - INFO - Update id=566539491 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:46:30,381 - aiogram.event - INFO - Update id=566539492 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:46:34,590 - aiogram.event - INFO - Update id=566539493 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:46:40,487 - aiogram.event - INFO - Update id=566539494 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:46:45,349 - aiogram.event - INFO - Update id=566539495 is handled. Duration 250 ms by bot id=7935736491
+2025-05-23 10:46:46,837 - aiogram.event - INFO - Update id=566539496 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:46:47,633 - aiogram.event - INFO - Update id=566539497 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:46:48,278 - aiogram.event - INFO - Update id=566539498 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:46:48,815 - aiogram.event - INFO - Update id=566539499 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:46:49,354 - aiogram.event - INFO - Update id=566539500 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:46:49,979 - aiogram.event - INFO - Update id=566539501 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:46:50,529 - aiogram.event - INFO - Update id=566539502 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:46:51,081 - aiogram.event - INFO - Update id=566539503 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:46:51,707 - aiogram.event - INFO - Update id=566539504 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:46:52,305 - aiogram.event - INFO - Update id=566539505 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 10:46:55,257 - aiogram.event - INFO - Update id=566539506 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:46:55,922 - aiogram.event - INFO - Update id=566539507 is handled. Duration 141 ms by bot id=7935736491
+2025-05-23 10:46:56,556 - aiogram.event - INFO - Update id=566539508 is handled. Duration 170 ms by bot id=7935736491
+2025-05-23 10:46:57,044 - aiogram.event - INFO - Update id=566539509 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:46:57,733 - aiogram.event - INFO - Update id=566539510 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:46:58,280 - aiogram.event - INFO - Update id=566539511 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:46:58,911 - aiogram.event - INFO - Update id=566539512 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:46:59,505 - aiogram.event - INFO - Update id=566539513 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:47:00,154 - aiogram.event - INFO - Update id=566539514 is handled. Duration 219 ms by bot id=7935736491
+2025-05-23 10:47:00,736 - aiogram.event - INFO - Update id=566539515 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:47:01,400 - aiogram.event - INFO - Update id=566539516 is handled. Duration 344 ms by bot id=7935736491
+2025-05-23 10:47:02,269 - aiogram.event - INFO - Update id=566539517 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:47:02,948 - aiogram.event - INFO - Update id=566539518 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 10:47:03,668 - aiogram.event - INFO - Update id=566539519 is handled. Duration 203 ms by bot id=7935736491
+2025-05-23 10:47:04,273 - aiogram.event - INFO - Update id=566539520 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:47:04,952 - aiogram.event - INFO - Update id=566539521 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:47:06,104 - aiogram.event - INFO - Update id=566539522 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:47:06,776 - aiogram.event - INFO - Update id=566539523 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:47:07,791 - aiogram.event - INFO - Update id=566539524 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:47:08,448 - aiogram.event - INFO - Update id=566539525 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 10:47:09,123 - aiogram.event - INFO - Update id=566539526 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:47:09,740 - aiogram.event - INFO - Update id=566539527 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:47:10,666 - aiogram.event - INFO - Update id=566539528 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:47:11,752 - aiogram.event - INFO - Update id=566539529 is handled. Duration 297 ms by bot id=7935736491
+2025-05-23 10:47:15,338 - aiogram.event - INFO - Update id=566539531 is handled. Duration 187 ms by bot id=7935736491
+2025-05-23 10:47:18,994 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:47:19,015 - profile_generator - INFO - Профиль успешно сгенерирован для пользователя Роберт
+2025-05-23 10:47:19,015 - profile_generator - INFO - Профиль сохранен для пользователя 895018115
+2025-05-23 10:47:19,344 - survey_handler - INFO - Пользователь 895018115 успешно завершил опрос и получил профиль
+2025-05-23 10:47:19,345 - aiogram.event - INFO - Update id=566539530 is handled. Duration 6266 ms by bot id=7935736491
+2025-05-23 10:47:20,926 - aiogram.event - INFO - Update id=566539533 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:47:22,555 - aiogram.event - INFO - Update id=566539534 is handled. Duration 639 ms by bot id=7935736491
+2025-05-23 10:47:25,556 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:47:25,562 - profile_generator - INFO - Профиль успешно сгенерирован для пользователя Роберт
+2025-05-23 10:47:25,562 - profile_generator - INFO - Профиль сохранен для пользователя 895018115
+2025-05-23 10:47:25,966 - survey_handler - INFO - Пользователь 895018115 успешно завершил опрос и получил профиль
+2025-05-23 10:47:25,967 - aiogram.event - INFO - Update id=566539532 is handled. Duration 8687 ms by bot id=7935736491
+2025-05-23 10:47:30,134 - aiogram.event - INFO - Update id=566539535 is handled. Duration 329 ms by bot id=7935736491
+2025-05-23 10:47:57,232 - aiogram.event - INFO - Update id=566539536 is handled. Duration 750 ms by bot id=7935736491
+2025-05-23 10:47:59,897 - apscheduler.scheduler - INFO - Added job "send_reminder" to job store "default"
+2025-05-23 10:48:00,277 - reminder_handler - INFO - Пользователь 895018115 включил напоминания на 20:00 в дни: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+2025-05-23 10:48:00,278 - aiogram.event - INFO - Update id=566539537 is handled. Duration 375 ms by bot id=7935736491
+2025-05-23 10:48:02,619 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-23 10:48:02,806 - aiogram.dispatcher - INFO - Polling stopped for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 10:48:02,807 - __main__ - INFO - Планировщик заданий остановлен
+2025-05-23 10:48:02,807 - __main__ - INFO - Бот остановлен
+2025-05-23 10:48:02,808 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-05-23 10:53:49,282 - __main__ - INFO - Бот ОНА запускается...
+2025-05-23 10:53:49,713 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-23 10:53:49,713 - __main__ - INFO - Планировщик заданий запущен
+2025-05-23 10:53:49,713 - aiogram.dispatcher - INFO - Start polling
+2025-05-23 10:53:49,851 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 10:54:16,073 - aiogram.event - INFO - Update id=566539538 is handled. Duration 2311 ms by bot id=7935736491
+2025-05-23 10:54:18,223 - survey_handler - INFO - Пользователь 7935736491 начал опрос
+2025-05-23 10:54:18,405 - aiogram.event - INFO - Update id=566539539 is handled. Duration 1328 ms by bot id=7935736491
+2025-05-23 10:54:23,609 - aiogram.event - INFO - Update id=566539540 is handled. Duration 217 ms by bot id=7935736491
+2025-05-23 10:54:24,471 - aiogram.event - INFO - Update id=566539541 is handled. Duration 312 ms by bot id=7935736491
+2025-05-23 10:54:25,465 - aiogram.event - INFO - Update id=566539542 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:54:26,951 - survey_handler - INFO - Пользователь 7935736491 начал опрос
+2025-05-23 10:54:27,125 - aiogram.event - INFO - Update id=566539543 is handled. Duration 797 ms by bot id=7935736491
+2025-05-23 10:54:29,841 - aiogram.event - INFO - Update id=566539544 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:54:32,251 - aiogram.event - INFO - Update id=566539545 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:54:36,895 - aiogram.event - INFO - Update id=566539546 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 10:54:42,359 - aiogram.event - INFO - Update id=566539547 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:54:48,052 - aiogram.event - INFO - Update id=566539548 is handled. Duration 217 ms by bot id=7935736491
+2025-05-23 10:54:50,061 - aiogram.event - INFO - Update id=566539549 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:54:51,981 - aiogram.event - INFO - Update id=566539550 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:54:52,717 - aiogram.event - INFO - Update id=566539551 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:54:53,462 - aiogram.event - INFO - Update id=566539552 is handled. Duration 234 ms by bot id=7935736491
+2025-05-23 10:54:54,106 - aiogram.event - INFO - Update id=566539553 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:54:54,875 - aiogram.event - INFO - Update id=566539554 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 10:54:55,623 - aiogram.event - INFO - Update id=566539555 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:54:56,366 - aiogram.event - INFO - Update id=566539556 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:54:57,127 - aiogram.event - INFO - Update id=566539557 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 10:54:57,798 - aiogram.event - INFO - Update id=566539558 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:54:58,611 - aiogram.event - INFO - Update id=566539559 is handled. Duration 250 ms by bot id=7935736491
+2025-05-23 10:54:59,230 - aiogram.event - INFO - Update id=566539560 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:55:00,061 - aiogram.event - INFO - Update id=566539561 is handled. Duration 280 ms by bot id=7935736491
+2025-05-23 10:55:00,739 - aiogram.event - INFO - Update id=566539562 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 10:55:01,432 - aiogram.event - INFO - Update id=566539563 is handled. Duration 170 ms by bot id=7935736491
+2025-05-23 10:55:02,102 - aiogram.event - INFO - Update id=566539564 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:55:02,744 - aiogram.event - INFO - Update id=566539565 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:55:03,419 - aiogram.event - INFO - Update id=566539566 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:55:04,017 - aiogram.event - INFO - Update id=566539567 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:55:04,678 - aiogram.event - INFO - Update id=566539568 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:55:05,395 - aiogram.event - INFO - Update id=566539569 is handled. Duration 187 ms by bot id=7935736491
+2025-05-23 10:55:06,002 - aiogram.event - INFO - Update id=566539570 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:55:06,690 - aiogram.event - INFO - Update id=566539571 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 10:55:07,356 - aiogram.event - INFO - Update id=566539572 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 10:55:08,001 - aiogram.event - INFO - Update id=566539573 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:55:08,700 - aiogram.event - INFO - Update id=566539574 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:55:09,345 - aiogram.event - INFO - Update id=566539575 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 10:55:10,575 - aiogram.event - INFO - Update id=566539576 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 10:55:11,282 - aiogram.event - INFO - Update id=566539577 is handled. Duration 187 ms by bot id=7935736491
+2025-05-23 10:55:12,397 - aiogram.event - INFO - Update id=566539578 is handled. Duration 219 ms by bot id=7935736491
+2025-05-23 10:55:13,259 - aiogram.event - INFO - Update id=566539579 is handled. Duration 282 ms by bot id=7935736491
+2025-05-23 10:55:14,111 - aiogram.event - INFO - Update id=566539580 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 10:55:15,306 - aiogram.event - INFO - Update id=566539581 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 10:55:15,913 - aiogram.event - INFO - Update id=566539582 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:55:23,632 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 10:55:23,648 - profile_generator - INFO - Профиль успешно сгенерирован для пользователя Роберт
+2025-05-23 10:55:23,649 - profile_generator - INFO - Профиль сохранен для пользователя 895018115
+2025-05-23 10:55:24,072 - survey_handler - INFO - Пользователь 895018115 успешно завершил опрос и получил профиль
+2025-05-23 10:55:24,072 - aiogram.event - INFO - Update id=566539583 is handled. Duration 7625 ms by bot id=7935736491
+2025-05-23 10:55:34,536 - aiogram.event - INFO - Update id=566539584 is handled. Duration 469 ms by bot id=7935736491
+2025-05-23 10:55:57,513 - survey_handler - INFO - Пользователь 895018115 вернулся в главное меню
+2025-05-23 10:55:57,513 - aiogram.event - INFO - Update id=566539585 is handled. Duration 922 ms by bot id=7935736491
+2025-05-23 10:56:00,070 - aiogram.event - INFO - Update id=566539586 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 10:56:01,620 - meditation_handler - INFO - Пользователь 895018115 запросил справку по медитациям
+2025-05-23 10:56:01,621 - aiogram.event - INFO - Update id=566539587 is handled. Duration 313 ms by bot id=7935736491
+2025-05-23 10:56:05,240 - aiogram.event - INFO - Update id=566539588 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 10:56:07,317 - aiogram.event - INFO - Update id=566539589 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 10:56:26,284 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-23 10:56:26,551 - __main__ - INFO - Планировщик заданий остановлен
+2025-05-23 10:56:26,552 - __main__ - INFO - Бот остановлен
+2025-05-23 10:56:26,552 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-05-23 10:56:26,553 - aiogram.dispatcher - INFO - Polling stopped for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 11:04:25,191 - __main__ - INFO - Бот ОНА запускается...
+2025-05-23 11:04:25,652 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-23 11:04:25,652 - __main__ - INFO - Планировщик заданий запущен
+2025-05-23 11:04:25,652 - aiogram.dispatcher - INFO - Start polling
+2025-05-23 11:04:25,784 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 11:04:37,829 - aiogram.event - INFO - Update id=566539591 is handled. Duration 452 ms by bot id=7935736491
+2025-05-23 11:04:39,905 - survey_handler - INFO - Пользователь 7935736491 начал опрос
+2025-05-23 11:04:40,068 - aiogram.event - INFO - Update id=566539592 is handled. Duration 766 ms by bot id=7935736491
+2025-05-23 11:04:40,958 - aiogram.event - INFO - Update id=566539593 is handled. Duration 187 ms by bot id=7935736491
+2025-05-23 11:04:42,244 - aiogram.event - INFO - Update id=566539594 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 11:04:44,258 - survey_handler - INFO - Пользователь 7935736491 начал опрос
+2025-05-23 11:04:44,413 - aiogram.event - INFO - Update id=566539595 is handled. Duration 625 ms by bot id=7935736491
+2025-05-23 11:04:48,688 - aiogram.event - INFO - Update id=566539596 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 11:04:50,415 - aiogram.event - INFO - Update id=566539597 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 11:04:56,236 - aiogram.event - INFO - Update id=566539598 is handled. Duration 140 ms by bot id=7935736491
+2025-05-23 11:04:58,925 - aiogram.event - INFO - Update id=566539599 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 11:05:00,784 - aiogram.event - INFO - Update id=566539600 is handled. Duration 203 ms by bot id=7935736491
+2025-05-23 11:05:02,417 - aiogram.event - INFO - Update id=566539601 is handled. Duration 235 ms by bot id=7935736491
+2025-05-23 11:05:03,822 - aiogram.event - INFO - Update id=566539602 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 11:05:04,612 - aiogram.event - INFO - Update id=566539603 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 11:05:05,380 - aiogram.event - INFO - Update id=566539604 is handled. Duration 188 ms by bot id=7935736491
+2025-05-23 11:05:06,275 - aiogram.event - INFO - Update id=566539605 is handled. Duration 328 ms by bot id=7935736491
+2025-05-23 11:05:06,932 - aiogram.event - INFO - Update id=566539606 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 11:05:07,586 - aiogram.event - INFO - Update id=566539607 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 11:05:08,638 - aiogram.event - INFO - Update id=566539608 is handled. Duration 204 ms by bot id=7935736491
+2025-05-23 11:05:09,384 - aiogram.event - INFO - Update id=566539609 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 11:05:09,985 - aiogram.event - INFO - Update id=566539610 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 11:05:10,708 - aiogram.event - INFO - Update id=566539611 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 11:05:11,428 - aiogram.event - INFO - Update id=566539612 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 11:05:12,224 - aiogram.event - INFO - Update id=566539613 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 11:05:13,106 - aiogram.event - INFO - Update id=566539614 is handled. Duration 327 ms by bot id=7935736491
+2025-05-23 11:05:13,644 - aiogram.event - INFO - Update id=566539615 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 11:05:14,290 - aiogram.event - INFO - Update id=566539616 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 11:05:14,928 - aiogram.event - INFO - Update id=566539617 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 11:05:15,725 - aiogram.event - INFO - Update id=566539618 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 11:05:16,278 - aiogram.event - INFO - Update id=566539619 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 11:05:17,273 - aiogram.event - INFO - Update id=566539620 is handled. Duration 203 ms by bot id=7935736491
+2025-05-23 11:05:17,906 - aiogram.event - INFO - Update id=566539621 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 11:05:18,718 - aiogram.event - INFO - Update id=566539622 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 11:05:19,303 - aiogram.event - INFO - Update id=566539623 is handled. Duration 170 ms by bot id=7935736491
+2025-05-23 11:05:20,014 - aiogram.event - INFO - Update id=566539624 is handled. Duration 188 ms by bot id=7935736491
+2025-05-23 11:05:20,932 - aiogram.event - INFO - Update id=566539625 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 11:05:21,613 - aiogram.event - INFO - Update id=566539626 is handled. Duration 188 ms by bot id=7935736491
+2025-05-23 11:05:22,262 - aiogram.event - INFO - Update id=566539627 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 11:05:22,889 - aiogram.event - INFO - Update id=566539628 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 11:05:23,399 - aiogram.event - INFO - Update id=566539629 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 11:05:23,987 - aiogram.event - INFO - Update id=566539630 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 11:05:25,018 - aiogram.event - INFO - Update id=566539631 is handled. Duration 219 ms by bot id=7935736491
+2025-05-23 11:05:26,463 - aiogram.event - INFO - Update id=566539632 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 11:05:27,032 - aiogram.event - INFO - Update id=566539633 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 11:05:27,689 - aiogram.event - INFO - Update id=566539634 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 11:05:30,437 - aiogram.event - INFO - Update id=566539636 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 11:05:34,441 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 11:05:34,497 - profile_generator - INFO - Профиль успешно сгенерирован для пользователя Роберт
+2025-05-23 11:05:34,498 - profile_generator - INFO - Профиль сохранен для пользователя 895018115
+2025-05-23 11:05:34,829 - survey_handler - INFO - Пользователь 895018115 успешно завершил опрос и получил профиль
+2025-05-23 11:05:34,830 - aiogram.event - INFO - Update id=566539635 is handled. Duration 6625 ms by bot id=7935736491
+2025-05-23 11:05:36,823 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 11:05:36,825 - profile_generator - INFO - Профиль успешно сгенерирован для пользователя Роберт
+2025-05-23 11:05:36,826 - profile_generator - INFO - Профиль сохранен для пользователя 895018115
+2025-05-23 11:05:37,287 - survey_handler - INFO - Пользователь 895018115 успешно завершил опрос и получил профиль
+2025-05-23 11:05:37,288 - aiogram.event - INFO - Update id=566539637 is handled. Duration 5500 ms by bot id=7935736491
+2025-05-23 11:05:40,128 - aiogram.event - INFO - Update id=566539638 is handled. Duration 547 ms by bot id=7935736491
+2025-05-23 11:05:51,667 - aiogram.event - INFO - Update id=566539639 is handled. Duration 453 ms by bot id=7935736491
+2025-05-23 11:05:55,405 - aiogram.event - INFO - Update id=566539640 is handled. Duration 344 ms by bot id=7935736491
+2025-05-23 11:06:00,601 - aiogram.event - INFO - Update id=566539641 is handled. Duration 906 ms by bot id=7935736491
+2025-05-23 11:06:04,053 - aiogram.event - INFO - Update id=566539642 is handled. Duration 327 ms by bot id=7935736491
+2025-05-23 11:06:05,899 - aiogram.event - INFO - Update id=566539643 is handled. Duration 312 ms by bot id=7935736491
+2025-05-23 11:06:16,592 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 11:06:16,744 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115 (тип: Интеллектуальный)
+2025-05-23 11:06:16,745 - aiogram.event - INFO - Update id=566539644 is handled. Duration 1422 ms by bot id=7935736491
+2025-05-23 11:06:30,064 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 11:06:30,230 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115 (тип: Интеллектуальный)
+2025-05-23 11:06:30,231 - aiogram.event - INFO - Update id=566539645 is handled. Duration 1842 ms by bot id=7935736491
+2025-05-23 11:06:50,172 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 11:06:50,608 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115 (тип: Интеллектуальный)
+2025-05-23 11:06:50,609 - aiogram.event - INFO - Update id=566539646 is handled. Duration 2561 ms by bot id=7935736491
+2025-05-23 11:07:04,268 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 11:07:04,557 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115 (тип: Интеллектуальный)
+2025-05-23 11:07:04,557 - aiogram.event - INFO - Update id=566539647 is handled. Duration 3217 ms by bot id=7935736491
+2025-05-23 11:07:18,001 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-23 11:07:18,263 - __main__ - INFO - Планировщик заданий остановлен
+2025-05-23 11:07:18,263 - __main__ - INFO - Бот остановлен
+2025-05-23 11:07:18,264 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-05-23 11:07:18,265 - aiogram.dispatcher - INFO - Polling stopped for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 11:09:29,041 - __main__ - INFO - Бот ОНА запускается...
+2025-05-23 11:09:29,485 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-23 11:09:29,485 - __main__ - INFO - Планировщик заданий запущен
+2025-05-23 11:09:29,486 - aiogram.dispatcher - INFO - Start polling
+2025-05-23 11:09:29,613 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 11:10:44,940 - aiogram.event - INFO - Update id=566539648 is handled. Duration 452 ms by bot id=7935736491
+2025-05-23 11:10:46,662 - survey_handler - INFO - Пользователь 7935736491 начал опрос
+2025-05-23 11:10:46,817 - aiogram.event - INFO - Update id=566539649 is handled. Duration 641 ms by bot id=7935736491
+2025-05-23 12:02:05,636 - aiogram.event - INFO - Update id=566539650 is handled. Duration 500 ms by bot id=7935736491
+2025-05-23 12:02:06,762 - aiogram.event - INFO - Update id=566539651 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:02:08,049 - aiogram.event - INFO - Update id=566539652 is handled. Duration 250 ms by bot id=7935736491
+2025-05-23 12:02:09,104 - aiogram.event - INFO - Update id=566539653 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 12:02:09,991 - aiogram.event - INFO - Update id=566539654 is handled. Duration 281 ms by bot id=7935736491
+2025-05-23 12:02:11,319 - aiogram.event - INFO - Update id=566539655 is handled. Duration 280 ms by bot id=7935736491
+2025-05-23 12:02:12,045 - aiogram.event - INFO - Update id=566539656 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 12:02:12,843 - aiogram.event - INFO - Update id=566539657 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 12:02:13,464 - aiogram.event - INFO - Update id=566539658 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 12:02:14,112 - aiogram.event - INFO - Update id=566539659 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:02:14,840 - aiogram.event - INFO - Update id=566539660 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 12:02:15,569 - aiogram.event - INFO - Update id=566539661 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 12:02:16,253 - aiogram.event - INFO - Update id=566539662 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:02:16,886 - aiogram.event - INFO - Update id=566539663 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:02:17,483 - aiogram.event - INFO - Update id=566539664 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 12:02:18,135 - aiogram.event - INFO - Update id=566539665 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 12:02:18,735 - aiogram.event - INFO - Update id=566539666 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 12:02:19,380 - aiogram.event - INFO - Update id=566539667 is handled. Duration 188 ms by bot id=7935736491
+2025-05-23 12:02:19,926 - aiogram.event - INFO - Update id=566539668 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 12:02:20,847 - aiogram.event - INFO - Update id=566539669 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 12:02:22,181 - aiogram.event - INFO - Update id=566539670 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 12:02:22,810 - aiogram.event - INFO - Update id=566539671 is handled. Duration 170 ms by bot id=7935736491
+2025-05-23 12:02:23,635 - aiogram.event - INFO - Update id=566539672 is handled. Duration 250 ms by bot id=7935736491
+2025-05-23 12:02:24,267 - aiogram.event - INFO - Update id=566539673 is handled. Duration 266 ms by bot id=7935736491
+2025-05-23 12:02:24,959 - aiogram.event - INFO - Update id=566539674 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 12:02:25,690 - aiogram.event - INFO - Update id=566539675 is handled. Duration 296 ms by bot id=7935736491
+2025-05-23 12:02:26,502 - aiogram.event - INFO - Update id=566539676 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 12:02:27,051 - aiogram.event - INFO - Update id=566539677 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 12:02:27,724 - aiogram.event - INFO - Update id=566539678 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 12:02:28,539 - aiogram.event - INFO - Update id=566539679 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:02:29,472 - aiogram.event - INFO - Update id=566539680 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 12:02:30,205 - aiogram.event - INFO - Update id=566539681 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 12:02:31,239 - aiogram.event - INFO - Update id=566539682 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 12:02:31,954 - aiogram.event - INFO - Update id=566539683 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 12:02:33,008 - aiogram.event - INFO - Update id=566539684 is handled. Duration 188 ms by bot id=7935736491
+2025-05-23 12:02:33,626 - aiogram.event - INFO - Update id=566539685 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 12:02:34,238 - aiogram.event - INFO - Update id=566539686 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:02:34,872 - aiogram.event - INFO - Update id=566539687 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:02:35,542 - aiogram.event - INFO - Update id=566539688 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 12:02:36,197 - questions - INFO - Подсчитано 34 ответов на вопросы Vasini
+2025-05-23 12:02:36,198 - questions - INFO - Распределение ответов: A (2), B (20), C (11), D (1)
+2025-05-23 12:02:36,199 - questions - INFO - Определен тип личности: Эмоциональный
+2025-05-23 12:02:36,201 - questions - INFO - Подсчитано 34 ответов на вопросы Vasini
+2025-05-23 12:02:36,202 - questions - INFO - Распределение ответов: A (2), B (20), C (11), D (1)
+2025-05-23 12:02:36,202 - questions - INFO - Определен тип личности: Эмоциональный
+2025-05-23 12:02:36,203 - questions - INFO - Подсчитано 34 ответов на вопросы Vasini
+2025-05-23 12:02:36,203 - questions - INFO - Распределение ответов: A (2), B (20), C (11), D (1)
+2025-05-23 12:02:36,204 - questions - INFO - Определен тип личности: Эмоциональный
+2025-05-23 12:02:44,029 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 12:02:44,052 - profile_generator - INFO - Профиль успешно сгенерирован для пользователя 1
+2025-05-23 12:02:44,053 - profile_generator - INFO - Профиль сохранен для пользователя 895018115
+2025-05-23 12:02:44,443 - survey_handler - INFO - Пользователь 895018115 успешно завершил опрос и получил профиль
+2025-05-23 12:02:44,443 - aiogram.event - INFO - Update id=566539689 is handled. Duration 8405 ms by bot id=7935736491
+2025-05-23 12:03:05,930 - questions - INFO - Подсчитано 34 ответов на вопросы Vasini
+2025-05-23 12:03:05,931 - questions - INFO - Распределение ответов: A (2), B (20), C (11), D (1)
+2025-05-23 12:03:05,931 - questions - INFO - Определен тип личности: Эмоциональный
+2025-05-23 12:03:06,951 - aiogram.event - INFO - Update id=566539690 is handled. Duration 1016 ms by bot id=7935736491
+2025-05-23 12:03:29,188 - survey_handler - INFO - Выбран персонализированный совет для типа личности Эмоциональный
+2025-05-23 12:03:29,982 - aiogram.event - INFO - Update id=566539691 is handled. Duration 797 ms by bot id=7935736491
+2025-05-23 12:04:34,969 - aiogram.event - INFO - Update id=566539692 is handled. Duration 421 ms by bot id=7935736491
+2025-05-23 12:04:36,636 - services.tts - INFO - Отправка запроса к ElevenLabs API для пользователя 895018115
+2025-05-23 12:04:38,062 - services.tts - ERROR - Ошибка при генерации аудио: 401, {"detail":{"status":"quota_exceeded","message":"This request exceeds your quota of 10000. You have 476 credits remaining, while 1097 credits are required for this request."}}
+2025-05-23 12:04:38,451 - meditation_handler - INFO - Пользователь 895018115 получил медитацию для фокусировки
+2025-05-23 12:04:38,452 - aiogram.event - INFO - Update id=566539693 is handled. Duration 2577 ms by bot id=7935736491
+2025-05-23 12:04:43,899 - aiogram.event - INFO - Update id=566539694 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:04:45,359 - services.tts - INFO - Отправка запроса к ElevenLabs API для пользователя 895018115
+2025-05-23 12:04:46,299 - services.tts - ERROR - Ошибка при генерации аудио: 401, {"detail":{"status":"quota_exceeded","message":"This request exceeds your quota of 10000. You have 476 credits remaining, while 1097 credits are required for this request."}}
+2025-05-23 12:04:46,720 - meditation_handler - INFO - Пользователь 895018115 получил медитацию для фокусировки
+2025-05-23 12:04:46,721 - aiogram.event - INFO - Update id=566539695 is handled. Duration 1890 ms by bot id=7935736491
+2025-05-23 12:04:49,992 - services.tts - INFO - Отправка запроса к ElevenLabs API для пользователя 895018115
+2025-05-23 12:04:50,947 - services.tts - ERROR - Ошибка при генерации аудио: 401, {"detail":{"status":"quota_exceeded","message":"This request exceeds your quota of 10000. You have 476 credits remaining, while 1296 credits are required for this request."}}
+2025-05-23 12:04:51,329 - meditation_handler - INFO - Пользователь 895018115 получил медитацию для сна
+2025-05-23 12:04:51,330 - aiogram.event - INFO - Update id=566539696 is handled. Duration 1811 ms by bot id=7935736491
+2025-05-23 12:04:54,499 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-23 12:04:54,695 - aiogram.dispatcher - INFO - Polling stopped for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 12:04:54,695 - __main__ - INFO - Планировщик заданий остановлен
+2025-05-23 12:04:54,696 - __main__ - INFO - Бот остановлен
+2025-05-23 12:04:54,696 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-05-23 12:07:15,008 - __main__ - INFO - Бот ОНА запускается...
+2025-05-23 12:07:15,717 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-23 12:07:15,718 - __main__ - INFO - Планировщик заданий запущен
+2025-05-23 12:07:15,718 - aiogram.dispatcher - INFO - Start polling
+2025-05-23 12:07:15,848 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 12:07:38,091 - aiogram.event - INFO - Update id=566539697 is handled. Duration 484 ms by bot id=7935736491
+2025-05-23 12:07:40,067 - survey_handler - INFO - Пользователь 7935736491 начал опрос
+2025-05-23 12:07:40,266 - aiogram.event - INFO - Update id=566539698 is handled. Duration 688 ms by bot id=7935736491
+2025-05-23 12:07:53,284 - aiogram.event - INFO - Update id=566539699 is handled. Duration 219 ms by bot id=7935736491
+2025-05-23 12:07:53,688 - aiogram.event - INFO - Update id=566539700 is handled. Duration 264 ms by bot id=7935736491
+2025-05-23 12:07:54,619 - aiogram.event - INFO - Update id=566539701 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 12:07:55,718 - aiogram.event - INFO - Update id=566539702 is handled. Duration 187 ms by bot id=7935736491
+2025-05-23 12:07:56,965 - aiogram.event - INFO - Update id=566539703 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 12:07:58,713 - aiogram.event - INFO - Update id=566539704 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 12:07:59,437 - aiogram.event - INFO - Update id=566539705 is handled. Duration 170 ms by bot id=7935736491
+2025-05-23 12:08:00,042 - aiogram.event - INFO - Update id=566539706 is handled. Duration 203 ms by bot id=7935736491
+2025-05-23 12:08:00,701 - aiogram.event - INFO - Update id=566539707 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 12:08:01,330 - aiogram.event - INFO - Update id=566539708 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 12:08:01,884 - aiogram.event - INFO - Update id=566539709 is handled. Duration 204 ms by bot id=7935736491
+2025-05-23 12:08:02,442 - aiogram.event - INFO - Update id=566539710 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 12:08:03,051 - aiogram.event - INFO - Update id=566539711 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 12:08:03,622 - aiogram.event - INFO - Update id=566539712 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:08:04,178 - aiogram.event - INFO - Update id=566539713 is handled. Duration 217 ms by bot id=7935736491
+2025-05-23 12:08:04,753 - aiogram.event - INFO - Update id=566539714 is handled. Duration 204 ms by bot id=7935736491
+2025-05-23 12:08:05,433 - aiogram.event - INFO - Update id=566539715 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 12:08:05,955 - aiogram.event - INFO - Update id=566539716 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 12:08:06,675 - aiogram.event - INFO - Update id=566539717 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 12:08:07,311 - aiogram.event - INFO - Update id=566539718 is handled. Duration 170 ms by bot id=7935736491
+2025-05-23 12:08:08,116 - aiogram.event - INFO - Update id=566539719 is handled. Duration 281 ms by bot id=7935736491
+2025-05-23 12:08:08,706 - aiogram.event - INFO - Update id=566539720 is handled. Duration 234 ms by bot id=7935736491
+2025-05-23 12:08:09,280 - aiogram.event - INFO - Update id=566539721 is handled. Duration 219 ms by bot id=7935736491
+2025-05-23 12:08:09,975 - aiogram.event - INFO - Update id=566539722 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 12:08:10,595 - aiogram.event - INFO - Update id=566539723 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 12:08:11,655 - aiogram.event - INFO - Update id=566539724 is handled. Duration 250 ms by bot id=7935736491
+2025-05-23 12:08:13,007 - aiogram.event - INFO - Update id=566539725 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:08:13,663 - aiogram.event - INFO - Update id=566539726 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:08:14,470 - aiogram.event - INFO - Update id=566539727 is handled. Duration 187 ms by bot id=7935736491
+2025-05-23 12:08:15,186 - aiogram.event - INFO - Update id=566539728 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 12:08:15,994 - aiogram.event - INFO - Update id=566539729 is handled. Duration 202 ms by bot id=7935736491
+2025-05-23 12:08:16,945 - aiogram.event - INFO - Update id=566539730 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 12:08:18,371 - aiogram.event - INFO - Update id=566539731 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 12:08:19,047 - aiogram.event - INFO - Update id=566539732 is handled. Duration 203 ms by bot id=7935736491
+2025-05-23 12:08:20,170 - aiogram.event - INFO - Update id=566539733 is handled. Duration 203 ms by bot id=7935736491
+2025-05-23 12:08:20,870 - aiogram.event - INFO - Update id=566539734 is handled. Duration 281 ms by bot id=7935736491
+2025-05-23 12:08:21,611 - aiogram.event - INFO - Update id=566539735 is handled. Duration 217 ms by bot id=7935736491
+2025-05-23 12:08:22,437 - aiogram.event - INFO - Update id=566539736 is handled. Duration 217 ms by bot id=7935736491
+2025-05-23 12:08:25,003 - aiogram.event - INFO - Update id=566539737 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:08:35,081 - questions - INFO - Подсчитано 34 ответов на вопросы Vasini
+2025-05-23 12:08:35,082 - questions - INFO - Распределение ответов: A (16), B (4), C (13), D (1)
+2025-05-23 12:08:35,082 - questions - INFO - Определен тип личности: Интеллектуальный с элементами Практический
+2025-05-23 12:08:35,083 - questions - INFO - Подсчитано 34 ответов на вопросы Vasini
+2025-05-23 12:08:35,083 - questions - INFO - Распределение ответов: A (16), B (4), C (13), D (1)
+2025-05-23 12:08:35,083 - questions - INFO - Определен тип личности: Интеллектуальный с элементами Практический
+2025-05-23 12:08:35,084 - questions - INFO - Подсчитано 34 ответов на вопросы Vasini
+2025-05-23 12:08:35,084 - questions - INFO - Распределение ответов: A (16), B (4), C (13), D (1)
+2025-05-23 12:08:35,084 - questions - INFO - Определен тип личности: Интеллектуальный с элементами Практический
+2025-05-23 12:08:45,918 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 12:08:45,948 - profile_generator - INFO - Профиль успешно сгенерирован для пользователя 1
+2025-05-23 12:08:45,949 - profile_generator - INFO - Профиль сохранен для пользователя 895018115
+2025-05-23 12:08:46,368 - survey_handler - INFO - Пользователь 895018115 успешно завершил опрос и получил профиль
+2025-05-23 12:08:46,369 - aiogram.event - INFO - Update id=566539738 is handled. Duration 11483 ms by bot id=7935736491
+2025-05-23 12:08:49,780 - questions - INFO - Подсчитано 34 ответов на вопросы Vasini
+2025-05-23 12:08:49,780 - questions - INFO - Распределение ответов: A (16), B (4), C (13), D (1)
+2025-05-23 12:08:49,781 - questions - INFO - Определен тип личности: Интеллектуальный с элементами Практический
+2025-05-23 12:08:50,446 - aiogram.event - INFO - Update id=566539739 is handled. Duration 671 ms by bot id=7935736491
+2025-05-23 12:08:53,099 - survey_handler - INFO - Выбран персонализированный совет для типа личности Интеллектуальный
+2025-05-23 12:08:53,500 - aiogram.event - INFO - Update id=566539740 is handled. Duration 406 ms by bot id=7935736491
+2025-05-23 12:08:56,829 - aiogram.event - INFO - Update id=566539741 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 12:08:58,364 - services.tts - INFO - Отправка запроса к ElevenLabs API для пользователя 895018115
+2025-05-23 12:08:59,535 - services.tts - ERROR - Ошибка при генерации аудио: 401, {"detail":{"status":"quota_exceeded","message":"This request exceeds your quota of 10000. You have 476 credits remaining, while 1097 credits are required for this request."}}
+2025-05-23 12:08:59,886 - meditation_handler - INFO - Пользователь 895018115 получил текст медитации из-за превышения квоты
+2025-05-23 12:08:59,887 - meditation_handler - INFO - Пользователь 895018115 получил медитацию для фокусировки
+2025-05-23 12:08:59,887 - aiogram.event - INFO - Update id=566539742 is handled. Duration 2313 ms by bot id=7935736491
+2025-05-23 12:09:20,768 - aiogram.event - INFO - Update id=566539743 is handled. Duration 469 ms by bot id=7935736491
+2025-05-23 12:09:22,447 - aiogram.event - INFO - Update id=566539744 is handled. Duration 625 ms by bot id=7935736491
+2025-05-23 12:09:36,904 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 12:09:37,060 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115 (тип: Интеллектуальный)
+2025-05-23 12:09:37,061 - aiogram.event - INFO - Update id=566539745 is handled. Duration 1467 ms by bot id=7935736491
+2025-05-23 12:09:46,726 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-23 12:09:46,999 - __main__ - INFO - Планировщик заданий остановлен
+2025-05-23 12:09:47,000 - __main__ - INFO - Бот остановлен
+2025-05-23 12:09:47,000 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-05-23 12:09:47,001 - aiogram.dispatcher - INFO - Polling stopped for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 12:12:52,408 - __main__ - INFO - Бот ОНА запускается...
+2025-05-23 12:12:52,983 - apscheduler.scheduler - INFO - Scheduler started
+2025-05-23 12:12:52,984 - __main__ - INFO - Планировщик заданий запущен
+2025-05-23 12:12:52,984 - aiogram.dispatcher - INFO - Start polling
+2025-05-23 12:12:53,121 - aiogram.dispatcher - INFO - Run polling for bot @ona_ai_bot id=7935736491 - 'ONA ai'
+2025-05-23 12:13:11,790 - aiogram.event - INFO - Update id=566539746 is handled. Duration 453 ms by bot id=7935736491
+2025-05-23 12:13:13,100 - survey_handler - INFO - Пользователь 7935736491 начал опрос
+2025-05-23 12:13:13,233 - aiogram.event - INFO - Update id=566539747 is handled. Duration 625 ms by bot id=7935736491
+2025-05-23 12:13:14,490 - aiogram.event - INFO - Update id=566539748 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 12:13:14,753 - aiogram.event - INFO - Update id=566539749 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:13:14,976 - aiogram.event - INFO - Update id=566539750 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 12:13:15,839 - aiogram.event - INFO - Update id=566539751 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 12:13:16,865 - aiogram.event - INFO - Update id=566539752 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 12:13:17,995 - aiogram.event - INFO - Update id=566539753 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:13:18,899 - aiogram.event - INFO - Update id=566539754 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:13:19,558 - aiogram.event - INFO - Update id=566539755 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 12:13:20,235 - aiogram.event - INFO - Update id=566539756 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 12:13:21,020 - aiogram.event - INFO - Update id=566539757 is handled. Duration 203 ms by bot id=7935736491
+2025-05-23 12:13:21,698 - aiogram.event - INFO - Update id=566539758 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 12:13:22,453 - aiogram.event - INFO - Update id=566539759 is handled. Duration 218 ms by bot id=7935736491
+2025-05-23 12:13:23,071 - aiogram.event - INFO - Update id=566539760 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 12:13:23,782 - aiogram.event - INFO - Update id=566539761 is handled. Duration 187 ms by bot id=7935736491
+2025-05-23 12:13:24,507 - aiogram.event - INFO - Update id=566539762 is handled. Duration 234 ms by bot id=7935736491
+2025-05-23 12:13:25,172 - aiogram.event - INFO - Update id=566539763 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:13:25,932 - aiogram.event - INFO - Update id=566539764 is handled. Duration 233 ms by bot id=7935736491
+2025-05-23 12:13:26,857 - aiogram.event - INFO - Update id=566539765 is handled. Duration 265 ms by bot id=7935736491
+2025-05-23 12:13:27,416 - aiogram.event - INFO - Update id=566539766 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:13:28,108 - aiogram.event - INFO - Update id=566539767 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 12:13:28,899 - aiogram.event - INFO - Update id=566539768 is handled. Duration 219 ms by bot id=7935736491
+2025-05-23 12:13:29,622 - aiogram.event - INFO - Update id=566539769 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:13:30,146 - aiogram.event - INFO - Update id=566539770 is handled. Duration 187 ms by bot id=7935736491
+2025-05-23 12:13:31,052 - aiogram.event - INFO - Update id=566539771 is handled. Duration 264 ms by bot id=7935736491
+2025-05-23 12:13:31,822 - aiogram.event - INFO - Update id=566539772 is handled. Duration 280 ms by bot id=7935736491
+2025-05-23 12:13:32,563 - aiogram.event - INFO - Update id=566539773 is handled. Duration 170 ms by bot id=7935736491
+2025-05-23 12:13:33,308 - aiogram.event - INFO - Update id=566539774 is handled. Duration 170 ms by bot id=7935736491
+2025-05-23 12:13:33,962 - aiogram.event - INFO - Update id=566539775 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 12:13:34,626 - aiogram.event - INFO - Update id=566539776 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:13:35,682 - aiogram.event - INFO - Update id=566539777 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 12:13:36,317 - aiogram.event - INFO - Update id=566539778 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 12:13:36,946 - aiogram.event - INFO - Update id=566539779 is handled. Duration 171 ms by bot id=7935736491
+2025-05-23 12:13:37,536 - aiogram.event - INFO - Update id=566539780 is handled. Duration 156 ms by bot id=7935736491
+2025-05-23 12:13:38,171 - aiogram.event - INFO - Update id=566539781 is handled. Duration 172 ms by bot id=7935736491
+2025-05-23 12:13:39,177 - aiogram.event - INFO - Update id=566539782 is handled. Duration 250 ms by bot id=7935736491
+2025-05-23 12:13:40,011 - aiogram.event - INFO - Update id=566539783 is handled. Duration 359 ms by bot id=7935736491
+2025-05-23 12:13:40,532 - aiogram.event - INFO - Update id=566539784 is handled. Duration 203 ms by bot id=7935736491
+2025-05-23 12:13:41,205 - aiogram.event - INFO - Update id=566539785 is handled. Duration 155 ms by bot id=7935736491
+2025-05-23 12:13:41,844 - aiogram.event - INFO - Update id=566539786 is handled. Duration 157 ms by bot id=7935736491
+2025-05-23 12:13:42,905 - questions - INFO - Подсчитано 34 ответов на вопросы Vasini
+2025-05-23 12:13:42,905 - questions - INFO - Распределение ответов: A (3), B (24), C (4), D (3)
+2025-05-23 12:13:42,906 - questions - INFO - Определен тип личности: Эмоциональный
+2025-05-23 12:13:42,906 - questions - INFO - Подсчитано 34 ответов на вопросы Vasini
+2025-05-23 12:13:42,907 - questions - INFO - Распределение ответов: A (3), B (24), C (4), D (3)
+2025-05-23 12:13:42,907 - questions - INFO - Определен тип личности: Эмоциональный
+2025-05-23 12:13:42,907 - questions - INFO - Подсчитано 34 ответов на вопросы Vasini
+2025-05-23 12:13:42,908 - questions - INFO - Распределение ответов: A (3), B (24), C (4), D (3)
+2025-05-23 12:13:42,908 - questions - INFO - Определен тип личности: Эмоциональный
+2025-05-23 12:13:49,738 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 12:13:49,752 - profile_generator - INFO - Профиль успешно сгенерирован для пользователя 1
+2025-05-23 12:13:49,753 - profile_generator - INFO - Профиль сохранен для пользователя 895018115
+2025-05-23 12:13:50,104 - survey_handler - INFO - Пользователь 895018115 успешно завершил опрос и получил профиль
+2025-05-23 12:13:50,105 - aiogram.event - INFO - Update id=566539787 is handled. Duration 7358 ms by bot id=7935736491
+2025-05-23 12:15:45,764 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 12:15:45,765 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 12:15:46,324 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115 (тип: Эмоциональный)
+2025-05-23 12:15:46,324 - aiogram.event - INFO - Update id=566539788 is handled. Duration 7593 ms by bot id=7935736491
+2025-05-23 12:15:46,347 - conversation_handler - INFO - Отправлен персонализированный ответ пользователю 895018115 (тип: Эмоциональный)
+2025-05-23 12:15:46,348 - aiogram.event - INFO - Update id=566539789 is handled. Duration 2140 ms by bot id=7935736491
+2025-05-23 12:16:04,309 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2025-05-23 12:16:06,249 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-23 12:16:06,487 - voice_handler - INFO - Голосовое сообщение пользователя 895018115 успешно обработано
+2025-05-23 12:16:06,488 - aiogram.event - INFO - Update id=566539790 is handled. Duration 6608 ms by bot id=7935736491
+2025-05-23 12:16:29,989 - aiogram.event - INFO - Update id=566539791 is handled. Duration 422 ms by bot id=7935736491
+2025-05-23 12:16:31,306 - aiogram.event - INFO - Update id=566539792 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 12:16:32,759 - aiogram.event - INFO - Update id=566539793 is handled. Duration 484 ms by bot id=7935736491
+2025-05-23 12:16:33,198 - aiogram.event - INFO - Update id=566539794 is handled. Duration 186 ms by bot id=7935736491
+2025-05-23 12:16:35,143 - reminder_handler - INFO - Пользователь 895018115 открыл меню выбора времени напоминаний
+2025-05-23 12:16:35,143 - aiogram.event - INFO - Update id=566539795 is handled. Duration 329 ms by bot id=7935736491
+2025-05-23 12:16:36,606 - reminder_handler - INFO - Пользователь 895018115 вернулся в меню напоминаний
+2025-05-23 12:16:36,607 - aiogram.event - INFO - Update id=566539796 is handled. Duration 406 ms by bot id=7935736491
+2025-05-23 12:16:37,599 - survey_handler - INFO - Выбран персонализированный совет для типа личности Эмоциональный
+2025-05-23 12:16:37,930 - aiogram.event - INFO - Update id=566539797 is handled. Duration 342 ms by bot id=7935736491
+2025-05-23 12:16:42,707 - survey_handler - INFO - Выбран персонализированный совет для типа личности Эмоциональный
+2025-05-23 12:16:43,208 - aiogram.event - INFO - Update id=566539798 is handled. Duration 516 ms by bot id=7935736491
+2025-05-23 12:16:46,853 - survey_handler - INFO - Выбран персонализированный совет для типа личности Эмоциональный
+2025-05-23 12:16:47,417 - aiogram.event - INFO - Update id=566539799 is handled. Duration 563 ms by bot id=7935736491
+2025-05-23 12:17:35,740 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-23 12:17:36,006 - __main__ - INFO - Планировщик заданий остановлен
+2025-05-23 12:17:36,008 - __main__ - INFO - Бот остановлен
+2025-05-23 12:17:36,009 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-05-23 12:17:36,009 - aiogram.dispatcher - INFO - Polling stopped for bot @ona_ai_bot id=7935736491 - 'ONA ai'
