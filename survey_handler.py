@@ -411,6 +411,9 @@ async def complete_survey(message: Message, state: FSMContext, answers: Dict[str
         profile_text = profile_data.get("profile", "")
         detailed_profile = profile_data.get("details", "")
         
+        # Сбрасываем состояние опроса
+        await state.set_state(None)
+        
         # Сохраняем результаты в состоянии пользователя
         await state.update_data(
             answers=answers,
@@ -869,13 +872,17 @@ async def cancel_survey_command(message: Message, state: FSMContext):
 
 # Обработчик кнопки возврата в главное меню
 @survey_router.callback_query(F.data == "main_menu")
-async def back_to_main_menu(callback: CallbackQuery):
+async def back_to_main_menu(callback: CallbackQuery, state: FSMContext):
     """
     Возвращает пользователя в главное меню.
     
     Args:
         callback: Callback query
+        state: Состояние FSM
     """
+    # Сбрасываем состояние просмотра профиля или любое другое состояние
+    await state.set_state(None)
+    
     # Удаляем сообщение с кнопками
     await callback.message.delete()
     

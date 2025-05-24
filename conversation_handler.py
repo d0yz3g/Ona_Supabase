@@ -6,6 +6,9 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+# Импортируем состояния для опроса
+from button_states import SurveyStates
+
 # Пытаемся импортировать модуль communication_handler
 try:
     from communication_handler import generate_personalized_response, get_personality_type_from_profile, communication_handler_router
@@ -57,6 +60,14 @@ async def handle_text_message(message: Message, state: FSMContext):
         message: Сообщение от пользователя
         state: Состояние FSM
     """
+    # Получаем текущее состояние пользователя
+    current_state = await state.get_state()
+    
+    # Если пользователь находится в процессе прохождения опроса, 
+    # не обрабатываем сообщение здесь, это будет сделано в survey_handler
+    if current_state == SurveyStates.answering_questions:
+        return
+    
     # Игнорируем команды и специальные кнопки
     if message.text.startswith("/") or message.text in [
         "📝 Опрос", "👤 Профиль", "🧘 Медитации", 
