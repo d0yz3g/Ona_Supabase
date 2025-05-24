@@ -19,7 +19,7 @@ WHISPER_API_KEY = os.getenv("OPENAI_API_KEY")
 if not WHISPER_API_KEY:
     logger.warning("OPENAI_API_KEY не найден в переменных окружения. Функция распознавания голоса будет недоступна.")
 
-@voice_router.message(F.content_type == "voice")
+@voice_router.message(F.voice)
 async def handle_voice_message(message: Message, state: FSMContext):
     """
     Обрабатывает голосовые сообщения от пользователя.

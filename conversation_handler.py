@@ -49,7 +49,7 @@ def is_profile_query(text: str) -> bool:
     return False
 
 @conversation_router.message(F.text)
-async def handle_message(message: Message, state: FSMContext):
+async def handle_text_message(message: Message, state: FSMContext):
     """
     Обрабатывает обычные текстовые сообщения от пользователя.
     
@@ -187,15 +187,4 @@ async def show_profile(message: Message, state: FSMContext):
                     [{"text": "❌ Нет, позже", "callback_data": "cancel_survey"}]
                 ]
             }
-        )
-
-@conversation_router.message()
-async def handle_message(message: Message):
-    """
-    Обработчик сообщений пользователя
-    """
-    # Заглушка для обработки обычных сообщений
-    if message.text and not message.text.startswith('/') and not message.text.startswith('📝') and not message.text.startswith('👤') and not message.text.startswith('🧘') and not message.text.startswith('⏰') and not message.text.startswith('💡') and not message.text.startswith('💬'):
-        await message.answer(
-            "Это заглушка для функции диалога. Реальный модуль не загружен."
         ) 

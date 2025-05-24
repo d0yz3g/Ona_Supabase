@@ -127,11 +127,15 @@ except ImportError as e:
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(storage=MemoryStorage())
 
-# Регистрируем роутеры
+# Регистрируем роутеры в правильном порядке
+# Сначала регистрируем роутер опроса, чтобы он имел приоритет при обработке сообщений в состоянии опроса
 dp.include_router(survey_router)
+# Затем регистрируем роутер голосовых сообщений
 dp.include_router(voice_router)
+# Далее регистрируем остальные роутеры
 dp.include_router(meditation_router)
 dp.include_router(reminder_router)
+# Регистрируем роутер обычных сообщений последним
 dp.include_router(conversation_router)
 
 # Обработчик команды /start
