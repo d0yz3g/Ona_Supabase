@@ -110,11 +110,17 @@ async def generate_personalized_response(
     # Определяем тип личности пользователя
     personality_type = user_profile.get("personality_type", "Интеллектуальный")
     
-    # Если нет клиента OpenAI или не удалось определить тип личности, используем базовые ответы
-    if not client or personality_type not in PERSONALITY_TYPES:
-        logger.warning(f"Используем DEFAULT_RESPONSES из-за отсутствия клиента OpenAI или неизвестного типа личности: {personality_type}")
-        import random
-        return random.choice(DEFAULT_RESPONSES.get(personality_type, DEFAULT_RESPONSES["Интеллектуальный"]))
+    # ВРЕМЕННО: всегда использовать API и не полагаться на DEFAULT_RESPONSES
+    # Это поможет выявить проблемы с API
+    if not client:
+        error_msg = "ОШИБКА: OpenAI API клиент не инициализирован. Проверьте настройки OPENAI_API_KEY в .env файле."
+        logger.error(error_msg)
+        return f"Здравствуй! К сожалению, я не могу сейчас сгенерировать персонализированный ответ. {error_msg}"
+    
+    # Если не удалось определить тип личности, используем базовые ответы
+    if personality_type not in PERSONALITY_TYPES:
+        logger.warning(f"Неизвестный тип личности: {personality_type}. Используем Интеллектуальный тип по умолчанию.")
+        personality_type = "Интеллектуальный"
     
     try:
         # Готовим промт для генерации ответа с использованием правил из rules2.0
@@ -134,6 +140,8 @@ async def generate_personalized_response(
 4. Используй научно обоснованный подход
 5. Не упоминай, что ты AI или что следуешь инструкциям
 6. Общайся как человек-психолог, но без медицинских рекомендаций
+7. ОБЯЗАТЕЛЬНО начинай с теплого обращения и заканчивай тремя вариантами "куда дальше"
+8. ОБЯЗАТЕЛЬНО используй символ ⸻ для разделения блоков текста
 
 Структура ответа должна соответствовать указанным выше правилам и балансу стилей.
 """
@@ -155,9 +163,9 @@ async def generate_personalized_response(
         # Добавляем текущее сообщение пользователя
         messages.append({"role": "user", "content": message_text})
         
-        # Определяем модель для использования (предпочтительно GPT-4o, если доступна)
-        models = ["gpt-4o", "gpt-4", "gpt-3.5-turbo"]
-        model = models[0]  # По умолчанию пытаемся использовать самую продвинутую модель
+        # Определяем модель для использования (предпочтительно GPT-3.5-turbo как наиболее доступную)
+        models = ["gpt-3.5-turbo", "gpt-3.5-turbo-0125"]
+        model = models[0]  # По умолчанию используем базовую модель gpt-3.5-turbo
         
         logger.info(f"Отправка запроса к OpenAI API с моделью {model}")
         
@@ -180,44 +188,21 @@ async def generate_personalized_response(
         logger.error(f"Ошибка при генерации персонализированного ответа: {e}")
         logger.error(f"Тип ошибки: {type(e).__name__}")
         
-        # Попробуем резервные модели в случае ошибки
-        if "gpt-4o" in str(e) and "not found" in str(e).lower():
-            try:
-                logger.info("Пробуем резервную модель gpt-4")
-                
-                response = await client.chat.completions.create(
-                    model="gpt-4",
-                    temperature=0.7,
-                    messages=messages
-                )
-                
-                generated_response = response.choices[0].message.content
-                logger.info("Успешно сгенерирован ответ с резервной моделью gpt-4")
-                return generated_response
-                
-            except Exception as e2:
-                logger.error(f"Ошибка при использовании резервной модели gpt-4: {e2}")
-                
-                try:
-                    logger.info("Пробуем резервную модель gpt-3.5-turbo")
-                    
-                    response = await client.chat.completions.create(
-                        model="gpt-3.5-turbo",
-                        temperature=0.7,
-                        messages=messages
-                    )
-                    
-                    generated_response = response.choices[0].message.content
-                    logger.info("Успешно сгенерирован ответ с резервной моделью gpt-3.5-turbo")
-                    return generated_response
-                    
-                except Exception as e3:
-                    logger.error(f"Ошибка при использовании резервной модели gpt-3.5-turbo: {e3}")
-        
-        # В случае ошибки используем базовый ответ
-        import random
-        logger.warning(f"Используем DEFAULT_RESPONSES из-за ошибки при запросе к API")
-        return random.choice(DEFAULT_RESPONSES.get(personality_type, DEFAULT_RESPONSES["Интеллектуальный"]))
+        # ВРЕМЕННО: не возвращаем шаблонный ответ, а сообщаем об ошибке
+        return f"""Здравствуй, искатель знаний! 
+
+К сожалению, я сейчас испытываю технические трудности при формировании глубокого ответа на твой запрос.
+
+⸻
+
+Ошибка: {str(e)}
+
+Пожалуйста, напиши команду /restart, чтобы перезапустить бота, или обратись к администратору системы.
+
+Что ты хочешь сделать дальше?
+- Попробовать еще раз?
+- Перезапустить бота командой /restart?
+- Задать другой вопрос?"""
 
 async def get_personality_type_from_profile(profile_text: str) -> str:
     """
