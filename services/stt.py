@@ -81,21 +81,41 @@ async def transcribe_voice(file_path: str) -> Optional[str]:
                 response_format="text"
             )
         
-        # В новейшей версии OpenAI API v1.0.0+ response - это строка напрямую для response_format="text"
+        logger.info(f"Получен ответ от OpenAI API: {type(response)}")
+        
+        # В версии OpenAI API v1.79.0+ response - это строка для response_format="text"
         if isinstance(response, str):
+            logger.info("Успешно получен текстовый ответ")
             return response
         
-        # В API версии v1.x (но до 1.0.0) response может быть объектом с полем text
+        # Обработка для других случаев (обратная совместимость)
         if hasattr(response, 'text'):
+            logger.info("Получен ответ в формате объекта с атрибутом text")
             return response.text
             
-        # Для других случаев
+        # Для OpenAI API v1.x, возможно, ответ находится в поле 'text'
+        if isinstance(response, dict) and 'text' in response:
+            logger.info("Получен ответ в формате словаря с ключом 'text'")
+            return response['text']
+        
+        # Для случая, когда ответ - это объект с данными
+        if hasattr(response, 'data') and hasattr(response.data, 'text'):
+            logger.info("Получен ответ в формате объекта с data.text")
+            return response.data.text
+        
+        # Для случая с другими форматами ответа
         logger.warning(f"Необычный формат ответа от OpenAI API: {type(response)}")
-        # Попробуем вернуть строковое представление
+        # Логируем детали ответа для отладки
+        logger.debug(f"Детали ответа: {response}")
+        
+        # Пытаемся преобразовать ответ в строку
         return str(response)
     
     except Exception as e:
         logger.error(f"Ошибка при транскрибировании голосового сообщения: {e}")
+        # Логируем подробную информацию об исключении для отладки
+        import traceback
+        logger.error(f"Детали ошибки: {traceback.format_exc()}")
         return None
 
 async def process_voice_message(bot, voice: Voice) -> Optional[str]:

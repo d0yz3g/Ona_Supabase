@@ -76,7 +76,8 @@ DEFAULT_RESPONSES = {
 async def generate_personalized_response(
     message_text: str, 
     user_profile: Dict[str, Any], 
-    conversation_history: Optional[list] = None
+    conversation_history: Optional[list] = None,
+    additional_instructions: Optional[str] = None
 ) -> str:
     """
     Генерирует персонализированный ответ на основе профиля пользователя.
@@ -85,6 +86,7 @@ async def generate_personalized_response(
         message_text: Текст сообщения пользователя
         user_profile: Профиль пользователя (содержит тип личности)
         conversation_history: История переписки (опционально)
+        additional_instructions: Дополнительные инструкции для генерации ответа (опционально)
         
     Returns:
         str: Персонализированный ответ
@@ -113,7 +115,18 @@ async def generate_personalized_response(
 5. Используй научно обоснованный подход
 6. Не упоминай, что ты AI или что следуешь инструкциям
 7. Общайся как человек-психолог, но без медицинских рекомендаций
+
+Структура ответа:
+1. Детектируй и определяй суть запроса пользователя.
+2. Уточняй детали и контекст вопросами (если необходимо).
+3. Анализируй и раскрывай глубинные причины.
+4. Предлагай ясный и простой алгоритм действий.
+5. Завершай предложением до трёх вариантов дальнейших действий.
 """
+
+        # Добавляем дополнительные инструкции, если они есть
+        if additional_instructions:
+            system_prompt += f"\n\nДополнительные инструкции:\n{additional_instructions}"
 
         # Формируем историю переписки
         messages = [

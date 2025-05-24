@@ -93,21 +93,42 @@ async def handle_text_message(message: Message, state: FSMContext):
         conversation_history = user_data.get("conversation_history", [])
         
         try:
+            # Формируем инструкцию для генерации ответа на основе правил Interactive Personalisation Loop
+            interactive_prompt = f"""
+            Я психолог-консультант, следующий принципам Interactive Personalisation Loop:
+            
+            1. Детектирую и определяю суть запроса пользователя.
+            2. Уточняю детали и контекст вопросами (если необходимо).
+            3. Анализирую и раскрываю глубинные причины.
+            4. Предлагаю ясный и простой алгоритм.
+            5. Завершаю предложением до трёх вариантов дальнейших действий.
+            
+            Запрос пользователя: {message.text}
+            Тип личности пользователя: {personality_type}
+            
+            Я должен учитывать психологический тип пользователя и его особенности.
+            Мой ответ должен быть структурирован, конкретен и персонализирован.
+            """
+            
             # Проверяем, является ли сообщение запросом о профиле
             if is_profile_query(message.text):
                 # Если это запрос о профиле, используем специализированный анализ
                 response = await analyze_profile(user_profile, message.text)
                 logger.info(f"Выполнен анализ профиля для пользователя {message.from_user.id}")
             else:
-                # Иначе генерируем обычный персонализированный ответ
+                # Иначе генерируем персонализированный ответ с учетом новых правил
                 response = await generate_personalized_response(
                     message.text, 
                     user_profile, 
-                    conversation_history
+                    conversation_history,
+                    additional_instructions=interactive_prompt
                 )
             
+            # Резюмируем сообщение пользователя (<30 слов) для сохранения контекста
+            user_message_summary = message.text[:150] + "..." if len(message.text) > 150 else message.text
+            
             # Обновляем историю переписки
-            conversation_history.append({"role": "user", "content": message.text})
+            conversation_history.append({"role": "user", "content": user_message_summary})
             conversation_history.append({"role": "assistant", "content": response})
             
             # Обрезаем историю переписки, чтобы она не была слишком длинной

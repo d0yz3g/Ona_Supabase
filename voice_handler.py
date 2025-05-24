@@ -90,15 +90,36 @@ async def handle_voice_message(message: Message, state: FSMContext):
             # Получаем историю переписки (если есть)
             conversation_history = user_data.get("conversation_history", [])
             
-            # Генерируем персонализированный ответ
+            # Формируем инструкцию для генерации ответа на основе правил Interactive Personalisation Loop
+            interactive_prompt = f"""
+            Я психолог-консультант, следующий принципам Interactive Personalisation Loop:
+            
+            1. Детектирую и определяю суть запроса пользователя.
+            2. Уточняю детали и контекст вопросами (если необходимо).
+            3. Анализирую и раскрываю глубинные причины.
+            4. Предлагаю ясный и простой алгоритм.
+            5. Завершаю предложением до трёх вариантов дальнейших действий.
+            
+            Запрос пользователя (голосовое сообщение): {text}
+            Тип личности пользователя: {user_profile["personality_type"]}
+            
+            Я должен учитывать психологический тип пользователя и его особенности.
+            Мой ответ должен быть структурирован, конкретен и персонализирован.
+            """
+            
+            # Генерируем персонализированный ответ с учетом новых правил
             response = await generate_personalized_response(
                 text, 
                 user_profile, 
-                conversation_history
+                conversation_history,
+                additional_instructions=interactive_prompt
             )
             
+            # Резюмируем сообщение пользователя (<30 слов) для сохранения контекста
+            user_message_summary = text[:150] + "..." if len(text) > 150 else text
+            
             # Обновляем историю переписки
-            conversation_history.append({"role": "user", "content": text})
+            conversation_history.append({"role": "user", "content": user_message_summary})
             conversation_history.append({"role": "assistant", "content": response})
             
             # Обрезаем историю переписки, чтобы она не была слишком длинной
@@ -110,6 +131,8 @@ async def handle_voice_message(message: Message, state: FSMContext):
             
             # Отправляем ответ
             await message.answer(response)
+            
+            logger.info(f"Голосовое сообщение пользователя {message.from_user.id} успешно обработано")
         else:
             # Если профиля нет, предлагаем пройти опрос
             await message.answer(
@@ -117,12 +140,15 @@ async def handle_voice_message(message: Message, state: FSMContext):
                 "Это позволит мне лучше понять ваши особенности и адаптировать свои ответы под ваш стиль мышления."
             )
             
-            # Обрабатываем сообщение обычным способом
+            # Предлагаем кнопку для начала опроса
+            from aiogram.utils.keyboard import InlineKeyboardBuilder
+            builder = InlineKeyboardBuilder()
+            builder.button(text="✅ Начать опрос", callback_data="start_survey")
+            
             await message.answer(
-                "Я обработал ваше голосовое сообщение. Как я могу помочь вам дальше?"
+                "Хотите пройти опрос сейчас?",
+                reply_markup=builder.as_markup()
             )
-        
-        logger.info(f"Голосовое сообщение пользователя {message.from_user.id} успешно обработано")
         
     except Exception as e:
         logger.error(f"Ошибка при обработке голосового сообщения: {e}")
