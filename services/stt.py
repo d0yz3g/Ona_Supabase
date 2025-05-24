@@ -81,18 +81,18 @@ async def transcribe_voice(file_path: str) -> Optional[str]:
                 response_format="text"
             )
         
-        # В OpenAI API v1.x response - это объект, а не строка напрямую
-        # Нужно получить текст из объекта ответа
-        if hasattr(response, 'text'):
-            # Для более новых версий API, где ответ - объект с полем text
-            return response.text
-        elif isinstance(response, str):
-            # Для версий API, где ответ возвращается как строка
+        # В новейшей версии OpenAI API v1.0.0+ response - это строка напрямую для response_format="text"
+        if isinstance(response, str):
             return response
-        else:
-            # Для других версий API, попробуем вернуть строковое представление
-            logger.warning(f"Необычный формат ответа от OpenAI API: {type(response)}")
-            return str(response)
+        
+        # В API версии v1.x (но до 1.0.0) response может быть объектом с полем text
+        if hasattr(response, 'text'):
+            return response.text
+            
+        # Для других случаев
+        logger.warning(f"Необычный формат ответа от OpenAI API: {type(response)}")
+        # Попробуем вернуть строковое представление
+        return str(response)
     
     except Exception as e:
         logger.error(f"Ошибка при транскрибировании голосового сообщения: {e}")

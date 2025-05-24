@@ -439,12 +439,20 @@ async def complete_survey(message: Message, state: FSMContext, answers: Dict[str
         builder.button(text="💡 Получить совет", callback_data="get_advice")
         builder.adjust(1)
         
+        # Отправляем сообщение с кнопками для дальнейших действий
         await message.answer(
             "🧠 <b>Что дальше?</b>\n\n"
             "Теперь я буду общаться с вами с учетом вашего психологического профиля.\n"
-            "Вы можете задавать мне вопросы, просить совета или просто поговорить на интересующие вас темы.",
+            "Вы можете <b>задавать мне вопросы</b>, <b>просить совета</b> или просто <b>поговорить на интересующие вас темы</b>.\n\n"
+            "Просто <b>напишите сообщение</b> или <b>отправьте голосовое сообщение</b>, и я отвечу вам, используя знания о вашем типе личности.",
             parse_mode="HTML",
             reply_markup=builder.as_markup()
+        )
+        
+        # Восстанавливаем основную клавиатуру, чтобы пользователь не остался с пустым интерфейсом
+        await message.answer(
+            "Возвращаю основное меню",
+            reply_markup=get_main_keyboard()
         )
         
         logger.info(f"Пользователь {message.from_user.id} успешно завершил опрос и получил профиль")
@@ -570,6 +578,9 @@ async def show_stats(callback: CallbackQuery, state: FSMContext):
         await callback.answer("Данные профиля не найдены")
         return
     
+    # Показываем индикатор "печатает..."
+    await callback.message.bot.send_chat_action(chat_id=callback.message.chat.id, action="typing")
+    
     # Импортируем функцию для анализа ответов
     from questions import get_personality_type_from_answers
     
@@ -640,6 +651,12 @@ async def show_stats(callback: CallbackQuery, state: FSMContext):
         reply_markup=builder.as_markup()
     )
     
+    # Возвращаем основную клавиатуру после вывода статистики
+    await callback.message.answer(
+        "⬅️ Вернуться в главное меню",
+        reply_markup=get_main_keyboard()
+    )
+    
     # Отвечаем на callback
     await callback.answer("Статистика профиля")
 
@@ -672,11 +689,20 @@ async def show_profile_details(callback: CallbackQuery, state: FSMContext):
     builder.button(text="🔙 Назад", callback_data="view_profile")
     builder.adjust(1)
     
+    # Показываем индикатор "печатает..."
+    await callback.message.bot.send_chat_action(chat_id=callback.message.chat.id, action="typing")
+    
     # Отправляем детальный профиль
     await callback.message.answer(
         details_text,
         parse_mode="HTML",
         reply_markup=builder.as_markup()
+    )
+    
+    # Возвращаем основную клавиатуру после вывода деталей
+    await callback.message.answer(
+        "⬅️ Вернуться в главное меню",
+        reply_markup=get_main_keyboard()
     )
     
     # Отвечаем на callback
@@ -691,6 +717,9 @@ async def view_profile_callback(callback: CallbackQuery, state: FSMContext):
         callback: Callback query
         state: Состояние FSM
     """
+    # Показываем индикатор "печатает..."
+    await callback.message.bot.send_chat_action(chat_id=callback.message.chat.id, action="typing")
+    
     # Получаем данные пользователя
     user_data = await state.get_data()
     profile_text = user_data.get("profile_text", "")
@@ -709,6 +738,12 @@ async def view_profile_callback(callback: CallbackQuery, state: FSMContext):
             "Это займет около 5-10 минут и поможет мне лучше понять ваш стиль мышления и особенности.",
             parse_mode="HTML",
             reply_markup=builder.as_markup()
+        )
+        
+        # Возвращаем основную клавиатуру
+        await callback.message.answer(
+            "Вернуться в главное меню",
+            reply_markup=get_main_keyboard()
         )
         
         await callback.answer("Профиль не найден")
@@ -734,6 +769,12 @@ async def view_profile_callback(callback: CallbackQuery, state: FSMContext):
         "Выберите, что вы хотите сделать:",
         parse_mode="HTML",
         reply_markup=builder.as_markup()
+    )
+    
+    # Возвращаем основную клавиатуру
+    await callback.message.answer(
+        "⬅️ Вернуться в главное меню",
+        reply_markup=get_main_keyboard()
     )
     
     await callback.answer("Профиль загружен")
@@ -906,6 +947,9 @@ async def get_advice_callback(callback: CallbackQuery, state: FSMContext):
         callback: Callback query
         state: Состояние FSM
     """
+    # Показываем индикатор "печатает..."
+    await callback.message.bot.send_chat_action(chat_id=callback.message.chat.id, action="typing")
+    
     # Получаем данные пользователя
     user_data = await state.get_data()
     personality_type = user_data.get("personality_type", "Интеллектуальный")
@@ -929,6 +973,12 @@ async def get_advice_callback(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer(
         "Что вы хотите сделать дальше?",
         reply_markup=builder.as_markup()
+    )
+    
+    # Возвращаем основную клавиатуру
+    await callback.message.answer(
+        "⬅️ Вернуться в главное меню",
+        reply_markup=get_main_keyboard()
     )
     
     # Отвечаем на callback

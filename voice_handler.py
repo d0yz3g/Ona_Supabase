@@ -28,6 +28,9 @@ async def handle_voice_message(message: Message, state: FSMContext):
         message: Голосовое сообщение от пользователя
         state: Состояние FSM
     """
+    # Показываем индикатор "записывает аудио" для начальной обработки
+    await message.bot.send_chat_action(chat_id=message.chat.id, action="record_voice")
+    
     # Сообщаем пользователю, что начинаем обработку голосового сообщения
     process_message = await message.answer("🎙 Обрабатываю ваше голосовое сообщение...")
     
@@ -41,6 +44,9 @@ async def handle_voice_message(message: Message, state: FSMContext):
             file_path = temp_file.name
         
         await message.bot.download_file(voice_file.file_path, file_path)
+        
+        # Показываем индикатор "печатает..." пока обрабатываем аудио
+        await message.bot.send_chat_action(chat_id=message.chat.id, action="typing")
         
         # Транскрибируем голосовое сообщение в текст
         text = await transcribe_voice(file_path)
@@ -69,6 +75,9 @@ async def handle_voice_message(message: Message, state: FSMContext):
         
         # Проверяем, есть ли у пользователя профиль
         if user_data.get("profile_completed", False):
+            # Показываем индикатор "печатает..." пока генерируем ответ
+            await message.bot.send_chat_action(chat_id=message.chat.id, action="typing")
+            
             # Импортируем функцию для генерации персонализированного ответа
             from communication_handler import generate_personalized_response
             

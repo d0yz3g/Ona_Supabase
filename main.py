@@ -124,7 +124,12 @@ except ImportError as e:
     railway_print("Аварийная загрузка базовых модулей выполнена", "WARNING")
 
 # Создаем экземпляр бота и диспетчер
-bot = Bot(token=BOT_TOKEN)
+bot = Bot(
+    token=BOT_TOKEN,
+    parse_mode="HTML",  # Устанавливаем HTML-разметку по умолчанию
+    disable_web_page_preview=True,  # Отключаем предпросмотр веб-страниц
+    protect_content=False  # Разрешаем пересылку сообщений
+)
 dp = Dispatcher(storage=MemoryStorage())
 
 # Регистрируем роутеры в правильном порядке

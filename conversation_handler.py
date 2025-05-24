@@ -65,6 +65,9 @@ async def handle_text_message(message: Message, state: FSMContext):
     ]:
         return
     
+    # Показываем индикатор "печатает..."
+    await message.bot.send_chat_action(chat_id=message.chat.id, action="typing")
+    
     # Получаем данные пользователя из состояния
     user_data = await state.get_data()
     
