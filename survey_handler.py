@@ -379,39 +379,43 @@ async def process_survey_answer(message: Message, state: FSMContext):
 
 async def complete_survey(message: Message, state: FSMContext, answers: Dict[str, str]):
     """
-    Завершает опрос и генерирует профиль.
+    Завершает опрос, генерирует и отображает профиль пользователя.
     
     Args:
         message: Сообщение от пользователя
         state: Состояние FSM
-        answers: Ответы пользователя
+        answers: Словарь с ответами пользователя
     """
-    # Сообщаем о завершении опроса
-    await message.answer(
-        "🎉 <b>Поздравляю! Вы завершили опрос!</b>\n\n"
-        "Теперь я анализирую ваши ответы и создаю персональный психологический профиль.\n"
-        "Это может занять несколько секунд...",
-        parse_mode="HTML",
-        reply_markup=get_main_keyboard()
-    )
-    
     try:
-        # Импортируем функции для определения типа личности
+        # Сообщаем пользователю, что генерируем профиль
+        wait_message = await message.answer(
+            "🧠 <b>Генерирую ваш психологический профиль...</b>\n\n"
+            "Это может занять несколько секунд.",
+            parse_mode="HTML"
+        )
+        
+        # Импортируем функции для генерации профиля
+        from profile_generator import generate_profile, save_profile_to_db
         from questions import get_personality_type_from_answers
         
         # Определяем тип личности
         type_counts, primary_type, secondary_type = get_personality_type_from_answers(answers)
         
-        # Генерируем профиль
-        profile_text = await generate_profile(answers)
+        # Генерируем профиль (теперь возвращает словарь с profile и details)
+        profile_data = await generate_profile(answers)
         
-        # Сохраняем профиль в базу данных
+        # Извлекаем краткий профиль и детальную информацию
+        profile_text = profile_data["profile"]
+        details_text = profile_data["details"]
+        
+        # Сохраняем профиль в базу данных (сохраняем только краткий профиль)
         await save_profile_to_db(message.from_user.id, profile_text, answers)
         
-        # Обновляем состояние
+        # Обновляем состояние, сохраняя оба варианта профиля
         await state.update_data(
             profile_completed=True,
             profile_text=profile_text,
+            profile_details=details_text,
             answers=answers,
             personality_type=primary_type
         )
@@ -419,7 +423,10 @@ async def complete_survey(message: Message, state: FSMContext, answers: Dict[str
         # Переключаем состояние на просмотр профиля
         await state.set_state(ProfileStates.viewing)
         
-        # Отображаем профиль пользователю
+        # Удаляем сообщение о загрузке
+        await wait_message.delete()
+        
+        # Отображаем краткий профиль пользователю
         await message.answer(
             profile_text,
             parse_mode="HTML"
@@ -428,6 +435,7 @@ async def complete_survey(message: Message, state: FSMContext, answers: Dict[str
         # Предлагаем дальнейшие действия
         builder = InlineKeyboardBuilder()
         builder.button(text="📊 Подробная статистика", callback_data="show_stats")
+        builder.button(text="📋 Детальный анализ", callback_data="show_details")
         builder.button(text="💡 Получить совет", callback_data="get_advice")
         builder.adjust(1)
         
@@ -598,73 +606,138 @@ async def show_stats(callback: CallbackQuery, state: FSMContext):
         "A": "🧠", # Интеллектуальный
         "B": "❤️", # Эмоциональный
         "C": "⚙️", # Практический
-        "D": "✨"  # Творческий
+        "D": "🎨"  # Творческий
     }
     
-    type_labels = {
-        "A": "Интеллектуальный",
-        "B": "Эмоциональный",
-        "C": "Практический",
-        "D": "Творческий"
-    }
+    # Создаем строку статистики для каждого типа
+    for type_key, count in type_counts.items():
+        if total_answers > 0:
+            percentage = (count / total_answers) * 100
+            bar_length = max(1, int(round(percentage / 10)))
+            bar = "█" * bar_length + "░" * (10 - bar_length)
+            
+            type_name = {
+                "A": "Интеллектуальный",
+                "B": "Эмоциональный",
+                "C": "Практический",
+                "D": "Творческий"
+            }.get(type_key, type_key)
+            
+            stats_text += f"{type_emoji.get(type_key, '•')} <b>{type_name}:</b> {count} ({percentage:.1f}%)\n"
+            stats_text += f"  {bar} {count}/{total_answers}\n"
     
-    # Создаем визуальный график распределения
-    for type_key in ["A", "B", "C", "D"]:
-        count = type_counts[type_key]
-        percentage = round((count / total_answers) * 100) if total_answers > 0 else 0
-        
-        # Создаем график в виде символов
-        bar = ""
-        bar_length = min(10, percentage // 10) if percentage > 0 else 0
-        bar = "▮" * bar_length + "▯" * (10 - bar_length)
-        
-        stats_text += f"{type_emoji[type_key]} <b>{type_labels[type_key]}:</b> {count} ({percentage}%)\n"
-        stats_text += f"  {bar} \n"
-    
-    stats_text += "\n<b>👤 ЛИЧНАЯ ИНФОРМАЦИЯ:</b>\n"
-    if "name" in answers:
-        stats_text += f"• Имя: {answers['name']}\n"
-    if "age" in answers:
-        stats_text += f"• Возраст: {answers['age']}\n"
-    if "birthdate" in answers:
-        stats_text += f"• Дата рождения: {answers['birthdate']}\n"
-    if "birthplace" in answers:
-        stats_text += f"• Место рождения: {answers['birthplace']}\n"
-    if "timezone" in answers:
-        stats_text += f"• Часовой пояс: {answers['timezone']}\n"
-    
-    # Добавляем интерпретацию (краткую) на основе доминирующего типа
-    stats_text += "\n<b>💡 ИНТЕРПРЕТАЦИЯ:</b>\n"
-    
-    interpretations = {
-        "Интеллектуальный": "Вы склонны к аналитическому мышлению, рационализму и структурированному подходу к задачам. Вам важно глубокое понимание процессов.",
-        "Эмоциональный": "Вы обладаете развитой эмпатией, эмоциональным интеллектом и чуткостью к людям. Для вас важны гармоничные отношения и внутренний баланс.",
-        "Практический": "Вы ориентированы на результат, организованны и эффективны. Для вас важно достижение конкретных целей и практическая применимость.",
-        "Творческий": "Вы обладаете богатым воображением, креативным подходом и нестандартным мышлением. Для вас важна свобода самовыражения."
-    }
-    
-    stats_text += interpretations.get(primary_type, "")
+    # Добавляем кнопки для навигации
+    builder = InlineKeyboardBuilder()
+    builder.button(text="📋 Детальный анализ", callback_data="show_details")
+    builder.button(text="💡 Получить совет", callback_data="get_advice")
+    builder.button(text="🔙 Назад", callback_data="view_profile")
+    builder.adjust(1)
     
     # Отправляем статистику
     await callback.message.answer(
         stats_text,
-        parse_mode="HTML"
-    )
-    
-    # Предлагаем пользователю действия после просмотра статистики
-    builder = InlineKeyboardBuilder()
-    builder.button(text="🔄 Пройти опрос заново", callback_data="restart_survey")
-    builder.button(text="💡 Получить совет", callback_data="get_advice")
-    builder.button(text="◀️ Вернуться в главное меню", callback_data="main_menu")
-    builder.adjust(1)
-    
-    await callback.message.answer(
-        "Что вы хотите сделать дальше?",
+        parse_mode="HTML",
         reply_markup=builder.as_markup()
     )
     
     # Отвечаем на callback
-    await callback.answer("Статистика загружена")
+    await callback.answer("Статистика профиля")
+
+# Добавляем новый обработчик для отображения детального профиля
+@survey_router.callback_query(F.data == "show_details")
+async def show_profile_details(callback: CallbackQuery, state: FSMContext):
+    """
+    Отображает детальный психологический профиль.
+    
+    Args:
+        callback: Callback query
+        state: Состояние FSM
+    """
+    # Получаем данные пользователя
+    user_data = await state.get_data()
+    details_text = user_data.get("profile_details", "")
+    
+    if not details_text:
+        await callback.message.answer(
+            "❌ <b>Ошибка:</b> Детальный профиль не найден. Пожалуйста, пройдите опрос заново.",
+            parse_mode="HTML"
+        )
+        await callback.answer("Детальный профиль не найден")
+        return
+    
+    # Добавляем кнопки для навигации
+    builder = InlineKeyboardBuilder()
+    builder.button(text="📊 Статистика", callback_data="show_stats")
+    builder.button(text="💡 Получить совет", callback_data="get_advice")
+    builder.button(text="🔙 Назад", callback_data="view_profile")
+    builder.adjust(1)
+    
+    # Отправляем детальный профиль
+    await callback.message.answer(
+        details_text,
+        parse_mode="HTML",
+        reply_markup=builder.as_markup()
+    )
+    
+    # Отвечаем на callback
+    await callback.answer("Детальный психологический профиль")
+
+@survey_router.callback_query(F.data == "view_profile")
+async def view_profile_callback(callback: CallbackQuery, state: FSMContext):
+    """
+    Отображает профиль пользователя.
+    
+    Args:
+        callback: Callback query
+        state: Состояние FSM
+    """
+    # Получаем данные пользователя
+    user_data = await state.get_data()
+    profile_text = user_data.get("profile_text", "")
+    profile_completed = user_data.get("profile_completed", False)
+    
+    if not profile_completed or not profile_text:
+        # Профиль не найден, предлагаем пройти опрос
+        builder = InlineKeyboardBuilder()
+        builder.button(text="📝 Пройти опрос", callback_data="start_survey")
+        builder.button(text="🔙 Главное меню", callback_data="main_menu")
+        builder.adjust(1)
+        
+        await callback.message.answer(
+            "❌ <b>Профиль не найден</b>\n\n"
+            "Для создания психологического профиля необходимо пройти опрос. "
+            "Это займет около 5-10 минут и поможет мне лучше понять ваш стиль мышления и особенности.",
+            parse_mode="HTML",
+            reply_markup=builder.as_markup()
+        )
+        
+        await callback.answer("Профиль не найден")
+        return
+    
+    # Отображаем профиль
+    await callback.message.answer(
+        profile_text,
+        parse_mode="HTML"
+    )
+    
+    # Добавляем кнопки с возможными действиями
+    builder = InlineKeyboardBuilder()
+    builder.button(text="📊 Подробная статистика", callback_data="show_stats")
+    builder.button(text="📋 Детальный анализ", callback_data="show_details")
+    builder.button(text="💡 Получить совет", callback_data="get_advice")
+    builder.button(text="🔄 Пройти опрос заново", callback_data="restart_survey")
+    builder.button(text="🔙 Главное меню", callback_data="main_menu")
+    builder.adjust(1)
+    
+    await callback.message.answer(
+        "👤 <b>Ваш психологический профиль</b>\n\n"
+        "Выберите, что вы хотите сделать:",
+        parse_mode="HTML",
+        reply_markup=builder.as_markup()
+    )
+    
+    await callback.answer("Профиль загружен")
+    logger.info(f"Пользователь {callback.from_user.id} просмотрел свой профиль")
 
 # Регистрация обработчиков команд
 @survey_router.message(Command("survey"))
@@ -860,51 +933,6 @@ async def get_advice_callback(callback: CallbackQuery, state: FSMContext):
     
     # Отвечаем на callback
     await callback.answer("Совет получен")
-
-# Обработчик для callback "view_profile"
-@survey_router.callback_query(F.data == "view_profile")
-async def view_profile_callback(callback: CallbackQuery, state: FSMContext):
-    """
-    Обработчик для просмотра профиля через callback.
-    
-    Args:
-        callback: Callback query
-        state: Состояние FSM
-    """
-    # Получаем данные пользователя
-    user_data = await state.get_data()
-    profile_text = user_data.get("profile_text", "")
-    
-    if profile_text:
-        # Отправляем профиль
-        await callback.message.answer(
-            f"<b>Ваш психологический профиль:</b>\n\n{profile_text}",
-            parse_mode="HTML"
-        )
-        
-        # Добавляем кнопки для действий с профилем
-        builder = InlineKeyboardBuilder()
-        builder.button(text="🔄 Пройти опрос заново", callback_data="restart_survey")
-        builder.button(text="📊 Подробная статистика", callback_data="show_stats")
-        builder.button(text="◀️ Главное меню", callback_data="main_menu")
-        builder.adjust(1)
-        
-        await callback.message.answer(
-            "Что вы хотите сделать дальше?",
-            reply_markup=builder.as_markup()
-        )
-        
-        # Устанавливаем состояние просмотра профиля
-        await state.set_state(ProfileStates.viewing)
-    else:
-        # Если профиль не найден
-        await callback.message.answer(
-            "Профиль не найден. Возможно, вам нужно пройти опрос заново.",
-            reply_markup=get_main_keyboard()
-        )
-    
-    # Отвечаем на callback
-    await callback.answer("Просмотр профиля")
 
 # Функция для генерации персонализированных советов
 def get_personalized_advice(personality_type: str) -> str:

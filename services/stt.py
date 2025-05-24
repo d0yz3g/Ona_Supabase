@@ -62,45 +62,40 @@ async def transcribe_voice(file_path: str) -> Optional[str]:
     Транскрибирует голосовое сообщение в текст с помощью OpenAI Whisper API.
     
     Args:
-        file_path: Путь к файлу с голосовым сообщением.
+        file_path: Путь к аудиофайлу
         
     Returns:
-        Optional[str]: Распознанный текст или None в случае ошибки.
+        str или None: Распознанный текст или None в случае ошибки
     """
-    # Проверяем наличие клиента OpenAI
     if not client:
-        logger.warning("OpenAI API недоступен. Невозможно транскрибировать голосовое сообщение.")
+        logger.error("OpenAI API недоступен для транскрибирования голосового сообщения")
         return None
     
     try:
-        # Открываем файл для чтения в бинарном режиме
+        # Открываем файл и отправляем его в OpenAI API
         with open(file_path, "rb") as audio_file:
-            # Отправляем запрос на транскрибацию
-            transcript = await client.audio.transcriptions.create(
+            response = await client.audio.transcriptions.create(
                 model="whisper-1",
                 file=audio_file,
-                language="ru"  # Указываем русский язык для лучшего распознавания
+                language="ru",  # Ставим русский язык
+                response_format="text"
             )
         
-        # Удаляем временный файл
-        try:
-            os.unlink(file_path)
-            logger.debug(f"Временный файл удален: {file_path}")
-        except Exception as e:
-            logger.warning(f"Не удалось удалить временный файл {file_path}: {e}")
-        
-        # Возвращаем распознанный текст
-        logger.info("Голосовое сообщение успешно транскрибировано")
-        return transcript.text
+        # В OpenAI API v1.x response - это объект, а не строка напрямую
+        # Нужно получить текст из объекта ответа
+        if hasattr(response, 'text'):
+            # Для более новых версий API, где ответ - объект с полем text
+            return response.text
+        elif isinstance(response, str):
+            # Для версий API, где ответ возвращается как строка
+            return response
+        else:
+            # Для других версий API, попробуем вернуть строковое представление
+            logger.warning(f"Необычный формат ответа от OpenAI API: {type(response)}")
+            return str(response)
+    
     except Exception as e:
-        logger.error(f"Ошибка при транскрибации голосового сообщения: {e}")
-        
-        # Удаляем временный файл в случае ошибки
-        try:
-            os.unlink(file_path)
-        except:
-            pass
-        
+        logger.error(f"Ошибка при транскрибировании голосового сообщения: {e}")
         return None
 
 async def process_voice_message(bot, voice: Voice) -> Optional[str]:
