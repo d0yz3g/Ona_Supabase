@@ -135,26 +135,21 @@ async def generate_audio(text: str, user_id: int, meditation_type: str = "defaul
             "xi-api-key": api_key
         }
         
-        # Модифицируем текст для более громкого голоса, добавляя описание
-        # Это не использует SSML тег volume, который может не работать в некоторых случаях
-        text_modified = f"Говорю громко и четко: {text}"
-        
-        # Параметры голоса для более громкого звучания
+        # Параметры голоса по запросу пользователя
         voice_settings = {
-            "stability": 0.3,  # уменьшаем стабильность для более выразительного голоса
-            "similarity_boost": 0.8,  # увеличиваем сходство для сохранения характеристик голоса
-            "style": 0.7,  # добавляем стиль для более выразительной речи
-            "use_speaker_boost": True  # включаем усиление голоса
+            "stability": 0.5,  # 50%
+            "similarity_boost": 0.75,  # 75%
+            "speed": 0.9  # 0.9 скорость
         }
         
         # Подготавливаем текст (ограничиваем длину)
-        if len(text_modified) > MAX_TEXT_LENGTH:
-            text_modified = text_modified[:MAX_TEXT_LENGTH-3] + "..."
+        if len(text) > MAX_TEXT_LENGTH:
+            text = text[:MAX_TEXT_LENGTH-3] + "..."
             logger.warning(f"Текст для генерации аудио был обрезан для пользователя {user_id}")
         
         # Данные для запроса с моделью высокого качества
         data = {
-            "text": text_modified,
+            "text": text,
             "model_id": "eleven_multilingual_v2",  # Используем модель высокого качества
             "voice_settings": voice_settings
         }
