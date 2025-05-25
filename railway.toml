@@ -5,14 +5,10 @@ buildCommand = "pip install pydantic==1.10.12"
 [deploy]
 startCommand = "python main.py"
 restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 5
-
-[environments]
-  [environments.production]
-    startCommand = "python main.py"
+restartPolicyMaxRetries = 10
 
 [nixpacks]
 install_packages = ["python3", "python3-pip", "libffi-dev", "python3-dev"]
 
 [phases.setup]
-cmds = ["pip install pydantic==1.10.12", "pip install aiogram==3.0.0"] 
+cmds = ["pip install pydantic==1.10.12", "pip install aiogram==3.0.0"]

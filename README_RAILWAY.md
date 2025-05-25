@@ -1,93 +1,80 @@
-# ONA Telegram Bot - Railway Deployment
+# Deploying ONA Bot on Railway
 
-This repository contains ONA (Осознанный Наставник и Аналитик) - a powerful Telegram bot designed for psychological profiling and intelligent conversations. This guide focuses specifically on deploying the bot to the Railway platform.
+This guide explains how to deploy the ONA Telegram bot on Railway.
 
-## Railway Deployment Quick Start
+## Prerequisites
 
-Railway is a platform that makes it easy to deploy and manage your applications. It's particularly well-suited for Telegram bots due to its simplicity and reliability.
+1. A GitHub account with the ONA bot code repository
+2. A Railway account (https://railway.app/)
+3. Your Telegram bot token (from BotFather)
+4. Any other API keys required by the bot (OpenAI, ElevenLabs, etc.)
 
-### Prerequisites
+## Deployment Steps
 
-- GitHub account
-- Railway account (sign up at [railway.app](https://railway.app/))
-- Telegram Bot Token (from [@BotFather](https://t.me/BotFather))
-- OpenAI API Key (optional, for AI-powered responses)
-- ElevenLabs API Key (optional, for voice functionality)
+### 1. Push your code to GitHub
 
-### Deployment Steps
+Make sure your code is in a GitHub repository.
 
-1. **Prepare Your Repository**
-   - Ensure your code is pushed to GitHub
-   - Make sure `requirements.txt`, `start.sh`, and other essential files are present
+### 2. Connect to Railway
 
-2. **Deploy to Railway**
-   - Go to [Railway](https://railway.app/)
-   - Click "New Project" → "Deploy from GitHub"
-   - Select your GitHub repository
-   - Add the following environment variables:
-     - `BOT_TOKEN` (required)
-     - `OPENAI_API_KEY` (optional)
-     - `ELEVEN_LABS_API_KEY` (optional)
-   - Click "Deploy"
+1. Go to Railway.app and log in
+2. Click "New Project" → "Deploy from GitHub"
+3. Select your GitHub repository
+4. Wait for Railway to build the initial deployment
 
-3. **Verify Deployment**
-   - Wait for the deployment to complete
-   - Check logs for "✅ Bot started successfully"
-   - Test the bot by sending `/start` in Telegram
+### 3. Configure Environment Variables
 
-## Files for Railway Deployment
+Add the following environment variables in Railway dashboard:
 
-The following files are essential for successful Railway deployment:
+- `BOT_TOKEN` - Your Telegram bot token from BotFather
+- `OPENAI_API_KEY` - Your OpenAI API key (if using OpenAI features)
+- `ELEVEN_TOKEN` - Your ElevenLabs API token (if using voice features)
+- Any other required API keys or configuration values
 
-- `main.py` - Main bot code
-- `requirements.txt` - Python dependencies
-- `start.sh` - Startup script that installs dependencies and runs the bot
-- `install_supabase.sh` - Script to install Supabase dependencies
-- `supabase_fallback.py` - SQLite fallback for when Supabase is unavailable
-- `Procfile` - Tells Railway how to run the application
-- `railway.toml` - Railway configuration file
+### 4. Configure the Deployment
 
-## Automatic SQLite Fallback
+Make sure the deployment settings are:
 
-ONA bot is designed to work with either Supabase or SQLite as a database. If Supabase dependencies cannot be installed (which is common on Railway's free tier), the bot will automatically fall back to using SQLite.
+- Build Command: `pip install pydantic==1.10.12 aiogram==3.0.0`
+- Start Command: `python main.py`
 
-This fallback mechanism ensures your bot will work even if the Supabase installation fails.
+### 5. Troubleshooting
 
-## Deployment Troubleshooting
+If you encounter issues with the deployment:
 
-### Common Issues and Solutions
+1. **Supabase Connection Issues**
+   - The bot will automatically fall back to SQLite if Supabase is not available
+   - No additional configuration is needed for the fallback
 
-1. **Bot Not Starting**
-   - Check logs for specific error messages
-   - Verify `BOT_TOKEN` is correctly set
-   - Make sure all required dependencies are in `requirements.txt`
+2. **Pydantic Compatibility Issues**
+   - The bot includes automatic patching for pydantic compatibility with aiogram
+   - This is handled in patch_pydantic.py
 
-2. **Supabase Dependency Errors**
-   - These are expected on Railway's free tier
-   - The bot will automatically use SQLite instead
-   - You should see "⚠️ Supabase is not installed, will use SQLite fallback" in logs
+3. **Deployment Fails**
+   - Check Railway logs for specific error messages
+   - Make sure all environment variables are set correctly
+   - Verify that Railway is using the correct Python version (3.11)
 
-3. **Memory/CPU Issues**
-   - Railway free tier has resource limitations
-   - Consider optimizing your code to reduce resource usage
-   - Use webhooks instead of polling if possible
+## Railway Configuration Files
 
-### Deployment Scripts
+The repository includes two important files for Railway deployment:
 
-For your convenience, this repository includes helper scripts:
+1. `railway.toml` - Configures the Railway project
+2. `Dockerfile` - Specifies how to build the Docker container
 
-- `prepare_for_railway.bat` - Windows script to prepare your project for Railway deployment
-- `railway_deploy.sh` - Linux/Mac script to prepare your project for Railway deployment
+## Automatic Restart
 
-Running these scripts will check your project for necessary files and create them if missing.
+The bot is configured to automatically restart on failure with:
 
-## Using the Bot on Railway
+```toml
+[deploy]
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+```
 
-Once deployed, your bot will run continuously on Railway. The free tier provides enough resources for basic usage.
+## Bot Status Monitoring
 
-To update your bot:
-1. Push changes to your GitHub repository
-2. Railway will automatically detect the changes and redeploy
+You can monitor the bot status through Railway's logs and metrics dashboard.
 
 ## Additional Resources
 

@@ -1,87 +1,143 @@
 #!/bin/bash
 
-echo "=== ONA TELEGRAM BOT RAILWAY DEPLOYMENT SCRIPT ==="
-echo "This script prepares your environment for Railway deployment"
+# ONA Bot Railway Deployment Script
+# This script prepares and deploys the ONA bot to Railway
 
-# Make scripts executable
-chmod +x start.sh
-chmod +x install_supabase.sh
+set -e
 
-# Verify requirements.txt exists
-if [ ! -f "requirements.txt" ]; then
-    echo "❌ ERROR: requirements.txt not found!"
+echo "=== ONA Bot Railway Deployment ==="
+echo "Preparing for deployment..."
+
+# Check if git is installed
+if ! command -v git &> /dev/null; then
+    echo "❌ Error: git is not installed"
     exit 1
 fi
 
-# Verify supabase_requirements.txt exists
-if [ ! -f "supabase_requirements.txt" ]; then
-    echo "❌ ERROR: supabase_requirements.txt not found!"
+# Check if we're in a git repository
+if ! git rev-parse --is-inside-work-tree &> /dev/null; then
+    echo "❌ Error: Not in a git repository"
     exit 1
 fi
 
-# Verify Procfile exists
-if [ ! -f "Procfile" ]; then
-    echo "Creating Procfile..."
-    echo "web: bash start.sh" > Procfile
-    echo "✅ Procfile created"
+# Create .dockerignore if it doesn't exist
+if [ ! -f .dockerignore ]; then
+    echo "Creating .dockerignore file..."
+    cat > .dockerignore << EOF
+__pycache__/
+*.py[cod]
+*$py.class
+.git
+.env
+.venv
+venv/
+ENV/
+logs/
+*.log
+.DS_Store
+EOF
+    echo "✅ Created .dockerignore"
 fi
 
-# Verify railway.toml exists
-if [ ! -f "railway.toml" ]; then
+# Create simple Dockerfile if it doesn't exist
+if [ ! -f Dockerfile ]; then
+    echo "Creating Dockerfile..."
+    cat > Dockerfile << EOF
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copy all application files
+COPY . .
+
+# Install dependencies directly
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir pydantic==1.10.12 aiogram==3.0.0
+
+# Create necessary directories
+RUN mkdir -p logs tmp
+
+# Start the bot directly with Python
+CMD ["python", "main.py"]
+EOF
+    echo "✅ Created Dockerfile"
+fi
+
+# Create railway.toml if it doesn't exist
+if [ ! -f railway.toml ]; then
     echo "Creating railway.toml..."
-    cat > railway.toml << EOL
+    cat > railway.toml << EOF
 [build]
-builder = "NIXPACKS"
+builder = "nixpacks"
+buildCommand = "pip install pydantic==1.10.12"
 
 [deploy]
-startCommand = "bash start.sh"
+startCommand = "python main.py"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 
-[environments]
-  [environments.production]
-    startCommand = "bash start.sh"
-EOL
-    echo "✅ railway.toml created"
+[nixpacks]
+install_packages = ["python3", "python3-pip", "libffi-dev", "python3-dev"]
+
+[phases.setup]
+cmds = ["pip install pydantic==1.10.12", "pip install aiogram==3.0.0"]
+EOF
+    echo "✅ Created railway.toml"
 fi
 
-echo "=== CHECKING SUPABASE FALLBACK ==="
-# Verify that supabase_fallback.py exists and contains needed functionality
-if [ ! -f "supabase_fallback.py" ]; then
-    echo "❌ ERROR: supabase_fallback.py not found!"
-    exit 1
-fi
+# Create or update README_RAILWAY.md
+echo "Creating/updating README_RAILWAY.md..."
+cat > README_RAILWAY.md << EOF
+# Deploying ONA Bot on Railway
 
-# Check for necessary env variables in local .env file
-echo "=== CHECKING .ENV FILE ==="
-if [ -f ".env" ]; then
-    echo "✅ .env file found locally"
-    # Check for BOT_TOKEN
-    if grep -q "BOT_TOKEN" .env; then
-        echo "✅ BOT_TOKEN found in .env"
-    else
-        echo "⚠️ WARNING: BOT_TOKEN not found in .env"
-    fi
-    
-    # Check for OPENAI_API_KEY
-    if grep -q "OPENAI_API_KEY" .env; then
-        echo "✅ OPENAI_API_KEY found in .env"
-    else
-        echo "⚠️ WARNING: OPENAI_API_KEY not found in .env"
-    fi
+This guide explains how to deploy the ONA Telegram bot on Railway.
+
+## Prerequisites
+
+1. A GitHub account with the ONA bot code repository
+2. A Railway account (https://railway.app/)
+3. Your Telegram bot token (from BotFather)
+4. Any other API keys required by the bot (OpenAI, ElevenLabs, etc.)
+
+## Deployment Steps
+
+### 1. Push your code to GitHub
+
+Make sure your code is in a GitHub repository.
+
+### 2. Connect to Railway
+
+1. Go to Railway.app and log in
+2. Click "New Project" → "Deploy from GitHub"
+3. Select your GitHub repository
+4. Wait for Railway to build the initial deployment
+
+### 3. Configure Environment Variables
+
+Add the following environment variables in Railway dashboard:
+
+- \`BOT_TOKEN\` - Your Telegram bot token from BotFather
+- \`OPENAI_API_KEY\` - Your OpenAI API key (if using OpenAI features)
+- \`ELEVEN_TOKEN\` - Your ElevenLabs API token (if using voice features)
+- Any other required API keys or configuration values
+
+### 4. Troubleshooting
+
+If you encounter issues with the deployment, check Railway logs for specific error messages.
+EOF
+echo "✅ Created/updated README_RAILWAY.md"
+
+# Commit changes if needed
+echo "Checking for changes to commit..."
+if git status --porcelain | grep -q "^??\\|^M\\|^A"; then
+    echo "Changes detected, committing..."
+    git add .dockerignore Dockerfile railway.toml README_RAILWAY.md
+    git commit -m "Update Railway deployment files"
+    echo "✅ Committed changes"
 else
-    echo "⚠️ WARNING: .env file not found. Make sure to add environment variables in Railway dashboard."
+    echo "No changes to commit"
 fi
 
-echo "=== DEPLOYMENT INSTRUCTIONS ==="
-echo "1. Create a new project on Railway: 'New Project' → 'Deploy from GitHub'"
-echo "2. Select your GitHub repository"
-echo "3. Add the following environment variables in the Railway dashboard:"
-echo "   - BOT_TOKEN (required)"
-echo "   - OPENAI_API_KEY (optional, for AI functionality)"
-echo "   - ELEVEN_LABS_API_KEY (optional, for voice functionality)"
-echo "4. Deploy the project"
-echo "5. Check logs to verify the bot has started"
-
-echo "=== READY FOR DEPLOYMENT ==="
-echo "Your project is now ready to be deployed to Railway." 
+echo "=== Deployment Preparation Complete ==="
+echo "Now you can push to GitHub and deploy on Railway with:"
+echo "git push origin main" 
