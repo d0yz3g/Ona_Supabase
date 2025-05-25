@@ -14,11 +14,26 @@ pip install --no-cache-dir -r requirements.txt || {
     echo "⚠️ Warning: Some dependencies failed to install. Continuing anyway."
 }
 
-echo "=== INSTALLING SUPABASE DEPENDENCIES ==="
-# Install dependencies one by one to better handle errors
-./install_supabase.sh || {
-    echo "⚠️ Warning: Supabase installation script failed. Will use SQLite fallback."
+echo "=== CHECKING FOR SQLITE ==="
+# Make sure SQLite is available
+python -c "import sqlite3; print('✅ SQLite version:', sqlite3.sqlite_version)" || {
+    echo "❌ ERROR: SQLite is not available. This is required even as a fallback."
+    exit 1
 }
+
+echo "=== TRYING TO INSTALL SUPABASE DEPENDENCIES ==="
+# Try to install dependencies from supabase_requirements.txt
+pip install --no-cache-dir -r supabase_requirements.txt || {
+    echo "⚠️ Warning: Supabase dependencies failed to install from requirements file. Will try individual installations."
+}
+
+# Try individual installations only if the above failed
+if ! pip list | grep -q supabase-py; then
+    echo "⚠️ Supabase not found. Trying individual installation..."
+    ./install_supabase.sh || {
+        echo "⚠️ Warning: Supabase installation script failed. Will use SQLite fallback."
+    }
+fi
 
 echo "=== VERIFYING SUPABASE INSTALLATION ==="
 if pip list | grep -q supabase-py; then
@@ -26,8 +41,15 @@ if pip list | grep -q supabase-py; then
     pip list | grep -E 'supabase|postgrest|realtime|storage3|gotrue|supafunc'
 else
     echo "⚠️ Supabase is not installed, will use SQLite fallback"
-    # Make sure SQLite is available
+    # Make sure SQLite is available (double-check)
     python -c "import sqlite3; print('✅ SQLite version:', sqlite3.sqlite_version)"
+    
+    # Ensure the fallback module is available
+    if [ -f "supabase_fallback.py" ]; then
+        echo "✅ SQLite fallback module (supabase_fallback.py) is available"
+    else
+        echo "❌ ERROR: SQLite fallback module (supabase_fallback.py) is missing!"
+    fi
 fi
 
 echo "=== CHECKING DATABASE TABLES ==="

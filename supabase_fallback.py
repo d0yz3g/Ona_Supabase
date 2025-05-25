@@ -106,11 +106,22 @@ class SupabaseDB:
     @property
     def is_connected(self) -> bool:
         """Проверяет подключение к базе данных"""
-        return self.conn is not None
+        try:
+            if self.conn is None:
+                return False
+            
+            # Проверяем, можем ли выполнить простой запрос
+            cursor = self.conn.cursor()
+            cursor.execute("SELECT 1")
+            return True
+        except Exception as e:
+            logger.error(f"Ошибка при проверке соединения с SQLite: {e}")
+            return False
     
     async def get_user(self, telegram_id: int) -> Optional[Dict[str, Any]]:
         """Получает пользователя по его Telegram ID"""
         if not self.is_connected:
+            logger.warning(f"Невозможно получить пользователя {telegram_id}: нет подключения к базе данных")
             return None
         
         try:
@@ -128,6 +139,7 @@ class SupabaseDB:
     async def create_user(self, telegram_id: int, username: str = None, first_name: str = None, last_name: str = None) -> Optional[Dict[str, Any]]:
         """Создает нового пользователя"""
         if not self.is_connected:
+            logger.warning(f"Невозможно создать пользователя {telegram_id}: нет подключения к базе данных")
             return None
         
         try:
@@ -161,6 +173,10 @@ class SupabaseDB:
             return None
         except Exception as e:
             logger.error(f"Ошибка при создании/обновлении пользователя {telegram_id}: {e}")
+            try:
+                self.conn.rollback()  # Откатываем транзакцию в случае ошибки
+            except:
+                pass
             return None
     
     async def save_profile(self, telegram_id: int, profile_text: str, details_text: str, answers: Dict[str, Any]) -> bool:
