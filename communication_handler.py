@@ -5,8 +5,13 @@ import json
 from openai import AsyncOpenAI
 import httpx
 from aiogram import Router
+from aiogram import F
+from aiogram.types import Message
+from aiogram.fsm.context import FSMContext
+import random
 
 # Создаем роутер для обработки коммуникаций
+communication_router = Router(name="communication_router")
 communication_handler_router = Router(name="communication_handler")
 
 # Настройка логирования
@@ -245,4 +250,72 @@ async def get_personality_type_from_profile(profile_text: str) -> str:
             max_score = score
             max_type = p_type
     
-    return max_type 
+    return max_type
+
+# Добавляем обработчики для communication_router
+@communication_router.message(F.text)
+async def handle_text_message(message: Message, state: FSMContext):
+    """
+    Обработчик текстовых сообщений для роутера communication_router
+    """
+    try:
+        # Получаем данные пользователя
+        user_data = await state.get_data()
+        user_profile = user_data.get("profile", {})
+        
+        # Если у пользователя нет профиля, используем базовый тип личности
+        if not user_profile:
+            personality_type = "Интеллектуальный"
+            logger.warning(f"Профиль пользователя {message.from_user.id} не найден, используем тип по умолчанию")
+        else:
+            # Извлекаем тип личности из профиля
+            personality_type = user_profile.get("personality_type", "Интеллектуальный")
+            if not personality_type or personality_type not in PERSONALITY_TYPES:
+                personality_type = await get_personality_type_from_profile(user_profile.get("profile_text", ""))
+        
+        # Формируем профиль для генерации ответа
+        simplified_profile = {
+            "personality_type": personality_type,
+            "name": message.from_user.first_name
+        }
+        
+        # Получаем историю переписки
+        conversation_history = user_data.get("conversation_history", [])
+        
+        # Генерируем персонализированный ответ
+        response = await generate_personalized_response(
+            message_text=message.text,
+            user_profile=simplified_profile,
+            conversation_history=conversation_history
+        )
+        
+        # Обновляем историю переписки
+        conversation_history.append({"role": "user", "content": message.text})
+        conversation_history.append({"role": "assistant", "content": response})
+        
+        # Сохраняем обновленную историю
+        await state.update_data(conversation_history=conversation_history[-10:])  # храним только последние 10 сообщений
+        
+        # Отправляем ответ пользователю
+        await message.answer(response)
+        
+        logger.info(f"Отправлен персонализированный ответ пользователю {message.from_user.id} с типом личности {personality_type}")
+    
+    except Exception as e:
+        logger.error(f"Ошибка при обработке текстового сообщения: {e}")
+        
+        # Отправляем сообщение об ошибке
+        error_message = f"""Здравствуй, {message.from_user.first_name}!
+
+К сожалению, произошла техническая ошибка при обработке твоего сообщения.
+
+⸻
+
+Пожалуйста, попробуй еще раз или воспользуйся командой /restart для перезапуска бота.
+
+Что ты хочешь сделать дальше?
+- Повторить свой вопрос?
+- Перезапустить бота командой /restart?
+- Перейти в раздел "Профиль" или "Медитации"?"""
+        
+        await message.answer(error_message) 
