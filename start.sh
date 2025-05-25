@@ -1,20 +1,29 @@
 #!/bin/bash
 
+# Exit on error, but not for pip commands
+set -e
+
+echo "=== CHECKING ENVIRONMENT ==="
+echo "Python version: $(python --version)"
+echo "Current directory: $(pwd)"
+echo "Files in directory: $(ls -la)"
+
 echo "=== INSTALLING DEPENDENCIES ==="
-pip install -r requirements.txt
+# Use --no-cache-dir to reduce memory usage on Railway
+pip install --no-cache-dir -r requirements.txt || {
+    echo "⚠️ Warning: Some dependencies failed to install. Continuing anyway."
+}
 
 echo "=== INSTALLING SUPABASE DEPENDENCIES ==="
-pip install supabase-py==2.3.5 postgrest-py==0.15.0 realtime-py==0.1.3 storage3==0.7.0 gotrue-py==1.2.0 supafunc==0.3.1 || echo "WARNING: Some Supabase dependencies couldn't be installed. Will use SQLite fallback."
+# Install dependencies one by one to better handle errors
+./install_supabase.sh || {
+    echo "⚠️ Warning: Supabase installation script failed. Will use SQLite fallback."
+}
 
 echo "=== VERIFYING SUPABASE INSTALLATION ==="
 if pip list | grep -q supabase-py; then
     echo "✅ Supabase installed successfully"
-    pip list | grep supabase
-    pip list | grep postgrest
-    pip list | grep realtime
-    pip list | grep storage3
-    pip list | grep gotrue
-    pip list | grep supafunc
+    pip list | grep -E 'supabase|postgrest|realtime|storage3|gotrue|supafunc'
 else
     echo "⚠️ Supabase is not installed, will use SQLite fallback"
     # Make sure SQLite is available
@@ -26,61 +35,86 @@ echo "=== CHECKING DATABASE TABLES ==="
 python -c "
 import sqlite3
 import os
+import logging
 
-db_path = os.getenv('SQLITE_DB_PATH', 'ona.db')
-print(f'Checking SQLite database at {db_path}')
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('db_setup')
 
-conn = sqlite3.connect(db_path)
-cursor = conn.cursor()
+try:
+    db_path = os.getenv('SQLITE_DB_PATH', 'ona.db')
+    print(f'Checking SQLite database at {db_path}')
 
-tables = [
-    '''CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        telegram_id INTEGER UNIQUE NOT NULL,
-        username TEXT,
-        first_name TEXT,
-        last_name TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )''',
-    '''CREATE TABLE IF NOT EXISTS profiles (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        telegram_id INTEGER NOT NULL,
-        profile_text TEXT,
-        details_text TEXT,
-        answers TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
-    )''',
-    '''CREATE TABLE IF NOT EXISTS reminders (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        telegram_id INTEGER NOT NULL,
-        time TEXT,
-        days TEXT,
-        active INTEGER DEFAULT 1,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
-    )''',
-    '''CREATE TABLE IF NOT EXISTS answers (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        telegram_id INTEGER NOT NULL,
-        question_id TEXT NOT NULL,
-        answer_text TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
-    )'''
-]
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
 
-for table_sql in tables:
-    cursor.execute(table_sql)
-    
-conn.commit()
-conn.close()
-print('✅ SQLite tables verified')
+    tables = [
+        '''CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            telegram_id INTEGER UNIQUE NOT NULL,
+            username TEXT,
+            first_name TEXT,
+            last_name TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )''',
+        '''CREATE TABLE IF NOT EXISTS profiles (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            telegram_id INTEGER NOT NULL,
+            profile_text TEXT,
+            details_text TEXT,
+            answers TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
+        )''',
+        '''CREATE TABLE IF NOT EXISTS reminders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            telegram_id INTEGER NOT NULL,
+            time TEXT,
+            days TEXT,
+            active INTEGER DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
+        )''',
+        '''CREATE TABLE IF NOT EXISTS answers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            telegram_id INTEGER NOT NULL,
+            question_id TEXT NOT NULL,
+            answer_text TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
+        )'''
+    ]
+
+    for table_sql in tables:
+        try:
+            cursor.execute(table_sql)
+            logger.info(f'Table created or already exists')
+        except sqlite3.Error as e:
+            logger.error(f'Error creating table: {e}')
+        
+    conn.commit()
+    conn.close()
+    print('✅ SQLite tables verified')
+except Exception as e:
+    print(f'❌ Error setting up SQLite: {e}')
 "
 
+# Make sure the bot token is available
+if [ -z "$BOT_TOKEN" ]; then
+    echo "❌ ERROR: BOT_TOKEN environment variable is not set!"
+    exit 1
+else
+    echo "✅ BOT_TOKEN is set"
+fi
+
 echo "=== STARTING BOT ==="
-python main.py 
+# Execute with proper error handling
+python main.py || {
+    echo "❌ Bot crashed with error code $?"
+    echo "Check logs for details"
+    exit 1
+} 

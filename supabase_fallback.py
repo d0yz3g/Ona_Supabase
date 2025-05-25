@@ -35,6 +35,8 @@ class SupabaseDB:
                 logger.error(f"Ошибка при подключении к SQLite: {e}")
                 cls._instance.conn = None
                 
+        return cls._instance
+    
     def _create_tables(self):
         """Создает необходимые таблицы в SQLite, если они не существуют"""
         try:
@@ -99,7 +101,7 @@ class SupabaseDB:
         except Exception as e:
             logger.error(f"Ошибка при создании таблиц SQLite: {e}")
         
-        return cls._instance
+        return self
     
     @property
     def is_connected(self) -> bool:

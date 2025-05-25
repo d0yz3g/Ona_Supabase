@@ -12,7 +12,6 @@ import random
 
 # Создаем роутер для обработки коммуникаций
 communication_router = Router(name="communication_router")
-communication_handler_router = Router(name="communication_handler")
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
