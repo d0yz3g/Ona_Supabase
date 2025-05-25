@@ -135,16 +135,21 @@ async def generate_audio(text: str, user_id: int, meditation_type: str = "defaul
             "xi-api-key": api_key
         }
         
-        # Параметры голоса (можно настроить)
+        # Параметры голоса (увеличиваем громкость голоса)
         voice_settings = {
-            "stability": 0.75,
-            "similarity_boost": 0.75
+            "stability": 0.5,  # уменьшаем стабильность для более выразительного голоса
+            "similarity_boost": 0.75,
+            "style": 0.7,  # добавляем стиль для более выразительной речи
+            "use_speaker_boost": True  # включаем усиление голоса
         }
         
         # Подготавливаем текст (ограничиваем длину)
         if len(text) > MAX_TEXT_LENGTH:
             text = text[:MAX_TEXT_LENGTH-3] + "..."
             logger.warning(f"Текст для генерации аудио был обрезан для пользователя {user_id}")
+        
+        # Добавляем специальные теги для усиления громкости
+        text = f"<volume:1.5>{text}</volume>"
         
         # Данные для запроса
         data = {
