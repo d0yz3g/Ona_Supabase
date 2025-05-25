@@ -132,7 +132,8 @@ try:
         "reminder_handler",
         "voice_handler",
         "railway_logging",
-        "communication_handler"
+        "communication_handler",
+        "supabase_db"  # Добавляем модуль Supabase
     ])
 except ImportError:
     print("БОТ: Railway Helper не найден, продолжаем без дополнительных проверок")
@@ -198,39 +199,21 @@ try:
     from survey_handler import survey_router, get_main_keyboard
     from voice_handler import voice_router
     from conversation_handler import conversation_router
+    from reminder_handler import reminder_router, load_reminders_from_db
     from meditation_handler import meditation_router
-    from reminder_handler import reminder_router, scheduler
-    railway_print("Все модули успешно импортированы", "INFO")
+    from communication_handler import communication_router
+    
+    # Инициализация соединения с Supabase
+    from supabase_db import db
+    if db.is_connected:
+        railway_print("Соединение с Supabase успешно установлено", "INFO")
+    else:
+        railway_print("Не удалось установить соединение с Supabase", "WARNING")
+        
 except ImportError as e:
-    logger.error(f"Ошибка импорта модулей: {e}")
-    railway_print(f"Ошибка импорта модулей: {e}", "ERROR")
-    railway_print("Попытка аварийной загрузки базовых модулей...", "WARNING")
-    
-    # Попытка аварийной загрузки базовых модулей
-    # Создаем пустые роутеры
-    from aiogram import Router
-    from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-    
-    survey_router = Router(name="survey")
-    voice_router = Router(name="voice")
-    conversation_router = Router(name="conversation")
-    meditation_router = Router(name="meditation")
-    reminder_router = Router(name="reminder")
-    
-    # Создаем базовую клавиатуру
-    def get_main_keyboard():
-        return ReplyKeyboardMarkup(
-            keyboard=[
-                [KeyboardButton(text="📝 Опрос"), KeyboardButton(text="💬 Помощь")]
-            ],
-            resize_keyboard=True
-        )
-    
-    # Создаем пустой планировщик
-    from apscheduler.schedulers.asyncio import AsyncIOScheduler
-    scheduler = AsyncIOScheduler()
-    
-    railway_print("Аварийная загрузка базовых модулей выполнена", "WARNING")
+    logger.error(f"Ошибка при импорте модулей: {e}")
+    railway_print(f"Ошибка при импорте модулей: {e}", "ERROR")
+    sys.exit(1)
 
 # Создаем экземпляр бота и диспетчер
 bot = Bot(
@@ -251,6 +234,7 @@ dp.include_router(meditation_router)
 dp.include_router(reminder_router)
 # Регистрируем роутер обычных сообщений последним
 dp.include_router(conversation_router)
+dp.include_router(communication_router)
 
 # Обработчик команды /start
 @dp.message(Command("start"))
@@ -385,98 +369,48 @@ async def start_scheduler():
 
 async def main():
     """
-    Главная функция запуска бота
+    Основная функция запуска бота
     """
-    # Проверяем, что нет другого запущенного экземпляра
-    if not acquire_lock():
-        logger.error("Другой экземпляр бота уже запущен. Завершение работы.")
-        railway_print("КРИТИЧЕСКАЯ ОШИБКА: Обнаружен другой запущенный экземпляр бота. Завершение работы.", "ERROR")
-        return
-        
-    # Инициализируем бот
-    logger.info("Бот ОНА запускается...")
-    railway_print("Запуск основного цикла бота...", "INFO")
+    railway_print("Запуск основной функции бота...", "INFO")
     
+    # Создаем экземпляр бота и диспетчера
+    bot = Bot(token=BOT_TOKEN)
+    storage = MemoryStorage()
+    dp = Dispatcher(storage=storage)
+    
+    # Включаем логирование событий middleware для отладки
+    logging.getLogger("aiogram.middleware").setLevel(logging.DEBUG)
+    
+    # Регистрируем роутеры
+    dp.include_router(survey_router)
+    dp.include_router(reminder_router)
+    dp.include_router(meditation_router)
+    dp.include_router(voice_router)
+    dp.include_router(conversation_router)
+    dp.include_router(communication_router)
+    
+    # Инициализируем и запускаем планировщик задач
     try:
-        # Удаляем все обновления, которые были пропущены (если бот был отключен)
-        await bot.delete_webhook(drop_pending_updates=True)
-        railway_print("Старые обновления удалены", "INFO")
-        
-        # Удаляем webhook (если он был установлен)
-        webhook_info = await bot.get_webhook_info()
-        if webhook_info.url:
-            await bot.delete_webhook()
-            logger.info("Webhook удален, старые обновления очищены")
-        
-        # Завершаем потенциально запущенные сессии бота (для предотвращения конфликтов)
-        if hasattr(bot, "session") and bot.session:
-            try:
-                await bot.session.close()
-                logger.info("Существующая сессия бота закрыта")
-            except Exception as e:
-                logger.warning(f"Не удалось закрыть существующую сессию: {e}")
-        
-        # Создаем новую сессию
-        bot._session = None  # Сбрасываем текущую сессию, чтобы создать новую
-        
-        # Проверяем соединение с Telegram API
-        bot_info = await bot.get_me()
-        logger.info(f"Соединение с Telegram API установлено успешно. Имя бота: @{bot_info.username}")
-        railway_print(f"Бот @{bot_info.username} успешно подключен к Telegram API", "INFO")
-        
-        # Запускаем планировщик заданий
-        await start_scheduler()
-        
-        # Сообщение о готовности бота
-        railway_print("=== ONA BOT ЗАПУЩЕН И ГОТОВ К РАБОТЕ ===", "INFO")
-        
-        # Запускаем бота с длинным поллингом и параметрами для предотвращения конфликтов
-        await dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
-    except Exception as e:
-        # Проверяем, является ли ошибка конфликтом запросов
-        if "Conflict: terminated by other getUpdates" in str(e) or "TelegramConflictError" in str(e):
-            logger.error("Обнаружен конфликт запросов Telegram API - другой экземпляр бота уже запущен")
-            railway_print("КОНФЛИКТ: Другой экземпляр бота уже получает обновления. Выполняем повторную попытку через 10 секунд...", "ERROR")
-            
-            # Делаем паузу и пробуем снова
-            await asyncio.sleep(10)
-            railway_print("Повторная попытка запуска после конфликта...", "INFO")
-            
-            try:
-                # Создаем новую сессию
-                if hasattr(bot, "session") and bot.session:
-                    await bot.session.close()
-                bot._session = None
-                
-                # Пробуем запустить снова
-                await dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
-                railway_print("Повторный запуск выполнен успешно!", "INFO")
-            except Exception as retry_error:
-                logger.error(f"Повторная попытка запуска не удалась: {retry_error}")
-                railway_print(f"Повторная попытка не удалась: {str(retry_error)}", "ERROR")
-                
-                # Если мы запускаемся из restart_bot.py, повторный запуск будет выполнен автоматически
-                if 'restart_bot.py' in sys.argv[0]:
-                    railway_print("Ожидаем перезапуска через монитор...", "INFO")
-                else:
-                    railway_print("Рекомендуется запускать бота через restart_bot.py для автоматического перезапуска", "WARNING")
+        railway_print("Загрузка напоминаний из Supabase...", "INFO")
+        if db.is_connected:
+            await load_reminders_from_db(bot)
+            railway_print("Напоминания успешно загружены из Supabase", "INFO")
         else:
-            logger.error(f"Ошибка запуска бота: {e}")
-            railway_print(f"Ошибка запуска: {str(e)}", "ERROR")
-    finally:
-        # Освобождаем блокировку при завершении
-        release_lock()
+            railway_print("Напоминания не загружены: нет подключения к Supabase", "WARNING")
         
-        # Останавливаем планировщик заданий при выходе
-        if scheduler and scheduler.running:
-            scheduler.shutdown()
-            logger.info("Планировщик заданий остановлен")
-        
-        if hasattr(bot, "session") and bot.session:
-            await bot.session.close()
-            logger.info("Сессия бота закрыта")
-        
-        railway_print("Бот завершил работу", "INFO")
+        # Запускаем планировщик для напоминаний
+        railway_print("Запуск планировщика задач...", "INFO")
+        await start_scheduler()
+    except Exception as e:
+        railway_print(f"Ошибка при инициализации планировщика: {e}", "ERROR")
+        logger.error(f"Ошибка при инициализации планировщика: {e}")
+    
+    # Удаляем все ожидающие обновления (webhook или polling)
+    await bot.delete_webhook(drop_pending_updates=True)
+    
+    # Запускаем бота
+    railway_print("Запуск поллинга обновлений...", "INFO")
+    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
 if __name__ == "__main__":
     # Запускаем бота

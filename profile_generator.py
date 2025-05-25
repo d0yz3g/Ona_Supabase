@@ -361,7 +361,7 @@ async def generate_profile(answers: Dict[str, str]) -> Dict[str, str]:
 
 async def save_profile_to_db(user_id: int, profile_text: str, answers: Dict[str, str]) -> bool:
     """
-    Сохраняет сгенерированный профиль в базу данных.
+    Сохраняет сгенерированный профиль в базу данных Supabase.
     
     Args:
         user_id: ID пользователя в Telegram
@@ -372,21 +372,31 @@ async def save_profile_to_db(user_id: int, profile_text: str, answers: Dict[str,
         bool: True, если сохранение успешно, иначе False
     """
     try:
-        # Подготовка данных для сохранения
-        profile_data = {
-            "profile_text": profile_text,
-            "answers": answers,
-            "created_at": str(asyncio.get_event_loop().time())
-        }
+        # Импортируем SupabaseDB
+        from supabase_db import db
         
-        # Преобразуем данные в JSON
-        profile_json = json.dumps(profile_data, ensure_ascii=False)
+        # Проверяем подключение к Supabase
+        if not db.is_connected:
+            logger.error("Невозможно сохранить профиль: нет подключения к Supabase")
+            return False
         
-        # Здесь должен быть код для сохранения в базу данных
-        # В данной реализации это заглушка
-        logger.info(f"Профиль сохранен для пользователя {user_id}")
+        # Извлекаем детальный профиль из ответов или используем текст профиля
+        details_text = answers.get("details", profile_text)
         
-        return True
+        # Сохраняем профиль в Supabase
+        success = await db.save_profile(
+            telegram_id=user_id,
+            profile_text=profile_text,
+            details_text=details_text,
+            answers=answers
+        )
+        
+        if success:
+            logger.info(f"Профиль успешно сохранен в Supabase для пользователя {user_id}")
+        else:
+            logger.warning(f"Не удалось сохранить профиль в Supabase для пользователя {user_id}")
+        
+        return success
     except Exception as e:
-        logger.error(f"Ошибка при сохранении профиля в базу данных: {e}")
+        logger.error(f"Ошибка при сохранении профиля в Supabase: {e}")
         return False 
