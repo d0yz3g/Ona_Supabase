@@ -9,7 +9,27 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
-from dotenv import load_dotenv
+# Use a try-except block for dotenv import
+try:
+    from dotenv import load_dotenv
+    print("Using standard python-dotenv")
+except ImportError:
+    print("python-dotenv not found, using fallback")
+    # Try to import from fallback modules
+    try:
+        import dotenv_fallback
+        from dotenv_fallback import load_dotenv
+        print("Using dotenv_fallback.py")
+    except ImportError:
+        try:
+            import dotenv
+            from dotenv import load_dotenv
+            print("Using local dotenv.py")
+        except ImportError:
+            # Minimal inline implementation as last resort
+            def load_dotenv(dotenv_path=None):
+                print("Using minimal inline load_dotenv implementation")
+                return True
 from aiogram.types import BufferedInputFile
 
 # Импортируем fcntl только для Unix-подобных систем
@@ -118,7 +138,7 @@ def release_lock():
     except Exception as e:
         print(f"Ошибка при освобождении блокировки: {e}")
 
-# Загружаем переменные окружения из .env
+# Загружаем переменные окружения
 load_dotenv()
 
 # Функция для проверки наличия модуля

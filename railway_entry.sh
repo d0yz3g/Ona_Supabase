@@ -18,14 +18,21 @@ else
     echo "✅ BOT_TOKEN is set"
 fi
 
+# Run dependency check first
+echo "=== Running dependency check ==="
+python check_dependencies.py || {
+    echo "⚠️ Warning: Some dependencies are missing or incompatible"
+    echo "⚠️ Attempting to install critical dependencies individually..."
+}
+
 # Install critical dependencies
 echo "=== Installing critical dependencies ==="
-pip install --no-cache-dir pydantic==1.10.12
-pip install --no-cache-dir aiogram==3.0.0
+pip install --no-cache-dir pydantic==1.10.12 || echo "⚠️ Failed to install pydantic"
+pip install --no-cache-dir aiogram==3.0.0 || echo "⚠️ Failed to install aiogram"
 pip install --no-cache-dir python-dotenv || {
     echo "⚠️ Warning: python-dotenv installation failed, will use fallback"
 }
-pip install --no-cache-dir APScheduler
+pip install --no-cache-dir APScheduler || echo "⚠️ Failed to install APScheduler"
 
 # Check if python-dotenv is available
 python -c "import dotenv; print('✅ python-dotenv is available')" 2>/dev/null || {

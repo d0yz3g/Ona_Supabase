@@ -1,103 +1,124 @@
 #!/usr/bin/env python3
 """
-Dependency checker script for ONA bot.
-This script verifies that all required dependencies are installed
-and reports any missing or incompatible packages.
+Utility script to check and install critical dependencies.
+Used during Docker build and startup to ensure all required packages are available.
 """
-
-import importlib
 import sys
+import importlib.util
 import subprocess
-import pkg_resources
+import os
 
-# Essential dependencies for the bot to function
-ESSENTIAL_DEPS = [
-    ("aiogram", "3.0.0"),
-    ("pydantic", "1.10.12"),
-    ("python-dotenv", None),
-    ("APScheduler", None),
-]
 
-# Optional dependencies that provide additional functionality
-OPTIONAL_DEPS = [
-    ("openai", None),
-    ("elevenlabs", None),
-    ("gTTS", None),
-    ("ephem", None),
-    ("PyYAML", None),
-    ("requests", None),
-]
-
-def check_dependency(package_name, required_version=None):
-    """Check if a package is installed and meets version requirements."""
+def is_module_installed(module_name):
+    """Check if a module is installed without importing it."""
     try:
-        module = importlib.import_module(package_name)
-        
-        # Special case for some modules that have different import and package names
-        if package_name == "python-dotenv":
-            package_name = "dotenv"
-            module = importlib.import_module(package_name)
-        
-        # Try to get the version if module is found
-        try:
-            version = pkg_resources.get_distribution(package_name).version
-            if required_version and version != required_version:
-                print(f"⚠️ {package_name} version mismatch: found {version}, required {required_version}")
-                return False
-            print(f"✅ {package_name} {version} is installed")
-            return True
-        except Exception:
-            # If we can import but can't get the version, assume it's working
-            print(f"✅ {package_name} is installed (version unknown)")
-            return True
-            
-    except ImportError:
-        print(f"❌ {package_name} is not installed")
+        spec = importlib.util.find_spec(module_name)
+        return spec is not None
+    except (ModuleNotFoundError, ValueError):
         return False
 
-def install_package(package_name, required_version=None):
+
+def install_package(package_name, version=None):
     """Attempt to install a package using pip."""
-    package_spec = f"{package_name}=={required_version}" if required_version else package_name
-    print(f"📦 Installing {package_spec}...")
+    pkg_str = f"{package_name}=={version}" if version else package_name
+    print(f"📦 Installing {pkg_str}...")
     
     try:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package_spec])
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", pkg_str])
+        print(f"✅ Successfully installed {pkg_str}")
         return True
-    except subprocess.CalledProcessError:
-        print(f"❌ Failed to install {package_spec}")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Failed to install {pkg_str}: {e}")
         return False
 
-def main():
-    """Main function to check all dependencies."""
-    print("=== ONA Bot Dependency Checker ===")
+
+def check_and_install_dependencies():
+    """Check and install critical dependencies."""
+    # List of critical packages (name, version, is_required)
+    critical_packages = [
+        ("pydantic", "1.10.12", True),
+        ("aiogram", "3.0.0", True),
+        ("python-dotenv", None, False),  # We have fallback for this
+        ("APScheduler", None, False),
+    ]
     
-    all_essential_found = True
-    all_optional_found = True
+    all_required_installed = True
     
-    print("\n== Essential Dependencies ==")
-    for package, version in ESSENTIAL_DEPS:
-        if not check_dependency(package, version):
-            all_essential_found = False
-            if input(f"Attempt to install {package}? (y/n): ").lower() == 'y':
-                install_package(package, version)
+    for package, version, is_required in critical_packages:
+        if is_module_installed(package):
+            print(f"✅ {package} is already installed")
+        else:
+            success = install_package(package, version)
+            if not success and is_required:
+                all_required_installed = False
     
-    print("\n== Optional Dependencies ==")
-    for package, version in OPTIONAL_DEPS:
-        if not check_dependency(package, version):
-            all_optional_found = False
-            if input(f"Attempt to install {package}? (y/n): ").lower() == 'y':
-                install_package(package, version)
+    # Check specific modules that might be part of larger packages
+    try:
+        from aiogram import Bot, Dispatcher
+        print("✅ aiogram core modules imported successfully")
+    except ImportError as e:
+        print(f"❌ Failed to import aiogram modules: {e}")
+        all_required_installed = False
     
-    print("\n== Results ==")
-    if all_essential_found:
-        print("✅ All essential dependencies are installed")
-    else:
-        print("❌ Some essential dependencies are missing")
+    # Create fallback for dotenv if needed
+    if not is_module_installed("dotenv"):
+        print("⚠️ python-dotenv not found, checking for fallback implementation...")
+        if os.path.exists("dotenv.py") or os.path.exists("dotenv_fallback.py"):
+            print("✅ Fallback dotenv implementation found")
+        else:
+            print("⚠️ Creating minimal dotenv fallback...")
+            create_dotenv_fallback()
     
-    if all_optional_found:
-        print("✅ All optional dependencies are installed")
-    else:
-        print("⚠️ Some optional dependencies are missing")
+    return all_required_installed
+
+
+def create_dotenv_fallback():
+    """Create minimal fallback implementation for dotenv."""
+    with open("dotenv_minimal.py", "w") as f:
+        f.write("""
+'''
+Minimal fallback implementation for python-dotenv
+'''
+import os
+
+def load_dotenv(dotenv_path=None, **kwargs):
+    print("[dotenv_minimal] Using minimal fallback implementation")
+    if os.path.exists('.env'):
+        with open('.env', 'r') as env_file:
+            for line in env_file:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    key, value = line.split('=', 1)
+                    os.environ[key.strip()] = value.strip()
+    return True
+
+def find_dotenv(*args, **kwargs):
+    return '.env' if os.path.exists('.env') else ''
+""")
+    
+    # Create symlink to make imports work
+    if not os.path.exists("dotenv.py"):
+        try:
+            with open("dotenv.py", "w") as f:
+                f.write("""
+'''
+Dotenv import redirection
+'''
+from dotenv_minimal import load_dotenv, find_dotenv
+""")
+            print("✅ Created dotenv fallback")
+        except Exception as e:
+            print(f"❌ Failed to create dotenv fallback: {e}")
+
 
 if __name__ == "__main__":
-    main() 
+    print("=== Checking critical dependencies ===")
+    success = check_and_install_dependencies()
+    
+    if success:
+        print("✅ All critical dependencies available")
+        sys.exit(0)
+    else:
+        print("❌ Some critical dependencies could not be installed")
+        print("⚠️ The application may not function correctly")
+        sys.exit(1) 
