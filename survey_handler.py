@@ -474,6 +474,10 @@ async def complete_survey(message: Message, state: FSMContext, answers: Dict[str
         profile_text = profile_data.get("profile", "")
         detailed_profile = profile_data.get("details", "")
         
+        # Логируем информацию о полученных профилях для отладки
+        logger.info(f"Получен краткий профиль длиной {len(profile_text)} символов")
+        logger.info(f"Получен детальный профиль длиной {len(detailed_profile)} символов")
+        
         # Сбрасываем состояние опроса
         await state.set_state(None)
         
@@ -487,6 +491,11 @@ async def complete_survey(message: Message, state: FSMContext, answers: Dict[str
             secondary_type=secondary_type,
             type_counts=type_counts
         )
+        
+        # Проверяем, что профили действительно сохранились
+        verification_data = await state.get_data()
+        saved_details = verification_data.get("profile_details", "")
+        logger.info(f"Проверка сохранения детального профиля: сохранено {len(saved_details)} символов")
         
         # Удаляем сообщение о генерации профиля
         await processing_message.delete()
@@ -737,34 +746,76 @@ async def show_profile_details(callback: CallbackQuery, state: FSMContext):
         callback: Callback query
         state: Состояние FSM
     """
+    # Показываем индикатор "печатает..."
+    await callback.message.bot.send_chat_action(chat_id=callback.message.chat.id, action="typing")
+
     # Получаем данные пользователя
     user_data = await state.get_data()
     details_text = user_data.get("profile_details", "")
     
-    if not details_text:
+    # Логируем полученные данные для отладки
+    logger.info(f"Запрошен детальный профиль. Длина текста: {len(details_text) if details_text else 0}")
+    logger.info(f"Доступные ключи в user_data: {', '.join(user_data.keys())}")
+    
+    if not details_text or len(details_text) < 20:
         await callback.message.answer(
-            "❌ <b>Ошибка:</b> Детальный профиль не найден. Пожалуйста, пройдите опрос заново.",
+            "❌ <b>Ошибка:</b> Детальный профиль не найден или пуст. Пожалуйста, пройдите опрос заново.",
             parse_mode="HTML"
         )
         await callback.answer("Детальный профиль не найден")
         return
     
-    # Добавляем кнопки для навигации
-    builder = InlineKeyboardBuilder()
-    builder.button(text="📊 Статистика", callback_data="show_stats")
-    builder.button(text="💡 Получить совет", callback_data="get_advice")
-    builder.button(text="🔙 Назад", callback_data="view_profile")
-    builder.adjust(1)
+    # Проверяем, не слишком ли длинный профиль для отправки в одном сообщении
+    max_message_length = 4000  # Telegram ограничивает сообщения примерно до 4096 символов
     
-    # Показываем индикатор "печатает..."
-    await callback.message.bot.send_chat_action(chat_id=callback.message.chat.id, action="typing")
-    
-    # Отправляем детальный профиль
-    await callback.message.answer(
-        details_text,
-        parse_mode="HTML",
-        reply_markup=builder.as_markup()
-    )
+    if len(details_text) > max_message_length:
+        # Разбиваем детальный профиль на части
+        parts = []
+        current_part = ""
+        for line in details_text.split('\n'):
+            if len(current_part) + len(line) + 1 <= max_message_length:
+                current_part += line + '\n'
+            else:
+                parts.append(current_part)
+                current_part = line + '\n'
+        if current_part:
+            parts.append(current_part)
+        
+        # Отправляем части профиля
+        for i, part in enumerate(parts):
+            # Добавляем кнопки только к последней части
+            if i == len(parts) - 1:
+                # Добавляем кнопки для навигации
+                builder = InlineKeyboardBuilder()
+                builder.button(text="📊 Статистика", callback_data="show_stats")
+                builder.button(text="💡 Получить совет", callback_data="get_advice")
+                builder.button(text="🔙 Назад", callback_data="view_profile")
+                builder.adjust(1)
+                
+                await callback.message.answer(
+                    part,
+                    parse_mode="HTML",
+                    reply_markup=builder.as_markup()
+                )
+            else:
+                await callback.message.answer(
+                    part,
+                    parse_mode="HTML"
+                )
+    else:
+        # Добавляем кнопки для навигации
+        builder = InlineKeyboardBuilder()
+        builder.button(text="📊 Статистика", callback_data="show_stats")
+        builder.button(text="💡 Получить совет", callback_data="get_advice")
+        builder.button(text="🔙 Назад", callback_data="view_profile")
+        builder.adjust(1)
+        
+        # Отправляем детальный профиль
+        await callback.message.answer(
+            details_text,
+            parse_mode="HTML",
+            reply_markup=builder.as_markup()
+        )
     
     # Возвращаем основную клавиатуру после вывода деталей
     await callback.message.answer(

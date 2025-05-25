@@ -280,14 +280,19 @@ async def generate_profile(answers: Dict[str, str]) -> Dict[str, str]:
         # Получаем сгенерированный ответ
         result = response.choices[0].message.content
         
+        # Логируем для отладки полученный результат
+        logger.info(f"Получен результат генерации профиля длиной {len(result)} символов")
+        
         # Разделяем ответ на краткий профиль и подробный анализ
         if "КРАТКИЙ ПРОФИЛЬ" in result and "ПОЛНЫЙ ПРОФИЛЬ" in result:
             split_index = result.find("ПОЛНЫЙ ПРОФИЛЬ")
             profile = result[:split_index].strip()
             details = result[split_index:].strip()
+            logger.info(f"Профиль успешно разделен: краткий ({len(profile)} символов), полный ({len(details)} символов)")
         else:
             # Если ответ не содержит четкого разделения, используем весь текст как детальный профиль
             # и первые несколько строк как краткий профиль
+            logger.warning("Не найдены маркеры разделения профиля. Используем альтернативное разделение.")
             lines = result.strip().split('\n')
             profile_lines = lines[:min(15, len(lines))]
             profile = "\n".join(profile_lines)
@@ -300,13 +305,32 @@ async def generate_profile(answers: Dict[str, str]) -> Dict[str, str]:
                 title_end = details.find("\n", len("ПОЛНЫЙ ПРОФИЛЬ"))
                 if title_end > 0:
                     details = details[:title_end+1] + "\n" + personal_info + "\n" + details[title_end+1:]
+                    logger.info("Добавлена личная информация в начало детального профиля после заголовка")
                 else:
                     details = details + "\n\n" + personal_info
+                    logger.info("Добавлена личная информация в конец детального профиля")
+            else:
+                # Если нет заголовка, добавляем в начало
+                details = f"ПОЛНЫЙ ПРОФИЛЬ\n\n{personal_info}\n\n" + details
+                logger.info("Добавлен заголовок и личная информация в начало детального профиля")
+        
+        # Проверяем корректность детального профиля
+        if len(details) < 100:
+            logger.warning(f"Детальный профиль слишком короткий ({len(details)} символов), генерируем запасной вариант")
+            details = f"""ПОЛНЫЙ ПРОФИЛЬ
+
+{personal_info}
+
+{details}
+
+Пожалуйста, обратите внимание, что детальный профиль был сгенерирован в сокращенном виде. 
+Для получения более полного анализа рекомендуется пройти опрос повторно."""
         
         # Добавляем кнопку "Детальный анализ" в краткий профиль
         profile += "\n\nДля подробной информации и рекомендаций нажмите кнопку ниже."
         
         logger.info(f"Профиль успешно сгенерирован для пользователя {answers.get('name', 'неизвестно')}")
+        logger.info(f"Итоговые размеры: краткий профиль - {len(profile)} символов, детальный профиль - {len(details)} символов")
         
         return {
             "profile": profile,
