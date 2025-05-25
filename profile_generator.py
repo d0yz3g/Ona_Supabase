@@ -373,7 +373,17 @@ async def save_profile_to_db(user_id: int, profile_text: str, answers: Dict[str,
     """
     try:
         # Импортируем SupabaseDB
-        from supabase_db import db
+        try:
+            from supabase_db import db  # Импортируем Supabase клиент
+            logger.info("Успешный импорт модуля supabase_db в profile_generator")
+        except ImportError:
+            logger.warning("Модуль supabase не найден, используем SQLite-заглушку в profile_generator")
+            try:
+                from supabase_fallback import db  # Импортируем заглушку SQLite
+                logger.info("Подключена SQLite-заглушка вместо Supabase в profile_generator")
+            except Exception as fallback_error:
+                logger.error(f"Ошибка при подключении SQLite-заглушки в profile_generator: {fallback_error}")
+                return False
         
         # Проверяем подключение к Supabase
         if not db.is_connected:

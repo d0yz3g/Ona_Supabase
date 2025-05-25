@@ -204,11 +204,20 @@ try:
     from communication_handler import communication_router
     
     # Инициализация соединения с Supabase
-    from supabase_db import db
-    if db.is_connected:
-        railway_print("Соединение с Supabase успешно установлено", "INFO")
-    else:
-        railway_print("Не удалось установить соединение с Supabase", "WARNING")
+    try:
+        from supabase_db import db
+        railway_print("Импорт модуля supabase_db успешен", "INFO")
+        if db.is_connected:
+            railway_print("Соединение с Supabase успешно установлено", "INFO")
+        else:
+            railway_print("Не удалось установить соединение с Supabase", "WARNING")
+    except ImportError:
+        railway_print("Модуль supabase не найден, используем SQLite-заглушку", "WARNING")
+        try:
+            from supabase_fallback import db
+            railway_print("Подключена SQLite-заглушка вместо Supabase", "INFO")
+        except Exception as fallback_error:
+            railway_print(f"Ошибка при подключении SQLite-заглушки: {fallback_error}", "ERROR")
         
 except ImportError as e:
     logger.error(f"Ошибка при импорте модулей: {e}")

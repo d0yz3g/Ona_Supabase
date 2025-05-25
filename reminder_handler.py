@@ -12,7 +12,16 @@ from button_states import ReminderStates
 from survey_handler import get_main_keyboard
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
-from supabase_db import db  # Импортируем Supabase клиент
+try:
+    from supabase_db import db  # Импортируем Supabase клиент
+    logger.info("Успешный импорт модуля supabase_db в reminder_handler")
+except ImportError:
+    logger.warning("Модуль supabase не найден, используем SQLite-заглушку в reminder_handler")
+    try:
+        from supabase_fallback import db  # Импортируем заглушку SQLite
+        logger.info("Подключена SQLite-заглушка вместо Supabase в reminder_handler")
+    except Exception as fallback_error:
+        logger.error(f"Ошибка при подключении SQLite-заглушки в reminder_handler: {fallback_error}")
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
