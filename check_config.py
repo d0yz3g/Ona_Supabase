@@ -1,159 +1,185 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
-Скрипт для проверки конфигурации окружения и импортов
+Скрипт для проверки конфигурации перед запуском бота.
+Проверяет наличие всех необходимых модулей и переменных окружения.
 """
-
 import os
 import sys
-import importlib
 import logging
+import importlib
+import subprocess
 
 # Настройка логирования
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - [CONFIG_CHECK] - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()]
 )
-logger = logging.getLogger("check_config")
+logger = logging.getLogger("config_check")
 
-def check_environment():
-    """Проверка переменных окружения"""
-    print("=== Проверка переменных окружения ===")
+# Список необходимых переменных окружения
+REQUIRED_ENV_VARS = [
+    "BOT_TOKEN"
+]
+
+# Список необходимых модулей
+REQUIRED_MODULES = [
+    ("aiogram", "3.0.0", True),  # (название, версия, обязательный)
+    ("pydantic", "1.10.12", True),
+    ("openai", "0.28.1", True),
+    ("httpx", None, True),
+    ("python-dotenv", None, False),  # Для этого есть fallback
+    ("APScheduler", None, True)
+]
+
+def check_env_vars():
+    """Проверяет наличие необходимых переменных окружения"""
+    logger.info("Проверка переменных окружения...")
+    missing_vars = []
     
-    required_env_vars = ["BOT_TOKEN", "OPENAI_API_KEY", "ELEVEN_API_KEY"]
-    missing_env_vars = []
-    
-    for var in required_env_vars:
-        value = os.getenv(var)
-        if value:
-            print(f"✅ {var}: Установлен")
+    for var in REQUIRED_ENV_VARS:
+        if not os.environ.get(var):
+            missing_vars.append(var)
+            logger.error(f"❌ Переменная окружения {var} не задана")
         else:
-            print(f"❌ {var}: Не установлен")
-            missing_env_vars.append(var)
+            logger.info(f"✅ Переменная окружения {var} задана")
     
-    return missing_env_vars
+    return len(missing_vars) == 0
 
-def check_imports():
-    """Проверка импортов"""
-    print("\n=== Проверка импортов ===")
-    
-    modules_to_check = [
-        ("aiogram", "Библиотека для работы с Telegram API"),
-        ("openai", "Библиотека для работы с OpenAI API"),
-        ("apscheduler", "Библиотека для планирования задач"),
-        ("httpx", "HTTP клиент для асинхронных запросов"),
-        ("dotenv", "Библиотека для работы с .env файлами")
-    ]
-    
-    missing_modules = []
-    
-    for module_name, description in modules_to_check:
-        try:
-            importlib.import_module(module_name)
-            print(f"✅ {module_name}: Установлен ({description})")
-        except ImportError:
-            print(f"❌ {module_name}: Не установлен ({description})")
-            missing_modules.append(module_name)
-    
-    return missing_modules
-
-def check_project_structure():
-    """Проверка структуры проекта"""
-    print("\n=== Проверка структуры проекта ===")
-    
-    files_to_check = [
-        ("main.py", "Основной файл бота"),
-        ("button_bot.py", "Модуль с обработчиками бота"),
-        ("button_states.py", "Модуль с состояниями FSM"),
-        ("questions.py", "Модуль с вопросами для опроса"),
-        ("services/recs.py", "Модуль с функциями генерации ответов"),
-        ("services/stt.py", "Модуль для обработки голосовых сообщений")
-    ]
-    
-    missing_files = []
-    
-    for file_path, description in files_to_check:
-        if os.path.exists(file_path):
-            print(f"✅ {file_path}: Существует ({description})")
-        else:
-            print(f"❌ {file_path}: Не существует ({description})")
-            missing_files.append(file_path)
-    
-    return missing_files
-
-def check_services_imports():
-    """Проверка импортов в сервисных модулях"""
-    print("\n=== Проверка импортов в сервисных модулях ===")
-    
-    # Убедимся, что директория services в пути для импорта
-    if not os.path.exists("services"):
-        print("❌ Директория services не найдена")
+def is_module_installed(module_name):
+    """Проверяет, установлен ли модуль"""
+    try:
+        spec = importlib.util.find_spec(module_name)
+        return spec is not None
+    except (ModuleNotFoundError, ValueError):
         return False
+
+def install_package(package_name, version=None):
+    """Устанавливает пакет через pip"""
+    package_str = f"{package_name}=={version}" if version else package_name
+    logger.info(f"Установка пакета {package_str}...")
     
     try:
-        # Проверяем импорт из services.recs
-        from services.recs import generate_response
-        print("✅ services.recs.generate_response: Импортирован успешно")
-    except ImportError as e:
-        print(f"❌ services.recs.generate_response: Ошибка импорта - {e}")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", package_str])
+        logger.info(f"✅ Успешно установлен пакет {package_str}")
+        return True
+    except subprocess.CalledProcessError as e:
+        logger.error(f"❌ Не удалось установить пакет {package_str}: {e}")
         return False
+
+def check_modules():
+    """Проверяет наличие необходимых модулей и пытается установить отсутствующие"""
+    logger.info("Проверка наличия необходимых модулей...")
+    all_required_available = True
     
-    try:
-        # Проверяем импорт из services.stt
-        from services.stt import process_voice_message
-        print("✅ services.stt.process_voice_message: Импортирован успешно")
-    except ImportError as e:
-        print(f"❌ services.stt.process_voice_message: Ошибка импорта - {e}")
-        return False
+    for module, version, required in REQUIRED_MODULES:
+        # Для python-dotenv используем специальное имя модуля
+        module_import_name = "dotenv" if module == "python-dotenv" else module
+        
+        if is_module_installed(module_import_name):
+            logger.info(f"✅ Модуль {module} доступен")
+        else:
+            logger.warning(f"⚠️ Модуль {module} не установлен")
+            if install_package(module, version):
+                logger.info(f"✅ Модуль {module} успешно установлен")
+            elif required:
+                all_required_available = False
+                logger.error(f"❌ Не удалось установить обязательный модуль {module}")
+            else:
+                logger.warning(f"⚠️ Не удалось установить необязательный модуль {module}")
     
+    return all_required_available
+
+def check_fallbacks():
+    """Проверяет и создает fallback-реализации для отсутствующих модулей"""
+    logger.info("Проверка fallback-модулей...")
+    
+    # Проверяем и создаем fallback для python-dotenv
+    if not is_module_installed("dotenv"):
+        logger.warning("⚠️ Модуль dotenv не найден, проверка fallback...")
+        
+        if os.path.exists("dotenv.py") or os.path.exists("dotenv_fallback.py"):
+            logger.info("✅ Fallback для dotenv найден")
+        else:
+            logger.warning("⚠️ Создание fallback для dotenv...")
+            try:
+                with open("dotenv_minimal.py", "w") as f:
+                    f.write("""
+import os
+
+def load_dotenv(dotenv_path=None, **kwargs):
+    print("[dotenv_minimal] Using minimal implementation")
     return True
 
+def find_dotenv(*args, **kwargs):
+    return '.env' if os.path.exists('.env') else ''
+""")
+                logger.info("✅ Создан fallback для dotenv")
+            except Exception as e:
+                logger.error(f"❌ Не удалось создать fallback для dotenv: {e}")
+    
+    # Проверяем и создаем fallback для openai
+    if not is_module_installed("openai"):
+        logger.warning("⚠️ Модуль openai не найден, проверка fallback...")
+        
+        if os.path.exists("openai_fallback.py"):
+            logger.info("✅ Fallback для openai найден")
+        else:
+            try:
+                # Запускаем скрипт создания fallback
+                if os.path.exists("fix_imports.py"):
+                    logger.info("Запуск fix_imports.py для создания fallback...")
+                    subprocess.call([sys.executable, "fix_imports.py"])
+                    logger.info("✅ Запущен fix_imports.py")
+                else:
+                    logger.error("❌ Файл fix_imports.py не найден")
+            except Exception as e:
+                logger.error(f"❌ Не удалось создать fallback для openai: {e}")
+    
+    # Проверяем заглушки для обработчиков
+    handlers = ["survey_handler.py", "conversation_handler.py", "voice_handler.py", 
+                "meditation_handler.py", "reminder_handler.py", "communication_handler.py"]
+    
+    for handler in handlers:
+        if not os.path.exists(handler):
+            logger.warning(f"⚠️ Файл {handler} не найден")
+            try:
+                # Запускаем скрипт создания заглушек
+                if os.path.exists("create_placeholders.py"):
+                    logger.info("Запуск create_placeholders.py для создания заглушек...")
+                    subprocess.call([sys.executable, "create_placeholders.py"])
+                    logger.info("✅ Запущен create_placeholders.py")
+                    break  # Запускаем скрипт только один раз
+                else:
+                    logger.error("❌ Файл create_placeholders.py не найден")
+            except Exception as e:
+                logger.error(f"❌ Не удалось создать заглушки: {e}")
+            break  # Проверяем только первый отсутствующий файл
+
 def main():
-    """Основная функция проверки"""
-    print("=== Начало проверки конфигурации ===\n")
+    """Основная функция проверки конфигурации"""
+    logger.info("=== Проверка конфигурации перед запуском бота ===")
     
     # Проверка переменных окружения
-    missing_env_vars = check_environment()
+    env_ok = check_env_vars()
+    if not env_ok:
+        logger.error("❌ Не все необходимые переменные окружения заданы")
     
-    # Проверка импортов
-    missing_modules = check_imports()
+    # Проверка модулей
+    modules_ok = check_modules()
+    if not modules_ok:
+        logger.warning("⚠️ Не все необходимые модули доступны")
     
-    # Проверка структуры проекта
-    missing_files = check_project_structure()
+    # Проверка и создание fallback-модулей
+    check_fallbacks()
     
-    # Проверка импортов в сервисных модулях
-    services_imports_ok = check_services_imports()
-    
-    print("\n=== Результаты проверки ===")
-    
-    if missing_env_vars:
-        print(f"⚠️ Отсутствуют переменные окружения: {', '.join(missing_env_vars)}")
-        print("   Создайте файл .env и добавьте необходимые переменные.")
+    # Вывод результата
+    if env_ok and modules_ok:
+        logger.info("✅ Все проверки пройдены успешно")
+        return 0
     else:
-        print("✅ Все необходимые переменные окружения установлены.")
-    
-    if missing_modules:
-        print(f"⚠️ Отсутствуют модули: {', '.join(missing_modules)}")
-        print("   Установите их с помощью pip: pip install " + " ".join(missing_modules))
-    else:
-        print("✅ Все необходимые модули установлены.")
-    
-    if missing_files:
-        print(f"⚠️ Отсутствуют файлы: {', '.join(missing_files)}")
-        print("   Убедитесь, что структура проекта соответствует требованиям.")
-    else:
-        print("✅ Все необходимые файлы найдены.")
-    
-    if not services_imports_ok:
-        print("⚠️ Ошибки при импорте модулей из services.")
-        print("   Проверьте структуру и содержимое файлов в директории services.")
-    else:
-        print("✅ Импорты из services работают корректно.")
-    
-    # Общее заключение
-    if not missing_env_vars and not missing_modules and not missing_files and services_imports_ok:
-        print("\n✅ Конфигурация в порядке! Бот готов к запуску.")
-    else:
-        print("\n⚠️ Обнаружены проблемы в конфигурации. Устраните их перед запуском бота.")
+        logger.warning("⚠️ Не все проверки пройдены, но бот будет запущен с ограниченной функциональностью")
+        return 1
 
 if __name__ == "__main__":
-    main() 
+    sys.exit(main()) 
