@@ -4,6 +4,7 @@ import os
 import sys
 import tempfile  # Для создания временного файла блокировки
 import socket  # Для получения имени хоста
+import importlib.util  # Для проверки наличия модулей
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message
 from aiogram.filters import Command
@@ -120,11 +121,33 @@ def release_lock():
 # Загружаем переменные окружения из .env
 load_dotenv()
 
+# Функция для проверки наличия модуля
+def is_module_available(module_name):
+    """
+    Проверяет доступность модуля без его импорта
+    
+    Args:
+        module_name: Имя проверяемого модуля
+    
+    Returns:
+        bool: True, если модуль доступен, иначе False
+    """
+    try:
+        spec = importlib.util.find_spec(module_name)
+        return spec is not None
+    except (ImportError, ValueError):
+        return False
+
 # Проверка наличия railway_helper и его инициализация
 try:
     from railway_helper import ensure_modules_available, print_railway_info
     # Проверяем и обеспечиваем наличие необходимых модулей
     print_railway_info("Инициализация Railway Helper", "INFO")
+    
+    # Проверяем наличие supabase модуля
+    if not is_module_available('supabase'):
+        print_railway_info("Модуль 'supabase' не найден, будет использована SQLite-заглушка", "WARNING")
+    
     ensure_modules_available([
         "survey_handler",
         "meditation_handler",
@@ -132,8 +155,7 @@ try:
         "reminder_handler",
         "voice_handler",
         "railway_logging",
-        "communication_handler",
-        "supabase_db"  # Добавляем модуль Supabase
+        "communication_handler"
     ])
 except ImportError:
     print("БОТ: Railway Helper не найден, продолжаем без дополнительных проверок")

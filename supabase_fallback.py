@@ -26,10 +26,78 @@ class SupabaseDB:
                 db_path = os.getenv("SQLITE_DB_PATH", "ona.db")
                 cls._instance.conn = sqlite3.connect(db_path)
                 cls._instance.conn.row_factory = sqlite3.Row
+                
+                # Создаем необходимые таблицы, если они не существуют
+                cls._instance._create_tables()
+                
                 logger.info(f"Подключено к SQLite базе данных: {db_path}")
             except Exception as e:
                 logger.error(f"Ошибка при подключении к SQLite: {e}")
                 cls._instance.conn = None
+                
+    def _create_tables(self):
+        """Создает необходимые таблицы в SQLite, если они не существуют"""
+        try:
+            cursor = self.conn.cursor()
+            
+            # Таблица пользователей
+            cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                telegram_id INTEGER UNIQUE NOT NULL,
+                username TEXT,
+                first_name TEXT,
+                last_name TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+            ''')
+            
+            # Таблица профилей
+            cursor.execute('''
+            CREATE TABLE IF NOT EXISTS profiles (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                telegram_id INTEGER NOT NULL,
+                profile_text TEXT,
+                details_text TEXT,
+                answers TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
+            )
+            ''')
+            
+            # Таблица напоминаний
+            cursor.execute('''
+            CREATE TABLE IF NOT EXISTS reminders (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                telegram_id INTEGER NOT NULL,
+                time TEXT,
+                days TEXT,
+                active INTEGER DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
+            )
+            ''')
+            
+            # Таблица ответов
+            cursor.execute('''
+            CREATE TABLE IF NOT EXISTS answers (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                telegram_id INTEGER NOT NULL,
+                question_id TEXT NOT NULL,
+                answer_text TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
+            )
+            ''')
+            
+            self.conn.commit()
+            logger.info("SQLite таблицы успешно созданы или уже существуют")
+        except Exception as e:
+            logger.error(f"Ошибка при создании таблиц SQLite: {e}")
         
         return cls._instance
     
