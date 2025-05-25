@@ -10,6 +10,7 @@ from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 from aiogram.types import BufferedInputFile
+from aiogram.client.default import DefaultBotProperties
 
 # Импортируем fcntl только для Unix-подобных систем
 if sys.platform != 'win32':
@@ -235,9 +236,11 @@ except ImportError as e:
 # Создаем экземпляр бота и диспетчер
 bot = Bot(
     token=BOT_TOKEN,
-    parse_mode="HTML",  # Устанавливаем HTML-разметку по умолчанию
-    disable_web_page_preview=True,  # Отключаем предпросмотр веб-страниц
-    protect_content=False  # Разрешаем пересылку сообщений
+    default=DefaultBotProperties(
+        parse_mode="HTML",  # Устанавливаем HTML-разметку по умолчанию
+        link_preview_is_disabled=True,  # Отключаем предпросмотр веб-страниц
+        protect_content=False  # Разрешаем пересылку сообщений
+    )
 )
 dp = Dispatcher(storage=MemoryStorage())
 
