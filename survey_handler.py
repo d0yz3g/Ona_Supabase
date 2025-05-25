@@ -258,15 +258,21 @@ async def process_survey_answer(message: Message, state: FSMContext):
                 options = current_question["options"]
                 keyboard = []
                 for option, text in options.items():
-                    keyboard.append([KeyboardButton(text=f"{option}: {text}")])
+                    # Формируем текст кнопки с более выраженной буквой варианта
+                    button_text = f"{option}: {text}"
+                    keyboard.append([KeyboardButton(text=button_text)])
                 keyboard.append([KeyboardButton(text="❌ Отменить опрос")])
+                
+                # Логируем какие варианты ответов мы показываем
+                logger.info(f"Показываем вопрос 1 с вариантами ответов: {', '.join(options.keys())}")
                 
                 await message.answer(
                     f"Вопрос {question_index + 1}/34: {current_question['text']}",
                     reply_markup=ReplyKeyboardMarkup(
                         keyboard=keyboard,
                         resize_keyboard=True,
-                        one_time_keyboard=True
+                        one_time_keyboard=True,
+                        input_field_placeholder="Выберите вариант ответа (A, B, C или D)..."
                     )
                 )
                 
@@ -283,16 +289,26 @@ async def process_survey_answer(message: Message, state: FSMContext):
                 )
                 return
             else:
-                # Повторяем вопрос о готовности
+                # Если ответ не соответствует формату, просим повторить
+                options = current_question["options"]
+                keyboard = []
+                for opt, text in options.items():
+                    # Формируем текст кнопки с более выраженной буквой варианта
+                    button_text = f"{opt}: {text}"
+                    keyboard.append([KeyboardButton(text=button_text)])
+                keyboard.append([KeyboardButton(text="❌ Отменить опрос")])
+                
+                # Логируем, что пользователь должен повторить выбор
+                logger.info(f"Пользователь должен повторить выбор для вопроса {question_index + 1}")
+                
                 await message.answer(
-                    "Пожалуйста, выберите один из вариантов:",
+                    f"Пожалуйста, выберите один из предложенных вариантов ответа (A, B, C или D).\n\n"
+                    f"Вопрос {question_index + 1}/34: {current_question['text']}",
                     reply_markup=ReplyKeyboardMarkup(
-                        keyboard=[
-                            [KeyboardButton(text="✅ Да, готов(а)")],
-                            [KeyboardButton(text="❌ Отменить опрос")]
-                        ],
+                        keyboard=keyboard,
                         resize_keyboard=True,
-                        one_time_keyboard=True
+                        one_time_keyboard=True,
+                        input_field_placeholder="Выберите вариант ответа (A, B, C или D)..."
                     )
                 )
                 return
@@ -300,20 +316,49 @@ async def process_survey_answer(message: Message, state: FSMContext):
         # Обрабатываем ответ на вопрос Vasini
         current_question = vasini_questions[question_index]
         
+        # Логируем полученный текст сообщения для отладки
+        logger.info(f"Получен ответ на вопрос {question_index + 1}: '{message.text}'")
+        
         # Проверяем, что ответ содержит букву варианта (A, B, C или D)
         option = None
+        # Проверяем различные форматы ответов
         for opt in ["A", "B", "C", "D"]:
+            # Проверка на формат "A: текст"
             if message.text.startswith(f"{opt}:"):
                 option = opt
+                logger.info(f"Распознан ответ '{opt}' по шаблону '{opt}:'")
+                break
+            # Проверка на формат "A текст" без двоеточия
+            elif message.text.startswith(f"{opt} "):
+                option = opt
+                logger.info(f"Распознан ответ '{opt}' по шаблону '{opt} '")
+                break
+            # Проверка если пользователь ввел только букву "A", "B", "C" или "D"
+            elif message.text.upper() == opt:
+                option = opt
+                logger.info(f"Распознан ответ '{opt}' (пользователь ввел только букву)")
+                break
+            # Проверка если текст содержит букву в любом месте (менее строгая проверка)
+            elif f" {opt} " in f" {message.text.upper()} ":
+                option = opt
+                logger.info(f"Распознан ответ '{opt}' в тексте '{message.text}'")
                 break
         
         if not option:
+            # Если ответ не распознан, логируем это
+            logger.warning(f"Не удалось распознать вариант ответа в тексте: '{message.text}'")
+            
             # Если ответ не соответствует формату, просим повторить
             options = current_question["options"]
             keyboard = []
             for opt, text in options.items():
-                keyboard.append([KeyboardButton(text=f"{opt}: {text}")])
+                # Формируем текст кнопки с более выраженной буквой варианта
+                button_text = f"{opt}: {text}"
+                keyboard.append([KeyboardButton(text=button_text)])
             keyboard.append([KeyboardButton(text="❌ Отменить опрос")])
+            
+            # Логируем, что пользователь должен повторить выбор
+            logger.info(f"Пользователь должен повторить выбор для вопроса {question_index + 1}")
             
             await message.answer(
                 f"Пожалуйста, выберите один из предложенных вариантов ответа (A, B, C или D).\n\n"
@@ -321,7 +366,8 @@ async def process_survey_answer(message: Message, state: FSMContext):
                 reply_markup=ReplyKeyboardMarkup(
                     keyboard=keyboard,
                     resize_keyboard=True,
-                    one_time_keyboard=True
+                    one_time_keyboard=True,
+                    input_field_placeholder="Выберите вариант ответа (A, B, C или D)..."
                 )
             )
             return
@@ -369,15 +415,21 @@ async def process_survey_answer(message: Message, state: FSMContext):
         options = next_question["options"]
         keyboard = []
         for option, text in options.items():
-            keyboard.append([KeyboardButton(text=f"{option}: {text}")])
+            # Формируем текст кнопки, делая букву варианта более выраженной
+            button_text = f"{option}: {text}"
+            keyboard.append([KeyboardButton(text=button_text)])
         keyboard.append([KeyboardButton(text="❌ Отменить опрос")])
+        
+        # Логируем какие варианты ответов мы показываем
+        logger.info(f"Показываем вопрос {question_index + 1} с вариантами ответов: {', '.join(options.keys())}")
         
         await message.answer(
             f"Вопрос {question_index + 1}/34: {next_question['text']}",
             reply_markup=ReplyKeyboardMarkup(
                 keyboard=keyboard,
                 resize_keyboard=True,
-                one_time_keyboard=True
+                one_time_keyboard=True,
+                input_field_placeholder="Выберите вариант ответа (A, B, C или D)..."
             )
         )
     
