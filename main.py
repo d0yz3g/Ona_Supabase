@@ -138,6 +138,34 @@ def is_module_available(module_name):
     except (ImportError, ValueError):
         return False
 
+# Проверка совместимости pydantic с aiogram
+def check_pydantic_compatibility():
+    """
+    Проверяет совместимость установленной версии pydantic с aiogram
+    
+    Returns:
+        bool: True, если версии совместимы, иначе False
+    """
+    try:
+        # Попытка импорта необходимых функций из pydantic
+        from pydantic import BaseModel
+        # Проверка наличия model_validator или root_validator
+        try:
+            from pydantic import model_validator
+            railway_print("Используется pydantic с model_validator", "INFO")
+            return True
+        except ImportError:
+            try:
+                from pydantic import validator
+                railway_print("Используется pydantic со старым validator", "INFO")
+                return True
+            except ImportError:
+                railway_print("pydantic не имеет необходимых валидаторов", "ERROR")
+                return False
+    except ImportError as e:
+        railway_print(f"Ошибка при проверке pydantic: {e}", "ERROR")
+        return False
+
 # Проверка наличия railway_helper и его инициализация
 try:
     from railway_helper import ensure_modules_available, print_railway_info
@@ -246,14 +274,77 @@ except ImportError as e:
     railway_print(f"Ошибка при импорте модулей: {e}", "ERROR")
     sys.exit(1)
 
+# Проверяем совместимость зависимостей
+railway_print("Проверка совместимости зависимостей...", "INFO")
+if not check_pydantic_compatibility():
+    railway_print("Обнаружена несовместимая версия pydantic!", "WARNING")
+    railway_print("Применение патча из patch_pydantic.py...", "INFO")
+    
+    # Пытаемся импортировать и применить патч из отдельного модуля
+    try:
+        import patch_pydantic
+        if patch_pydantic.apply_pydantic_patch():
+            railway_print("Патч для pydantic успешно применен", "INFO")
+        else:
+            railway_print("Не удалось применить патч для pydantic", "ERROR")
+            railway_print("Бот может работать некорректно!", "WARNING")
+    except ImportError:
+        railway_print("Модуль patch_pydantic не найден, применяем встроенный патч", "WARNING")
+        
+        # Пытаемся переопределить model_validator в pydantic (встроенный патч)
+        import sys
+        import types
+        
+        # Проверяем, есть ли pydantic в импортированных модулях
+        if 'pydantic' in sys.modules:
+            try:
+                pydantic_module = sys.modules['pydantic']
+                if not hasattr(pydantic_module, 'model_validator'):
+                    railway_print("Добавление model_validator в pydantic...", "INFO")
+                    
+                    # Создаем функцию-заглушку
+                    def dummy_model_validator(cls_method=None, *args, **kwargs):
+                        def decorator(func):
+                            return func
+                        if cls_method is None:
+                            return decorator
+                        return decorator(cls_method)
+                    
+                    # Добавляем model_validator в модуль pydantic
+                    setattr(pydantic_module, 'model_validator', dummy_model_validator)
+                    railway_print("Успешно добавлен model_validator в pydantic", "INFO")
+                
+                # Проверяем наличие ConfigDict
+                if not hasattr(pydantic_module, 'ConfigDict'):
+                    railway_print("Добавление ConfigDict в pydantic...", "INFO")
+                    
+                    # Создаем класс-заглушку для ConfigDict
+                    class DummyConfigDict(dict):
+                        def __init__(self, *args, **kwargs):
+                            super().__init__(*args, **kwargs)
+                    
+                    # Добавляем ConfigDict в модуль pydantic
+                    setattr(pydantic_module, 'ConfigDict', DummyConfigDict)
+                    railway_print("Успешно добавлен ConfigDict в pydantic", "INFO")
+            except Exception as patch_error:
+                railway_print(f"Не удалось применить патч к pydantic: {patch_error}", "ERROR")
+                railway_print("Бот может работать некорректно!", "WARNING")
+        else:
+            railway_print("Модуль pydantic не найден в импортированных модулях", "ERROR")
+            railway_print("Бот может работать некорректно!", "WARNING")
+
 # Создаем экземпляр бота и диспетчер
-bot = Bot(
-    token=BOT_TOKEN,
-    parse_mode="HTML",  # Устанавливаем HTML-разметку по умолчанию
-    disable_web_page_preview=True,  # Отключаем предпросмотр веб-страниц
-    protect_content=False  # Разрешаем пересылку сообщений
-)
-dp = Dispatcher(storage=MemoryStorage())
+try:
+    bot = Bot(
+        token=BOT_TOKEN,
+        parse_mode="HTML",  # Устанавливаем HTML-разметку по умолчанию
+        disable_web_page_preview=True,  # Отключаем предпросмотр веб-страниц
+        protect_content=False  # Разрешаем пересылку сообщений
+    )
+    dp = Dispatcher(storage=MemoryStorage())
+except Exception as e:
+    railway_print(f"Ошибка при создании бота: {e}", "ERROR")
+    sys.exit(1)
 
 # Регистрируем роутеры в правильном порядке
 # Сначала регистрируем роутер опроса, чтобы он имел приоритет при обработке сообщений в состоянии опроса

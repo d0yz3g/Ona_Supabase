@@ -8,11 +8,23 @@ echo "Python version: $(python --version)"
 echo "Current directory: $(pwd)"
 echo "Files in directory: $(ls -la)"
 
-echo "=== INSTALLING DEPENDENCIES ==="
-# Use --no-cache-dir to reduce memory usage on Railway
-pip install --no-cache-dir -r requirements.txt || {
-    echo "⚠️ Warning: Some dependencies failed to install. Continuing anyway."
-}
+# Проверяем наличие файла railway_requirements.txt
+if [ -f "railway_requirements.txt" ]; then
+    echo "=== INSTALLING RAILWAY REQUIREMENTS ==="
+    # Use --no-cache-dir to reduce memory usage on Railway
+    pip install --no-cache-dir -r railway_requirements.txt || {
+        echo "⚠️ Warning: Some Railway requirements failed to install. Trying standard requirements."
+        pip install --no-cache-dir -r requirements.txt || {
+            echo "⚠️ Warning: Some standard requirements failed to install. Continuing anyway."
+        }
+    }
+else
+    echo "=== INSTALLING DEPENDENCIES ==="
+    # Use --no-cache-dir to reduce memory usage on Railway
+    pip install --no-cache-dir -r requirements.txt || {
+        echo "⚠️ Warning: Some dependencies failed to install. Continuing anyway."
+    }
+fi
 
 echo "=== CHECKING FOR SQLITE ==="
 # Make sure SQLite is available
@@ -131,6 +143,16 @@ if [ -z "$BOT_TOKEN" ]; then
     exit 1
 else
     echo "✅ BOT_TOKEN is set"
+fi
+
+echo "=== APPLYING PYDANTIC PATCH ==="
+# Attempt to apply pydantic patch
+if [ -f "patch_pydantic.py" ]; then
+    python patch_pydantic.py || {
+        echo "⚠️ Warning: Failed to apply pydantic patch. Bot may not work correctly."
+    }
+else
+    echo "⚠️ Warning: patch_pydantic.py not found. Skipping patch."
 fi
 
 echo "=== STARTING BOT ==="
