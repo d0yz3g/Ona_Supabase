@@ -840,10 +840,9 @@ async def view_profile_callback(callback: CallbackQuery, state: FSMContext):
     
     # Получаем данные пользователя
     user_data = await state.get_data()
-    profile_text = user_data.get("profile_text", "")
     profile_completed = user_data.get("profile_completed", False)
     
-    if not profile_completed or not profile_text:
+    if not profile_completed:
         # Профиль не найден, предлагаем пройти опрос
         builder = InlineKeyboardBuilder()
         builder.button(text="📝 Пройти опрос", callback_data="start_survey")
@@ -866,6 +865,36 @@ async def view_profile_callback(callback: CallbackQuery, state: FSMContext):
         
         await callback.answer("Профиль не найден")
         return
+    
+    # Получаем тип личности и ответы пользователя
+    personality_type = user_data.get("personality_type", "Интеллектуальный")
+    secondary_type = user_data.get("secondary_type", "")
+    answers = user_data.get("answers", {})
+    
+    # Извлекаем личные данные пользователя
+    name = answers.get("name", "пользователь")
+    age = answers.get("age", "")
+    birthdate = answers.get("birthdate", "")
+    birthplace = answers.get("birthplace", "")
+    timezone = answers.get("timezone", "")
+    
+    # Формируем личную информацию и тип личности
+    profile_text = f"👤 <b>Личная информация</b>:\n"
+    if name:
+        profile_text += f"• Имя: {name}\n"
+    if age:
+        profile_text += f"• Возраст: {age}\n"
+    if birthdate:
+        profile_text += f"• Дата рождения: {birthdate}\n"
+    if birthplace:
+        profile_text += f"• Место рождения: {birthplace}\n"
+    if timezone:
+        profile_text += f"• Часовой пояс: {timezone}\n"
+    
+    # Добавляем информацию о типе личности
+    profile_text += f"\n🧠 <b>Ваш психологический тип: {personality_type}</b>"
+    if secondary_type:
+        profile_text += f" <i>(с элементами {secondary_type})</i>"
     
     # Отображаем профиль
     await callback.message.answer(
@@ -927,11 +956,39 @@ async def command_profile(message: Message, state: FSMContext):
     profile_completed = user_data.get("profile_completed", False)
     
     if profile_completed:
-        profile_text = user_data.get("profile_text", "")
+        # Получаем тип личности и ответы пользователя
+        personality_type = user_data.get("personality_type", "Интеллектуальный")
+        secondary_type = user_data.get("secondary_type", "")
+        answers = user_data.get("answers", {})
+        
+        # Извлекаем личные данные пользователя
+        name = answers.get("name", "пользователь")
+        age = answers.get("age", "")
+        birthdate = answers.get("birthdate", "")
+        birthplace = answers.get("birthplace", "")
+        timezone = answers.get("timezone", "")
+        
+        # Формируем личную информацию и тип личности
+        profile_text = f"👤 <b>Личная информация</b>:\n"
+        if name:
+            profile_text += f"• Имя: {name}\n"
+        if age:
+            profile_text += f"• Возраст: {age}\n"
+        if birthdate:
+            profile_text += f"• Дата рождения: {birthdate}\n"
+        if birthplace:
+            profile_text += f"• Место рождения: {birthplace}\n"
+        if timezone:
+            profile_text += f"• Часовой пояс: {timezone}\n"
+        
+        # Добавляем информацию о типе личности
+        profile_text += f"\n🧠 <b>Ваш психологический тип: {personality_type}</b>"
+        if secondary_type:
+            profile_text += f" <i>(с элементами {secondary_type})</i>"
         
         # Отправляем профиль
         await message.answer(
-            f"<b>Ваш психологический профиль:</b>\n\n{profile_text}",
+            profile_text,
             parse_mode="HTML"
         )
         
@@ -939,6 +996,7 @@ async def command_profile(message: Message, state: FSMContext):
         builder = InlineKeyboardBuilder()
         builder.button(text="🔄 Пройти опрос заново", callback_data="restart_survey")
         builder.button(text="📊 Подробная статистика", callback_data="show_stats")
+        builder.button(text="📋 Детальный анализ", callback_data="show_details")
         builder.button(text="💡 Получить совет", callback_data="get_advice")
         builder.button(text="◀️ Вернуться в меню", callback_data="main_menu")
         builder.adjust(1)
