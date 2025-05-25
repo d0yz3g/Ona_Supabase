@@ -5,12 +5,13 @@ import logging
 import json
 import os
 import sqlite3
+import time
 from typing import Dict, Any, Optional, List
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
 
-# Создаем моклк-класс для Supabase
+# Создаем мок-класс для Supabase
 class SupabaseDB:
     _instance = None
     
@@ -36,6 +37,34 @@ class SupabaseDB:
                 cls._instance.conn = None
                 
         return cls._instance
+    
+    def _connect(self):
+        """Подключается к SQLite базе данных, если соединение закрыто или отсутствует"""
+        try:
+            if self.conn is None:
+                db_path = os.getenv("SQLITE_DB_PATH", "ona.db")
+                self.conn = sqlite3.connect(db_path)
+                self.conn.row_factory = sqlite3.Row
+                logger.info(f"Повторное подключение к SQLite базе данных: {db_path}")
+                # Создаем таблицы после повторного подключения
+                self._create_tables()
+            else:
+                # Проверяем, работает ли соединение
+                try:
+                    self.conn.execute("SELECT 1")
+                except sqlite3.Error:
+                    # Соединение не работает, переподключаемся
+                    db_path = os.getenv("SQLITE_DB_PATH", "ona.db")
+                    self.conn = sqlite3.connect(db_path)
+                    self.conn.row_factory = sqlite3.Row
+                    logger.info(f"Переподключение к SQLite базе данных: {db_path}")
+                    # Создаем таблицы после переподключения
+                    self._create_tables()
+            return True
+        except Exception as e:
+            logger.error(f"Ошибка при подключении к SQLite: {e}")
+            self.conn = None
+            return False
     
     def _create_tables(self):
         """Создает необходимые таблицы в SQLite, если они не существуют"""
@@ -100,6 +129,11 @@ class SupabaseDB:
             logger.info("SQLite таблицы успешно созданы или уже существуют")
         except Exception as e:
             logger.error(f"Ошибка при создании таблиц SQLite: {e}")
+            # Попытка отката транзакции
+            try:
+                self.conn.rollback()
+            except:
+                pass
         
         return self
     
@@ -108,7 +142,7 @@ class SupabaseDB:
         """Проверяет подключение к базе данных"""
         try:
             if self.conn is None:
-                return False
+                return self._connect()
             
             # Проверяем, можем ли выполнить простой запрос
             cursor = self.conn.cursor()
@@ -116,73 +150,99 @@ class SupabaseDB:
             return True
         except Exception as e:
             logger.error(f"Ошибка при проверке соединения с SQLite: {e}")
-            return False
+            # Пытаемся переподключиться
+            return self._connect()
     
     async def get_user(self, telegram_id: int) -> Optional[Dict[str, Any]]:
         """Получает пользователя по его Telegram ID"""
         if not self.is_connected:
             logger.warning(f"Невозможно получить пользователя {telegram_id}: нет подключения к базе данных")
-            return None
+            # Пытаемся подключиться еще раз
+            if not self._connect():
+                return None
         
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT * FROM users WHERE telegram_id = ?", (telegram_id,))
-            user = cursor.fetchone()
-            
-            if user:
-                return dict(user)
-            return None
-        except Exception as e:
-            logger.error(f"Ошибка при получении пользователя {telegram_id}: {e}")
-            return None
+        max_retries = 3
+        retry_count = 0
+        while retry_count < max_retries:
+            try:
+                cursor = self.conn.cursor()
+                cursor.execute("SELECT * FROM users WHERE telegram_id = ?", (telegram_id,))
+                user = cursor.fetchone()
+                
+                if user:
+                    return dict(user)
+                return None
+            except sqlite3.Error as e:
+                logger.error(f"Ошибка при получении пользователя {telegram_id} (попытка {retry_count+1}/{max_retries}): {e}")
+                retry_count += 1
+                # Пауза перед повторной попыткой
+                time.sleep(0.5)
+                # Переподключаемся
+                self._connect()
+        
+        logger.error(f"Не удалось получить пользователя {telegram_id} после {max_retries} попыток")
+        return None
     
     async def create_user(self, telegram_id: int, username: str = None, first_name: str = None, last_name: str = None) -> Optional[Dict[str, Any]]:
         """Создает нового пользователя"""
         if not self.is_connected:
             logger.warning(f"Невозможно создать пользователя {telegram_id}: нет подключения к базе данных")
-            return None
+            # Пытаемся подключиться еще раз
+            if not self._connect():
+                return None
         
-        try:
-            cursor = self.conn.cursor()
-            
-            # Проверяем, существует ли пользователь
-            cursor.execute("SELECT * FROM users WHERE telegram_id = ?", (telegram_id,))
-            existing_user = cursor.fetchone()
-            
-            if existing_user:
-                # Обновляем данные пользователя
-                cursor.execute(
-                    "UPDATE users SET username = ?, first_name = ?, last_name = ? WHERE telegram_id = ?",
-                    (username, first_name, last_name, telegram_id)
-                )
-            else:
-                # Создаем нового пользователя
-                cursor.execute(
-                    "INSERT INTO users (telegram_id, username, first_name, last_name) VALUES (?, ?, ?, ?)",
-                    (telegram_id, username, first_name, last_name)
-                )
-            
-            self.conn.commit()
-            
-            # Получаем обновленные данные пользователя
-            cursor.execute("SELECT * FROM users WHERE telegram_id = ?", (telegram_id,))
-            user = cursor.fetchone()
-            
-            if user:
-                return dict(user)
-            return None
-        except Exception as e:
-            logger.error(f"Ошибка при создании/обновлении пользователя {telegram_id}: {e}")
+        max_retries = 3
+        retry_count = 0
+        while retry_count < max_retries:
             try:
-                self.conn.rollback()  # Откатываем транзакцию в случае ошибки
-            except:
-                pass
-            return None
+                cursor = self.conn.cursor()
+                
+                # Проверяем, существует ли пользователь
+                cursor.execute("SELECT * FROM users WHERE telegram_id = ?", (telegram_id,))
+                existing_user = cursor.fetchone()
+                
+                if existing_user:
+                    # Обновляем данные пользователя
+                    cursor.execute(
+                        "UPDATE users SET username = ?, first_name = ?, last_name = ? WHERE telegram_id = ?",
+                        (username, first_name, last_name, telegram_id)
+                    )
+                else:
+                    # Создаем нового пользователя
+                    cursor.execute(
+                        "INSERT INTO users (telegram_id, username, first_name, last_name) VALUES (?, ?, ?, ?)",
+                        (telegram_id, username, first_name, last_name)
+                    )
+                
+                self.conn.commit()
+                
+                # Получаем обновленные данные пользователя
+                cursor.execute("SELECT * FROM users WHERE telegram_id = ?", (telegram_id,))
+                user = cursor.fetchone()
+                
+                if user:
+                    return dict(user)
+                return None
+            except sqlite3.Error as e:
+                logger.error(f"Ошибка при создании/обновлении пользователя {telegram_id} (попытка {retry_count+1}/{max_retries}): {e}")
+                retry_count += 1
+                # Пауза перед повторной попыткой
+                time.sleep(0.5)
+                # Отменяем транзакцию и переподключаемся
+                try:
+                    self.conn.rollback()
+                except:
+                    pass
+                self._connect()
+        
+        logger.error(f"Не удалось создать/обновить пользователя {telegram_id} после {max_retries} попыток")
+        return None
     
     async def save_profile(self, telegram_id: int, profile_text: str, details_text: str, answers: Dict[str, Any]) -> bool:
         """Сохраняет профиль пользователя"""
         if not self.is_connected:
-            return False
+            if not self._connect():
+                return False
         
         try:
             cursor = self.conn.cursor()
@@ -211,12 +271,17 @@ class SupabaseDB:
             return True
         except Exception as e:
             logger.error(f"Ошибка при сохранении профиля пользователя {telegram_id}: {e}")
+            try:
+                self.conn.rollback()
+            except:
+                pass
             return False
     
     async def get_profile(self, telegram_id: int) -> Optional[Dict[str, Any]]:
         """Получает профиль пользователя"""
         if not self.is_connected:
-            return None
+            if not self._connect():
+                return None
         
         try:
             cursor = self.conn.cursor()
@@ -237,13 +302,17 @@ class SupabaseDB:
     async def save_reminder(self, telegram_id: int, time: str, days: List[str], active: bool) -> bool:
         """Сохраняет настройки напоминаний пользователя"""
         if not self.is_connected:
-            return False
+            if not self._connect():
+                return False
         
         try:
             cursor = self.conn.cursor()
             
             # Преобразуем список в JSON
             days_json = json.dumps(days, ensure_ascii=False)
+            
+            # Преобразуем булево значение в INTEGER для SQLite
+            active_int = 1 if active else 0
             
             # Проверяем, есть ли уже напоминания у пользователя
             cursor.execute("SELECT * FROM reminders WHERE telegram_id = ?", (telegram_id,))
@@ -253,25 +322,30 @@ class SupabaseDB:
                 # Обновляем существующие напоминания
                 cursor.execute(
                     "UPDATE reminders SET time = ?, days = ?, active = ? WHERE telegram_id = ?",
-                    (time, days_json, active, telegram_id)
+                    (time, days_json, active_int, telegram_id)
                 )
             else:
                 # Создаем новые настройки напоминаний
                 cursor.execute(
                     "INSERT INTO reminders (telegram_id, time, days, active) VALUES (?, ?, ?, ?)",
-                    (telegram_id, time, days_json, active)
+                    (telegram_id, time, days_json, active_int)
                 )
             
             self.conn.commit()
             return True
         except Exception as e:
             logger.error(f"Ошибка при сохранении настроек напоминаний пользователя {telegram_id}: {e}")
+            try:
+                self.conn.rollback()
+            except:
+                pass
             return False
     
     async def get_reminder(self, telegram_id: int) -> Optional[Dict[str, Any]]:
         """Получает настройки напоминаний пользователя"""
         if not self.is_connected:
-            return None
+            if not self._connect():
+                return None
         
         try:
             cursor = self.conn.cursor()
@@ -292,7 +366,8 @@ class SupabaseDB:
     async def get_all_active_reminders(self) -> List[Dict[str, Any]]:
         """Получает все активные напоминания"""
         if not self.is_connected:
-            return []
+            if not self._connect():
+                return []
         
         try:
             cursor = self.conn.cursor()
@@ -315,7 +390,8 @@ class SupabaseDB:
     async def save_answer(self, telegram_id: int, question_id: str, answer_text: str) -> bool:
         """Сохраняет ответ пользователя на вопрос"""
         if not self.is_connected:
-            return False
+            if not self._connect():
+                return False
         
         try:
             cursor = self.conn.cursor()
@@ -344,12 +420,17 @@ class SupabaseDB:
             return True
         except Exception as e:
             logger.error(f"Ошибка при сохранении ответа пользователя {telegram_id} на вопрос {question_id}: {e}")
+            try:
+                self.conn.rollback()
+            except:
+                pass
             return False
     
     async def get_user_answers(self, telegram_id: int) -> List[Dict[str, Any]]:
         """Получает все ответы пользователя"""
         if not self.is_connected:
-            return []
+            if not self._connect():
+                return []
         
         try:
             cursor = self.conn.cursor()
