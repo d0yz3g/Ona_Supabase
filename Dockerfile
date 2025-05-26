@@ -8,21 +8,22 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Копирование минимального файла зависимостей
+COPY requirements.txt.minimal ./requirements.txt
+
+# Обновление pip и установка минимальных зависимостей
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir -r requirements.txt
+
 # Копирование файлов проекта
 COPY . .
 
-# Установка зависимостей
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir python-dotenv httpx openai pydantic aiogram
-
 # Делаем скрипты исполняемыми
-RUN chmod +x *.py && \
-    chmod +x *.sh && \
-    ls -la
+RUN chmod +x *.py || echo "Не удалось установить права"
+RUN chmod +x *.sh || echo "Не найдены shell-скрипты"
 
 # Порт для веб-сервера
 ENV PORT=8080
 
 # Запуск бота напрямую через Python
-CMD ["python", "railway_final.py"] 
+CMD ["python", "direct_start.py"] 

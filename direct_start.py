@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Сверхпростой скрипт запуска для Railway.
-Просто запускает бота напрямую и поддерживает минимальный healthcheck.
+Максимально упрощенный скрипт запуска для Railway.
+Запускает бота напрямую и предоставляет простой healthcheck.
 """
 import os
 import sys
@@ -26,10 +26,7 @@ if os.getcwd() not in sys.path:
 # Порт для healthcheck
 PORT = int(os.environ.get("PORT", 8080))
 
-# Время запуска
-START_TIME = time.time()
-
-# HTTP-обработчик для healthcheck
+# Простой HTTP обработчик для healthcheck
 class SimpleHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         return
@@ -49,10 +46,12 @@ def run_healthcheck_server():
     except Exception as e:
         logger.error(f"Ошибка при запуске healthcheck сервера: {e}")
 
-if __name__ == "__main__":
+# Основная функция для запуска бота
+def main():
     logger.info("=== Запуск бота на Railway ===")
     logger.info(f"Python версия: {sys.version}")
     logger.info(f"Текущая директория: {os.getcwd()}")
+    logger.info(f"Содержимое директории: {os.listdir('.')}")
     
     # Запускаем healthcheck сервер в отдельном потоке
     health_thread = threading.Thread(target=run_healthcheck_server, daemon=True)
@@ -80,4 +79,7 @@ if __name__ == "__main__":
         
         # Держим процесс активным для healthcheck
         while True:
-            time.sleep(60) 
+            time.sleep(60)
+
+if __name__ == "__main__":
+    main() 
