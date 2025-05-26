@@ -121,4 +121,67 @@ For better performance, consider using webhooks instead of polling:
 
 For any issues or questions, please open an issue on the GitHub repository or contact the development team.
 
-Remember to regularly update your dependencies and check for new Railway features that might enhance your deployment. 
+Remember to regularly update your dependencies and check for new Railway features that might enhance your deployment.
+
+## Проблема
+
+При деплое на Railway может возникнуть ошибка с healthcheck:
+
+```
+Attempt #1 failed with service unavailable. Continuing to retry for 4m54s
+...
+1/1 replicas never became healthy!
+Healthcheck failed!
+```
+
+Это происходит потому, что Railway не может определить, что ваш бот работает, так как проверяет HTTP-запросы, а бот может не иметь HTTP-сервера.
+
+## Решение 1: Отключить healthcheck
+
+1. Создайте новый проект на Railway
+2. Соедините его с вашим GitHub репозиторием
+3. В настройках проекта в Railway отключите healthcheck:
+   - Settings → Deployment → Health Check → Disable
+
+## Решение 2: Использовать конфигурацию с отдельным сервисом для healthcheck
+
+В репозитории уже настроены файлы для этого подхода:
+
+1. `railway.json` - содержит конфигурацию с двумя сервисами:
+   - `onabot-main` - основной сервис с ботом
+   - `onabot-health` - отдельный сервис только для healthcheck
+
+2. `Dockerfile.health` - специальный Docker-файл для сервиса healthcheck
+
+3. `simple_healthcheck.py` - сверхпростой HTTP-сервер для healthcheck
+
+4. `static_index.html` - статическая страница для healthcheck
+
+## Решение 3: Использовать упрощенную конфигурацию
+
+Для максимальной простоты можно использовать:
+
+1. `railway_simple.json` - упрощенная конфигурация с отключенным healthcheck
+2. `direct_start.py` - скрипт, который запускает бота и никогда не завершается
+3. `nixpacks.toml` - конфигурация для Nixpacks
+
+Инструкция:
+
+1. Переименуйте `railway_simple.json` в `railway.json`
+2. Создайте новый проект на Railway
+3. Соедините его с вашим GitHub репозиторием
+4. Дождитесь завершения деплоя
+
+## Важные моменты при деплое
+
+1. Убедитесь, что все переменные окружения настроены в Railway:
+   - `BOT_TOKEN`
+   - `OPENAI_API_KEY`
+   - И другие, используемые в вашем боте
+
+2. Если после деплоя бот не работает, проверьте логи в Railway:
+   - Deployment → Logs
+
+3. Для проверки работоспособности:
+   - Отправьте команду `/start` боту в Telegram
+   - Проверьте, что бот отвечает 

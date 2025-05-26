@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Копируем файлы для healthcheck
+COPY simple_healthcheck.py static_index.html ./
+
+# Экспонируем порт для health check
+EXPOSE 8080
+
+# Устанавливаем переменную окружения для порта
+ENV PORT=8080
+
+# Запускаем простой healthcheck сервер
+CMD ["python", "simple_healthcheck.py"] 
