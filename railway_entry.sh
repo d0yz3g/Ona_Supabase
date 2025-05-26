@@ -34,6 +34,16 @@ pip install --no-cache-dir python-dotenv || {
 }
 pip install --no-cache-dir APScheduler || echo "⚠️ Failed to install APScheduler"
 
+# Install OpenAI and httpx which were missing
+echo "=== Installing OpenAI and httpx dependencies ==="
+pip install --no-cache-dir openai==0.28.1
+pip install --no-cache-dir httpx==0.23.3
+pip install --no-cache-dir elevenlabs==0.2.24 gTTS==2.3.2 ephem==4.1.4 PyYAML==6.0.1
+
+# Force check installations
+python -c "import openai; print('✅ OpenAI установлен успешно, версия:', openai.__version__)" || pip install --no-cache-dir --force-reinstall openai==0.28.1
+python -c "import httpx; print('✅ HTTPX установлен успешно, версия:', httpx.__version__)" || pip install --no-cache-dir --force-reinstall httpx==0.23.3
+
 # Check if python-dotenv is available
 python -c "import dotenv; print('✅ python-dotenv is available')" 2>/dev/null || {
     echo "⚠️ python-dotenv is not available, using fallback"
@@ -92,6 +102,12 @@ pip install --no-cache-dir postgrest-py==0.10.3 realtime-py==0.1.2 storage3==0.5
     echo "⚠️ Warning: Supabase installation failed, will use SQLite fallback"
 }
 
+# Install additional missing dependencies
+echo "=== Installing additional dependencies ==="
+pip install --no-cache-dir elevenlabs gTTS ephem PyYAML || {
+    echo "⚠️ Warning: Some additional dependencies failed to install"
+}
+
 # Create necessary directories
 mkdir -p logs tmp
 
@@ -108,6 +124,38 @@ python -c "import dotenv; print('✅ Final check: dotenv is available')" 2>/dev/
     echo "⚠️ Final check: dotenv is still not available. Adding current directory to Python path."
     export PYTHONPATH=$PYTHONPATH:$(pwd)
 }
+
+# Final check for critical dependencies
+echo "=== Final dependency check ==="
+python -c "import openai; print('✅ OpenAI is available')" 2>/dev/null || {
+    echo "❌ ERROR: OpenAI module is still not available!"
+    echo "Installing one more time with specific version..."
+    pip install --no-cache-dir --force-reinstall openai==0.28.1
+    pip install --no-cache-dir openai==0.28.1 -v # Установка с подробным выводом
+    python -c "import sys; print('Python path:', sys.path)" # Вывод путей Python
+}
+
+python -c "import httpx; print('✅ httpx is available')" 2>/dev/null || {
+    echo "❌ ERROR: httpx module is still not available!"
+    pip install --no-cache-dir --force-reinstall httpx==0.23.3
+    pip install --no-cache-dir httpx==0.23.3 -v # Установка с подробным выводом
+}
+
+# Run fix scripts
+echo "=== Running fix scripts ==="
+if [ -f "fix_imports.py" ]; then
+    python fix_imports.py || echo "⚠️ Warning: Failed to run fix_imports.py"
+fi
+
+if [ -f "create_placeholders.py" ]; then
+    python create_placeholders.py || echo "⚠️ Warning: Failed to run create_placeholders.py"
+fi
+
+# Run config check
+echo "=== Running config check ==="
+if [ -f "check_config.py" ]; then
+    python check_config.py || echo "⚠️ Warning: Some config checks failed, but continuing startup"
+fi
 
 # Start the bot
 echo "=== Starting ONA Bot ==="

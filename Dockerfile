@@ -46,6 +46,8 @@ def main():\n\
         ("aiogram", "3.0.0"),\n\
         "python-dotenv",\n\
         "APScheduler",\n\
+        ("openai", "0.28.1"),\n\
+        "httpx",\n\
     ]\n\
 \n\
     success = True\n\
@@ -72,6 +74,15 @@ RUN pip install --no-cache-dir aiogram==3.0.0 || echo "Failed to install aiogram
 RUN pip install --no-cache-dir python-dotenv || echo "Failed to install python-dotenv, will use fallback"
 RUN pip install --no-cache-dir APScheduler || echo "Failed to install APScheduler, will try again later"
 
+# Install OpenAI and httpx which were missing
+RUN pip install --no-cache-dir openai==0.28.1 && \
+    pip install --no-cache-dir httpx==0.23.3 && \
+    pip install --no-cache-dir elevenlabs==0.2.24 gTTS==2.3.2 ephem==4.1.4 PyYAML==6.0.1
+
+# Verify critical modules are installed
+RUN python -c "import openai; print('OpenAI version:', openai.__version__)" && \
+    python -c "import httpx; print('HTTPX version:', httpx.__version__)"
+
 # Copy entry point script and fallback implementations
 COPY railway_entry.sh fix_dotenv_import.py dotenv.py dotenv_fallback.py ./
 RUN chmod +x railway_entry.sh
@@ -88,5 +99,11 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p logs tmp
 
+# Run fix scripts
+RUN python fix_imports.py || echo "Failed to run fix_imports.py, continuing anyway"
+RUN python create_placeholders.py || echo "Failed to run create_placeholders.py, continuing anyway"
+
 # Set up entry point
-CMD ["./railway_entry.sh"] 
+COPY railway_start_fixed.sh .
+RUN chmod +x railway_start_fixed.sh
+CMD ["./railway_start_fixed.sh"] 
