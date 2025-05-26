@@ -11,8 +11,9 @@ cmds = [
 [phases.build]
 cmds = [
   "python -c \"import sys; print(f'Python version: {sys.version}')\"",
-  "python -c \"import sys; sys.path.insert(0, '.'); import pre_import_fix\" || echo 'Failed to import pre_import_fix'"
+  "python -c \"import openai; print(f'OpenAI version: {openai.__version__}')\"",
+  "python -c \"import sys; sys.path.insert(0, '.'); import pre_import_fix\" || echo 'Failed to import pre_import_fix (this is expected)'"
 ]
 
 [start]
-cmd = "python main.py" 
+cmd = "python railway_final.py" 

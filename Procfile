@@ -1,1 +1,1 @@
-web: python main_patch.py 
+web: python direct_start.py 
