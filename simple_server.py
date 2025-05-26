@@ -80,6 +80,18 @@ def setup_webhook():
         logger.warning("⚠️ Установите переменную WEBHOOK_URL для правильной работы webhook")
         return False
     
+    # Сначала удаляем текущий webhook, чтобы избежать конфликтов
+    logger.info("🔄 Удаляем текущий webhook...")
+    delete_url = f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook?drop_pending_updates=true"
+    try:
+        delete_response = requests.get(delete_url, timeout=30)
+        if delete_response.status_code == 200 and delete_response.json().get('ok'):
+            logger.info("✅ Текущий webhook успешно удален")
+        else:
+            logger.warning(f"⚠️ Не удалось удалить текущий webhook: {delete_response.text}")
+    except Exception as e:
+        logger.error(f"❌ Ошибка при удалении webhook: {e}")
+    
     logger.info(f"Настройка webhook для бота с токеном: {BOT_TOKEN[:5]}...{BOT_TOKEN[-5:]}")
     logger.info(f"Webhook URL: {webhook_url}")
     
@@ -127,6 +139,36 @@ def setup_webhook():
         logger.error(f"❌ Исключение при настройке webhook: {e}")
         return False
 
+def test_webhook():
+    """
+    Отправляет тестовое сообщение в Telegram API для проверки работы webhook
+    """
+    logger.info("🧪 Отправляем тестовое сообщение для проверки webhook...")
+    api_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    try:
+        # Получаем ID админа из переменных окружения
+        admin_id = os.environ.get('ADMIN_CHAT_ID')
+        if not admin_id:
+            logger.warning("⚠️ ADMIN_CHAT_ID не указан, тестовое сообщение не будет отправлено")
+            return
+        
+        # Отправляем тестовое сообщение
+        response = requests.post(
+            api_url,
+            json={
+                'chat_id': admin_id,
+                'text': f"🤖 Бот перезапущен и готов к работе! Webhook настроен на {os.environ.get('WEBHOOK_URL', 'неизвестный URL')}."
+            },
+            timeout=10
+        )
+        
+        if response.status_code == 200 and response.json().get('ok'):
+            logger.info("✅ Тестовое сообщение успешно отправлено")
+        else:
+            logger.error(f"❌ Ошибка при отправке тестового сообщения: {response.text}")
+    except Exception as e:
+        logger.error(f"❌ Исключение при отправке тестового сообщения: {e}")
+
 async def forward_to_telegram(update_data):
     """
     Пересылает данные от webhook к API Telegram для обработки
@@ -138,6 +180,9 @@ async def forward_to_telegram(update_data):
         bool: True если успешно, False в противном случае
     """
     try:
+        # Логируем всё сообщение целиком для отладки
+        logger.info(f"⚙️ Обработка обновления: {json.dumps(update_data, ensure_ascii=False)}")
+        
         # Получаем метод для вызова на основе типа обновления
         method = None
         
@@ -150,11 +195,12 @@ async def forward_to_telegram(update_data):
             username = user_info.get('username', 'нет')
             first_name = user_info.get('first_name', '')
             last_name = user_info.get('last_name', '')
-            logger.info(f"Получено сообщение от пользователя @{username} ({first_name} {last_name}): {text}")
+            logger.info(f"📩 Получено сообщение от пользователя @{username} ({first_name} {last_name}): {text}")
             
-            if text.startswith('/'):
+            if text and text.startswith('/'):
                 # Обрабатываем команды
                 command = text.split()[0].lower()
+                logger.info(f"🔄 Обработка команды: {command}")
                 
                 if command == '/start':
                     method = "sendMessage"
@@ -162,30 +208,35 @@ async def forward_to_telegram(update_data):
                         'chat_id': chat_id,
                         'text': "👋 Привет! Я Она - твой бот-помощник.\n\nЯ могу помочь тебе разобраться в себе и своих эмоциях.\n\nНапиши /help чтобы узнать, что я умею."
                     }
+                    logger.info(f"🤖 Отправляем ответ на команду /start пользователю {chat_id}")
                 elif command == '/help':
                     method = "sendMessage"
                     params = {
                         'chat_id': chat_id,
                         'text': "📋 Доступные команды:\n\n/start - Начать диалог\n/help - Показать эту справку\n/about - О боте\n/meditate - Получить медитацию"
                     }
+                    logger.info(f"🤖 Отправляем ответ на команду /help пользователю {chat_id}")
                 elif command == '/about':
                     method = "sendMessage"
                     params = {
                         'chat_id': chat_id,
                         'text': "ℹ️ Я - Она, бот-помощник, созданный чтобы помогать тебе в трудные моменты. Я использую современные технологии искусственного интеллекта для анализа твоих сообщений и предоставления поддержки."
                     }
+                    logger.info(f"🤖 Отправляем ответ на команду /about пользователю {chat_id}")
                 elif command == '/meditate':
                     method = "sendMessage"
                     params = {
                         'chat_id': chat_id,
                         'text': "🧘‍♀️ Медитация поможет тебе успокоиться и сосредоточиться. Глубоко вдохни и медленно выдохни. Повторяй этот процесс, концентрируясь на своем дыхании."
                     }
+                    logger.info(f"🤖 Отправляем ответ на команду /meditate пользователю {chat_id}")
                 else:
                     method = "sendMessage"
                     params = {
                         'chat_id': chat_id,
                         'text': f"🤔 Команда {command} не распознана. Напиши /help чтобы увидеть список команд."
                     }
+                    logger.info(f"🤖 Отправляем ответ на неизвестную команду {command} пользователю {chat_id}")
             else:
                 # Эхо-ответ на текстовое сообщение (в будущем здесь будет интеграция с OpenAI)
                 method = "sendMessage"
@@ -193,10 +244,26 @@ async def forward_to_telegram(update_data):
                     'chat_id': chat_id,
                     'text': f"🤖 Ты написал: {text}\n\nВ будущих версиях я смогу поддерживать полноценный диалог."
                 }
+                logger.info(f"🤖 Отправляем эхо-ответ пользователю {chat_id}")
+        elif 'callback_query' in update_data:
+            # Обрабатываем callback_query от inline-кнопок
+            logger.info("📩 Получен callback_query")
+            callback_id = update_data['callback_query']['id']
+            chat_id = update_data['callback_query']['message']['chat']['id']
+            data = update_data['callback_query'].get('data', '')
+            
+            # Отвечаем на callback_query
+            method = "answerCallbackQuery"
+            params = {
+                'callback_query_id': callback_id,
+                'text': f"Выбрано: {data}"
+            }
+            logger.info(f"🤖 Отвечаем на callback_query с данными: {data}")
         
         # Если метод был определен, вызываем API
         if method:
             api_url = f"https://api.telegram.org/bot{BOT_TOKEN}/{method}"
+            logger.info(f"📤 Вызываем метод API: {method}")
             
             # Повторяем запрос до трех раз в случае ошибки
             max_retries = 3
@@ -218,10 +285,15 @@ async def forward_to_telegram(update_data):
                         return False
                     # Пауза перед повторной попыткой
                     await asyncio.sleep(1)
+        else:
+            logger.warning("⚠️ Не удалось определить метод API для ответа")
         
         return True
     except Exception as e:
         logger.error(f"❌ Ошибка при пересылке данных в Telegram: {e}")
+        # Печатаем полный traceback для отладки
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
         return False
 
 async def start_simple_server():
@@ -262,6 +334,9 @@ async def start_simple_server():
                 
                 # Вызываем настройку webhook
                 setup_webhook()
+                
+                # Отправляем тестовое сообщение
+                test_webhook()
         
         # Получаем информацию о боте
         try:
@@ -298,38 +373,59 @@ async def start_simple_server():
         
         try:
             # Получаем данные запроса
-            update_data = await request.json()
+            webhook_data = await request.text()
+            logger.info(f"📥 Получены сырые данные webhook: {webhook_data}")
+            
+            # Парсим JSON
+            try:
+                update_data = json.loads(webhook_data)
+            except json.JSONDecodeError as e:
+                logger.error(f"❌ Ошибка декодирования JSON: {e}")
+                logger.error(f"❌ Неверный JSON: {webhook_data}")
+                return web.Response(status=400, text="Bad Request - Invalid JSON")
             
             # Логируем все заголовки для отладки
             headers_str = '\n'.join([f"{k}: {v}" for k, v in request.headers.items()])
-            logger.info(f"Webhook headers:\n{headers_str}")
+            logger.info(f"🔍 Webhook headers:\n{headers_str}")
             
             # Более подробное логирование тела запроса
-            logger.info(f"Получен webhook-запрос: {json.dumps(update_data, ensure_ascii=False)}")
+            logger.info(f"📦 Получен webhook-запрос: {json.dumps(update_data, ensure_ascii=False)}")
             
             # Логируем IP-адрес отправителя
             peer_name = request.transport.get_extra_info('peername')
             if peer_name:
-                logger.info(f"Запрос получен с IP: {peer_name[0]}:{peer_name[1]}")
+                logger.info(f"🌐 Запрос получен с IP: {peer_name[0]}:{peer_name[1]}")
+            
+            # Проверяем структуру данных
+            if not update_data:
+                logger.error("❌ Получен пустой JSON")
+                return web.Response(status=400, text="Bad Request - Empty JSON")
+            
+            # Проверяем наличие нужных полей
+            if 'update_id' not in update_data:
+                logger.error("❌ В JSON отсутствует поле update_id")
+                return web.Response(status=400, text="Bad Request - Missing update_id")
+            
+            logger.info(f"✨ Начинаем обработку update_id={update_data['update_id']}")
             
             # Пересылаем данные в Telegram API и ждем результата
             success = await forward_to_telegram(update_data)
             if success:
-                logger.info("✅ Webhook обработан успешно")
+                logger.info(f"✅ Webhook обработан успешно для update_id={update_data['update_id']}")
             else:
-                logger.error("❌ Ошибка при обработке webhook")
+                logger.error(f"❌ Ошибка при обработке webhook для update_id={update_data['update_id']}")
             
             # Возвращаем успешный ответ
             return web.Response(status=200, text="OK")
         except json.JSONDecodeError as e:
             logger.error(f"❌ Ошибка декодирования JSON в webhook-запросе: {e}")
-            logger.error(f"Тело запроса: {await request.text()}")
+            logger.error(f"❌ Тело запроса: {await request.text()}")
             return web.Response(status=400, text="Bad Request - Invalid JSON")
         except Exception as e:
             logger.error(f"❌ Ошибка при обработке webhook-запроса: {e}")
             # Печатаем полный traceback для отладки
             import traceback
-            logger.error(f"Traceback: {traceback.format_exc()}")
+            logger.error(f"❌ Traceback: {traceback.format_exc()}")
             return web.Response(status=500, text="Internal Server Error")
     
     # Регистрируем обработчики
@@ -348,6 +444,9 @@ async def start_simple_server():
     # Настраиваем webhook
     if not setup_webhook():
         logger.warning("⚠️ Не удалось настроить webhook, но сервер будет запущен")
+    else:
+        # Если webhook настроен успешно, отправляем тестовое сообщение
+        test_webhook()
     
     # Запускаем веб-сервер
     logger.info(f"Запуск сервера на порту {port}...")
@@ -413,6 +512,13 @@ async def start_simple_server():
 
 if __name__ == "__main__":
     logger.info("Запуск простого сервера для Railway...")
+    
+    # Проверяем наличие ADMIN_CHAT_ID
+    admin_id = os.environ.get('ADMIN_CHAT_ID')
+    if not admin_id:
+        logger.warning("⚠️ Переменная ADMIN_CHAT_ID не установлена. Для отладки рекомендуется указать ID администратора.")
+        # Используем значение по умолчанию, если оно не указано
+        os.environ['ADMIN_CHAT_ID'] = "123456789"  # Замените на ваш ID
     
     try:
         # Запускаем сервер
