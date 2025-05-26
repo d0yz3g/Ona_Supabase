@@ -405,7 +405,15 @@ async def main():
         railway_print("Обнаружена переменная DATABASE_URL, проверка базы данных PostgreSQL...", "INFO")
         try:
             # Проверяем наличие таблиц
-            import psycopg2
+            try:
+                import psycopg2
+            except ImportError as e:
+                railway_print(f"Не найден модуль psycopg2, требуется для работы с PostgreSQL: {e}", "ERROR")
+                railway_print("Установите его командой: pip install psycopg2-binary", "ERROR")
+                railway_print("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL", "WARNING")
+                # Удаляем переменную окружения DATABASE_URL, чтобы использовать SQLite
+                os.environ.pop("DATABASE_URL", None)
+                # Продолжаем работу, так как будет использоваться SQLite
             
             conn = psycopg2.connect(os.getenv("DATABASE_URL"))
             with conn.cursor() as cursor:
@@ -423,33 +431,44 @@ async def main():
                     # Инициализируем базу данных
                     railway_print("Запуск инициализации PostgreSQL...", "INFO")
                     
-                    # Импортируем класс Database и константу POSTGRES_CREATE_TABLES_SQL из модуля db_postgres
-                    from db_postgres import Database, POSTGRES_CREATE_TABLES_SQL
-                    
-                    # Получаем экземпляр базы данных
-                    db = Database()
-                    
-                    # Принудительно создаем таблицы
-                    if hasattr(db, '_create_postgres_tables'):
-                        railway_print("Принудительное создание таблиц в PostgreSQL...", "INFO")
+                    try:
+                        # Импортируем класс Database и константу POSTGRES_CREATE_TABLES_SQL из модуля db_postgres
+                        from db_postgres import Database, POSTGRES_CREATE_TABLES_SQL
                         
-                        # Используем приватный метод для создания таблиц (синхронно)
-                        conn = db._get_postgres_connection()
-                        try:
-                            with conn.cursor() as cursor:
-                                cursor.execute(POSTGRES_CREATE_TABLES_SQL)
-                            conn.commit()
-                            railway_print("Таблицы в PostgreSQL успешно созданы!", "INFO")
-                        except Exception as e:
-                            conn.rollback()
-                            railway_print(f"Ошибка при создании таблиц в PostgreSQL: {e}", "ERROR")
+                        # Получаем экземпляр базы данных
+                        db = Database()
+                        
+                        # Принудительно создаем таблицы
+                        if hasattr(db, '_create_postgres_tables'):
+                            railway_print("Принудительное создание таблиц в PostgreSQL...", "INFO")
+                            
+                            # Используем приватный метод для создания таблиц (синхронно)
+                            conn = db._get_postgres_connection()
+                            try:
+                                with conn.cursor() as cursor:
+                                    cursor.execute(POSTGRES_CREATE_TABLES_SQL)
+                                conn.commit()
+                                railway_print("Таблицы в PostgreSQL успешно созданы!", "INFO")
+                            except Exception as e:
+                                conn.rollback()
+                                railway_print(f"Ошибка при создании таблиц в PostgreSQL: {e}", "ERROR")
+                                railway_print("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL", "WARNING")
+                                # Удаляем переменную окружения DATABASE_URL, чтобы использовать SQLite
+                                os.environ.pop("DATABASE_URL", None)
+                    except Exception as e:
+                        railway_print(f"Ошибка при инициализации PostgreSQL: {e}", "ERROR")
+                        railway_print("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL", "WARNING")
+                        # Удаляем переменную окружения DATABASE_URL, чтобы использовать SQLite
+                        os.environ.pop("DATABASE_URL", None)
                 else:
                     railway_print(f"В базе данных PostgreSQL уже есть все необходимые таблицы", "INFO")
             
             conn.close()
         except Exception as e:
             railway_print(f"Ошибка при проверке или инициализации PostgreSQL: {e}", "ERROR")
-            # Продолжаем работу, даже если инициализация не удалась
+            railway_print("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL", "WARNING")
+            # Удаляем переменную окружения DATABASE_URL, чтобы использовать SQLite
+            os.environ.pop("DATABASE_URL", None)
         
     # Инициализируем бот
     logger.info("Бот ОНА запускается...")

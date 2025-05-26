@@ -38,8 +38,16 @@ def check_postgres_initialization():
     
     # Проверяем таблицы в PostgreSQL
     try:
-        import psycopg2
-        import psycopg2.extras
+        try:
+            import psycopg2
+            import psycopg2.extras
+        except ImportError as e:
+            logger.error(f"Не найден модуль psycopg2, требуется для работы с PostgreSQL: {e}")
+            logger.error("Установите его командой: pip install psycopg2-binary")
+            logger.warning("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL")
+            # Устанавливаем временную переменную, чтобы бот использовал SQLite
+            os.environ.pop("DATABASE_URL", None)
+            return True
         
         # Проверяем наличие таблиц
         try:
@@ -75,6 +83,9 @@ def check_postgres_initialization():
                         logger.warning(f"Автоматическая инициализация PostgreSQL завершилась с ошибкой (код {result.returncode})")
                         logger.warning(f"Вывод: {result.stdout}")
                         logger.error(f"Ошибки: {result.stderr}")
+                        logger.warning("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL")
+                        # Устанавливаем временную переменную, чтобы бот использовал SQLite
+                        os.environ.pop("DATABASE_URL", None)
                 else:
                     logger.info(f"Обнаружены все необходимые таблицы в PostgreSQL: {', '.join(required_tables)}")
             
@@ -100,16 +111,24 @@ def check_postgres_initialization():
                 logger.warning(f"Вывод: {result.stdout}")
                 logger.error(f"Ошибки: {result.stderr}")
                 
-                # Продолжаем работу, даже если инициализация не удалась
-                logger.info("Продолжаем запуск бота, несмотря на ошибки инициализации PostgreSQL")
+                # Продолжаем работу с SQLite вместо PostgreSQL
+                logger.warning("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL")
+                # Устанавливаем временную переменную, чтобы бот использовал SQLite
+                os.environ.pop("DATABASE_URL", None)
                 return True
     except ImportError:
         logger.error("Не найден модуль psycopg2, требуется для работы с PostgreSQL")
         logger.error("Установите его командой: pip install psycopg2-binary")
+        logger.warning("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL")
+        # Устанавливаем временную переменную, чтобы бот использовал SQLite
+        os.environ.pop("DATABASE_URL", None)
         return True
     except Exception as e:
         logger.error(f"Ошибка при запуске инициализации PostgreSQL: {e}")
-        # Продолжаем работу, даже если инициализация не удалась
+        # Продолжаем работу с SQLite вместо PostgreSQL
+        logger.warning("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL")
+        # Устанавливаем временную переменную, чтобы бот использовал SQLite
+        os.environ.pop("DATABASE_URL", None)
         return True
 
 def main():
