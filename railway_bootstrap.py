@@ -9,6 +9,7 @@ import logging
 import subprocess
 import importlib.util
 import signal
+import time
 
 # Настройка логирования
 logging.basicConfig(
@@ -39,8 +40,8 @@ def create_mock_openai_module():
         # Добавляем классы-заглушки, если их нет
         if not hasattr(openai_module, 'AsyncOpenAI'):
             class AsyncOpenAI:
-                def __init__(self, api_key=None):
-                    self.api_key = api_key
+                def __init__(self, api_key=None, **kwargs):
+                    self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
                     logger.info("[Bootstrap] Инициализация AsyncOpenAI")
                 
                 class chat:
@@ -49,14 +50,20 @@ def create_mock_openai_module():
                         async def create(*args, **kwargs):
                             logger.info("[Bootstrap] Вызов AsyncOpenAI.chat.completions.create")
                             return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
+                
+                class audio:
+                    @staticmethod
+                    async def transcriptions_create(*args, **kwargs):
+                        logger.info("[Bootstrap] Вызов AsyncOpenAI.audio.transcriptions_create")
+                        return {"text": "Заглушка транскрипции аудио"}
             
             openai_module.AsyncOpenAI = AsyncOpenAI
             logger.info("Добавлена заглушка AsyncOpenAI в модуль openai")
         
         if not hasattr(openai_module, 'OpenAI'):
             class OpenAI:
-                def __init__(self, api_key=None):
-                    self.api_key = api_key
+                def __init__(self, api_key=None, **kwargs):
+                    self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
                     logger.info("[Bootstrap] Инициализация OpenAI")
                 
                 class chat:
@@ -65,9 +72,19 @@ def create_mock_openai_module():
                         def create(*args, **kwargs):
                             logger.info("[Bootstrap] Вызов OpenAI.chat.completions.create")
                             return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
+                
+                class audio:
+                    @staticmethod
+                    def transcriptions_create(*args, **kwargs):
+                        logger.info("[Bootstrap] Вызов OpenAI.audio.transcriptions_create")
+                        return {"text": "Заглушка транскрипции аудио"}
             
             openai_module.OpenAI = OpenAI
             logger.info("Добавлена заглушка OpenAI в модуль openai")
+        
+        # Добавляем прямые ссылки на классы в sys.modules
+        sys.modules['openai.AsyncOpenAI'] = openai_module.AsyncOpenAI
+        sys.modules['openai.OpenAI'] = openai_module.OpenAI
         
         return True
     
@@ -75,44 +92,58 @@ def create_mock_openai_module():
         logger.error(f"Ошибка при создании заглушки openai: {e}")
         return False
 
-def run_global_import_patch():
-    """Запускает глобальный патч импортов"""
+def apply_patches_in_sequence():
+    """Последовательно применяет все патчи, чтобы убедиться что они работают"""
     try:
         # Добавляем текущую директорию в PYTHONPATH
-        env = os.environ.copy()
-        if 'PYTHONPATH' in env:
-            env['PYTHONPATH'] = os.getcwd() + ':' + env['PYTHONPATH']
-        else:
-            env['PYTHONPATH'] = os.getcwd()
+        os.environ['PYTHONPATH'] = os.getcwd() + ':' + os.environ.get('PYTHONPATH', '')
         
-        # Запускаем Python с параметром -c для выполнения кода импорта заглушки
-        patch_code = """
-import sys
-sys.path.insert(0, '.')
-try:
-    import fix_imports_global
-    print("Глобальный патч импортов применен успешно")
-except Exception as e:
-    print(f"Ошибка при применении глобального патча импортов: {e}")
-    sys.exit(1)
-"""
-        result = subprocess.run(
-            [sys.executable, "-c", patch_code],
-            env=env,
-            text=True,
-            capture_output=True
-        )
+        # 1. Запускаем глобальный патч импортов
+        try:
+            logger.info("Применение глобального патча импортов...")
+            import fix_imports_global
+            logger.info("Глобальный патч импортов применен успешно")
+        except Exception as e:
+            logger.error(f"Ошибка при применении глобального патча импортов: {e}")
         
-        if result.returncode == 0:
-            logger.info("Глобальный патч импортов запущен успешно")
-            logger.info(f"Вывод: {result.stdout.strip()}")
+        # 2. Модифицируем модуль openai в site-packages
+        try:
+            logger.info("Модификация модуля openai в site-packages...")
+            import modify_site_packages
+            logger.info("Модуль openai в site-packages модифицирован успешно")
+        except Exception as e:
+            logger.error(f"Ошибка при модификации модуля openai: {e}")
+        
+        # 3. Создаем заглушки для проблемных модулей
+        try:
+            logger.info("Создание заглушек для проблемных модулей...")
+            import fix_problem_modules
+            logger.info("Заглушки для проблемных модулей созданы успешно")
+        except Exception as e:
+            logger.error(f"Ошибка при создании заглушек для проблемных модулей: {e}")
+        
+        # 4. Сканируем и исправляем все импорты openai
+        try:
+            logger.info("Сканирование и исправление всех импортов openai...")
+            import fix_all_openai_imports
+            logger.info("Все импорты openai исправлены успешно")
+        except Exception as e:
+            logger.error(f"Ошибка при исправлении всех импортов openai: {e}")
+        
+        # 5. Создаем локальную заглушку openai
+        create_mock_openai_module()
+        
+        # 6. Проверяем, что AsyncOpenAI доступен
+        try:
+            from openai import AsyncOpenAI
+            logger.info("Проверка: AsyncOpenAI доступен успешно")
             return True
-        else:
-            logger.error(f"Ошибка при запуске глобального патча импортов: {result.stderr.strip()}")
+        except Exception as e:
+            logger.error(f"Проверка не пройдена: AsyncOpenAI недоступен: {e}")
             return False
     
     except Exception as e:
-        logger.error(f"Исключение при запуске глобального патча импортов: {e}")
+        logger.error(f"Ошибка при применении патчей в последовательности: {e}")
         return False
 
 def patch_sys_modules():
@@ -134,8 +165,8 @@ def patch_sys_modules():
         logger.warning("Применяем локальный патч для openai")
         return create_mock_openai_module()
 
-def run_bot():
-    """Запускает бота безопасным способом"""
+def run_safe_startup():
+    """Запускает бота через safe_startup.py"""
     try:
         # Проверяем наличие safe_startup.py
         if os.path.exists('safe_startup.py'):
@@ -151,10 +182,24 @@ def run_bot():
             bot_process.wait()
             
             return bot_process.returncode
-        
-        # Если safe_startup.py не найден, пробуем запустить main.py
-        elif os.path.exists('main.py'):
+        else:
+            logger.error("Файл safe_startup.py не найден")
+            return 1
+    
+    except Exception as e:
+        logger.error(f"Ошибка при запуске safe_startup.py: {e}")
+        return 1
+
+def run_main():
+    """Запускает бота через main.py"""
+    try:
+        # Проверяем наличие main.py
+        if os.path.exists('main.py'):
             logger.info("Запуск бота через main.py")
+            
+            # Модифицируем sys.path для обеспечения доступа к нашим модулям
+            if os.getcwd() not in sys.path:
+                sys.path.insert(0, os.getcwd())
             
             # Создаем новый процесс для запуска бота
             bot_process = subprocess.Popen(
@@ -166,14 +211,22 @@ def run_bot():
             bot_process.wait()
             
             return bot_process.returncode
-        
         else:
-            logger.error("Не найдены файлы safe_startup.py или main.py")
+            logger.error("Файл main.py не найден")
             return 1
     
     except Exception as e:
-        logger.error(f"Ошибка при запуске бота: {e}")
+        logger.error(f"Ошибка при запуске main.py: {e}")
         return 1
+
+def run_bot():
+    """Запускает бота безопасным способом"""
+    # Пытаемся запустить через безопасный запуск
+    if os.path.exists('safe_startup.py'):
+        return run_safe_startup()
+    
+    # Если не получилось, запускаем напрямую main.py
+    return run_main()
 
 def signal_handler(sig, frame):
     """Обработчик сигналов для корректного завершения"""
@@ -188,36 +241,14 @@ def main():
     
     logger.info("=== Railway Bootstrap: подготовка окружения для запуска бота ===")
     
-    # Патчим sys.modules перед запуском бота
-    if patch_sys_modules():
-        logger.info("Подготовка sys.modules выполнена успешно")
+    # Применяем все патчи последовательно
+    if apply_patches_in_sequence():
+        logger.info("Все патчи применены успешно")
     else:
-        logger.warning("Не удалось полностью подготовить sys.modules")
+        logger.warning("Не все патчи были применены успешно, продолжаем с осторожностью")
     
-    # Запускаем глобальный патч импортов
-    if run_global_import_patch():
-        logger.info("Глобальный патч импортов применен успешно")
-    else:
-        logger.warning("Не удалось применить глобальный патч импортов")
-    
-    # Создаем заглушку для openai
-    if create_mock_openai_module():
-        logger.info("Заглушка для openai создана успешно")
-    else:
-        logger.warning("Не удалось создать заглушку для openai")
-    
-    # Проверяем, что патч работает
-    try:
-        # Проверяем, доступны ли классы OpenAI и AsyncOpenAI
-        import openai
-        logger.info(f"OpenAI доступен: {hasattr(openai, 'OpenAI')}")
-        logger.info(f"AsyncOpenAI доступен: {hasattr(openai, 'AsyncOpenAI')}")
-        
-        # Пробуем импортировать классы напрямую
-        from openai import AsyncOpenAI, OpenAI
-        logger.info("Импорт AsyncOpenAI и OpenAI выполнен успешно")
-    except Exception as e:
-        logger.error(f"Ошибка при проверке патча: {e}")
+    # Небольшая пауза, чтобы патчи успели применится
+    time.sleep(1)
     
     # Запускаем бота
     logger.info("=== Railway Bootstrap: запуск бота ===")

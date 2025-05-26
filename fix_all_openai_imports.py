@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Скрипт для комплексного решения проблемы с импортом AsyncOpenAI
+Сканирует все Python файлы в проекте и заменяет импорты AsyncOpenAI на наши заглушки.
 """
 import os
 import re
@@ -15,145 +15,183 @@ logging.basicConfig(
 )
 logger = logging.getLogger("fix_all_openai_imports")
 
-# Список всех Python файлов в проекте
-def get_all_python_files():
-    """Получает список всех Python файлов в проекте"""
-    return glob.glob("*.py")
+# Шаблоны для поиска импортов
+IMPORT_PATTERNS = [
+    r'from\s+openai\s+import\s+AsyncOpenAI',
+    r'from\s+openai\s+import\s+.*?,\s*AsyncOpenAI',
+    r'from\s+openai\s+import\s+AsyncOpenAI\s*,\s*.*?',
+    r'import\s+openai'
+]
 
-# Код заглушки AsyncOpenAI для вставки в файлы
-OPENAI_MOCK_CODE = """
+# Шаблон для использования AsyncOpenAI
+USAGE_PATTERN = r'AsyncOpenAI\s*\('
+
 # Заглушка для AsyncOpenAI
+ASYNC_OPENAI_STUB = """
+# === BEGIN AsyncOpenAI Stub ===
 class AsyncOpenAI:
-    def __init__(self, api_key=None):
+    def __init__(self, api_key=None, **kwargs):
         self.api_key = api_key
-        print(f"[Mock AsyncOpenAI] Инициализация в {__name__}")
+        print(f"[Stub in {os.path.basename(__file__)}] AsyncOpenAI initialized")
     
     class chat:
         class completions:
             @staticmethod
             async def create(*args, **kwargs):
-                print(f"[Mock AsyncOpenAI] Вызов chat.completions.create в {__name__}")
-                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
+                print(f"[Stub in {os.path.basename(__file__)}] AsyncOpenAI.chat.completions.create called")
+                return {"choices": [{"message": {"content": "OpenAI API stub response"}}]}
+    
+    class audio:
+        @staticmethod
+        async def transcriptions_create(*args, **kwargs):
+            print(f"[Stub in {os.path.basename(__file__)}] AsyncOpenAI.audio.transcriptions_create called")
+            return {"text": "Audio transcription stub"}
+# === END AsyncOpenAI Stub ===
+"""
 
 # Заглушка для OpenAI
+OPENAI_STUB = """
+# === BEGIN OpenAI Stub ===
 class OpenAI:
-    def __init__(self, api_key=None):
+    def __init__(self, api_key=None, **kwargs):
         self.api_key = api_key
-        print(f"[Mock OpenAI] Инициализация в {__name__}")
+        print(f"[Stub in {os.path.basename(__file__)}] OpenAI initialized")
     
     class chat:
         class completions:
             @staticmethod
             def create(*args, **kwargs):
-                print(f"[Mock OpenAI] Вызов chat.completions.create в {__name__}")
-                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
+                print(f"[Stub in {os.path.basename(__file__)}] OpenAI.chat.completions.create called")
+                return {"choices": [{"message": {"content": "OpenAI API stub response"}}]}
+    
+    class audio:
+        @staticmethod
+        def transcriptions_create(*args, **kwargs):
+            print(f"[Stub in {os.path.basename(__file__)}] OpenAI.audio.transcriptions_create called")
+            return {"text": "Audio transcription stub"}
+# === END OpenAI Stub ===
 """
 
-def backup_file(file_path):
-    """Создает резервную копию файла"""
-    backup_path = f"{file_path}.bak"
-    if not os.path.exists(backup_path):
-        try:
-            with open(file_path, 'r', encoding='utf-8') as src:
-                with open(backup_path, 'w', encoding='utf-8') as dst:
-                    dst.write(src.read())
-            return True
-        except Exception as e:
-            logger.error(f"Ошибка при создании резервной копии {file_path}: {e}")
-            return False
-    return True
+def find_python_files(directory="."):
+    """Находит все Python файлы в указанной директории"""
+    python_files = []
+    
+    # Находим все .py файлы
+    for py_file in glob.glob(os.path.join(directory, "**", "*.py"), recursive=True):
+        # Игнорируем текущий скрипт
+        if os.path.basename(py_file) != os.path.basename(__file__):
+            python_files.append(py_file)
+    
+    return python_files
 
-def fix_file(file_path):
-    """Исправляет импорты OpenAI и AsyncOpenAI в файле"""
-    if not os.path.exists(file_path):
-        logger.warning(f"Файл {file_path} не найден")
-        return False
-    
-    # Создаем резервную копию
-    if not backup_file(file_path):
-        return False
-    
+def check_file_for_openai_imports(file_path):
+    """Проверяет файл на наличие импортов openai и AsyncOpenAI"""
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # Проверяем, используется ли в файле AsyncOpenAI или OpenAI
-        if "AsyncOpenAI" not in content and "OpenAI" not in content:
-            logger.info(f"Файл {file_path} не использует AsyncOpenAI или OpenAI")
+        # Проверяем наличие импортов
+        has_import = any(re.search(pattern, content) for pattern in IMPORT_PATTERNS)
+        
+        # Проверяем использование AsyncOpenAI
+        uses_async_openai = bool(re.search(USAGE_PATTERN, content))
+        
+        return has_import or uses_async_openai
+    
+    except Exception as e:
+        logger.error(f"Ошибка при проверке файла {file_path}: {e}")
+        return False
+
+def add_stubs_to_file(file_path):
+    """Добавляет заглушки в файл"""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Создаем резервную копию файла
+        backup_path = f"{file_path}.bak"
+        if not os.path.exists(backup_path):
+            with open(backup_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            logger.info(f"Создана резервная копия файла {backup_path}")
+        
+        # Проверяем, есть ли уже заглушки
+        if "# === BEGIN AsyncOpenAI Stub ===" in content:
+            logger.info(f"Файл {file_path} уже содержит заглушки")
             return True
         
-        # Проверяем, есть ли уже заглушка AsyncOpenAI
-        if "class AsyncOpenAI" in content:
-            logger.info(f"Файл {file_path} уже содержит заглушку AsyncOpenAI")
-            return True
+        # Находим место для вставки заглушек (после импортов)
+        import_end = 0
+        for line_num, line in enumerate(content.split('\n')):
+            if line.startswith('import ') or line.startswith('from '):
+                import_end = line_num + 1
         
-        # Заменяем импорты AsyncOpenAI на комментарии
-        content = re.sub(
-            r'from\s+openai\s+import\s+([^#\n]*)(AsyncOpenAI|OpenAI)', 
-            r'# \g<0>  # Заменено на локальную заглушку', 
-            content
-        )
+        # Вставляем заглушки после импортов
+        lines = content.split('\n')
+        lines.insert(import_end, ASYNC_OPENAI_STUB)
+        lines.insert(import_end + 1, OPENAI_STUB)
         
-        # Находим место для вставки заглушки - после импортов
-        import_block_end = 0
-        for match in re.finditer(r'^(?:import|from)\s+\w+', content, re.MULTILINE):
-            import_block_end = max(import_block_end, match.end())
-        
-        if import_block_end > 0:
-            # Вставляем после последнего импорта
-            import_lines = []
-            other_lines = []
-            for line in content.splitlines():
-                if line.startswith('import ') or line.startswith('from '):
-                    import_lines.append(line)
-                else:
-                    other_lines.append(line)
-            
-            content = '\n'.join(import_lines) + '\n' + OPENAI_MOCK_CODE + '\n' + '\n'.join(other_lines)
-        else:
-            # Вставляем в начало файла
-            content = OPENAI_MOCK_CODE + '\n\n' + content
-        
-        # Записываем изменения обратно в файл
+        # Записываем модифицированный файл
         with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(content)
+            f.write('\n'.join(lines))
         
-        logger.info(f"Файл {file_path} успешно исправлен")
+        logger.info(f"Добавлены заглушки в файл {file_path}")
         return True
     
     except Exception as e:
-        logger.error(f"Ошибка при исправлении файла {file_path}: {e}")
-        # Восстанавливаем из резервной копии
-        try:
-            with open(f"{file_path}.bak", 'r', encoding='utf-8') as src:
-                with open(file_path, 'w', encoding='utf-8') as dst:
-                    dst.write(src.read())
-            logger.info(f"Файл {file_path} восстановлен из резервной копии")
-        except Exception as restore_error:
-            logger.error(f"Ошибка при восстановлении файла {file_path}: {restore_error}")
+        logger.error(f"Ошибка при добавлении заглушек в файл {file_path}: {e}")
+        return False
+
+def modify_imports_in_file(file_path):
+    """Модифицирует импорты в файле, добавляя заглушки"""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Создаем резервную копию файла
+        backup_path = f"{file_path}.bak"
+        if not os.path.exists(backup_path):
+            with open(backup_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            logger.info(f"Создана резервная копия файла {backup_path}")
+        
+        # Добавляем заглушки в файл
+        if add_stubs_to_file(file_path):
+            logger.info(f"Файл {file_path} успешно модифицирован")
+            return True
+        else:
+            logger.error(f"Не удалось модифицировать файл {file_path}")
+            return False
+    
+    except Exception as e:
+        logger.error(f"Ошибка при модификации файла {file_path}: {e}")
         return False
 
 def main():
     """Основная функция скрипта"""
-    logger.info("=== Начало исправления всех импортов OpenAI ===")
+    logger.info("=== Начало сканирования и модификации файлов ===")
     
-    # Создаем модуль-заглушку openai_stub.py
-    with open("openai_stub.py", "w", encoding="utf-8") as f:
-        f.write(OPENAI_MOCK_CODE)
-    logger.info("Создан модуль-заглушка openai_stub.py")
+    # Находим все Python файлы
+    python_files = find_python_files()
+    logger.info(f"Найдено Python файлов: {len(python_files)}")
     
-    # Получаем список всех Python файлов
-    python_files = get_all_python_files()
-    logger.info(f"Найдено {len(python_files)} Python файлов")
-    
-    # Исправляем каждый файл
-    success_count = 0
+    # Проверяем файлы на наличие импортов openai
+    files_with_openai = []
     for file_path in python_files:
-        if fix_file(file_path):
+        if check_file_for_openai_imports(file_path):
+            files_with_openai.append(file_path)
+    
+    logger.info(f"Файлов с импортами openai: {len(files_with_openai)}")
+    
+    # Модифицируем файлы с импортами
+    success_count = 0
+    for file_path in files_with_openai:
+        logger.info(f"Модификация файла {file_path}")
+        if modify_imports_in_file(file_path):
             success_count += 1
     
-    logger.info(f"=== Завершено. Исправлено файлов: {success_count}/{len(python_files)} ===")
-    return 0 if success_count > 0 else 1
+    logger.info(f"=== Завершено. Успешно модифицировано файлов: {success_count}/{len(files_with_openai)} ===")
+    return 0 if success_count == len(files_with_openai) else 1
 
 if __name__ == "__main__":
     sys.exit(main()) 

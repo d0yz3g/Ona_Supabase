@@ -1,12 +1,41 @@
+import sys
+import importlib.util
+import subprocess
+import os
+import os
+from dotenv_minimal import load_dotenv, find_dotenv
+
+# Заглушка для AsyncOpenAI
+class AsyncOpenAI:
+    def __init__(self, api_key=None):
+        self.api_key = api_key
+        print(f"[Mock AsyncOpenAI] Инициализация в {__name__}")
+    
+    class chat:
+        class completions:
+            @staticmethod
+            async def create(*args, **kwargs):
+                print(f"[Mock AsyncOpenAI] Вызов chat.completions.create в {__name__}")
+                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
+
+# Заглушка для OpenAI
+class OpenAI:
+    def __init__(self, api_key=None):
+        self.api_key = api_key
+        print(f"[Mock OpenAI] Инициализация в {__name__}")
+    
+    class chat:
+        class completions:
+            @staticmethod
+            def create(*args, **kwargs):
+                print(f"[Mock OpenAI] Вызов chat.completions.create в {__name__}")
+                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
+
 #!/usr/bin/env python3
 """
 Utility script to check and install critical dependencies.
 Used during Docker build and startup to ensure all required packages are available.
 """
-import sys
-import importlib.util
-import subprocess
-import os
 
 
 def is_module_installed(module_name):
@@ -94,7 +123,6 @@ def create_dotenv_fallback():
 '''
 Minimal fallback implementation for python-dotenv
 '''
-import os
 
 def load_dotenv(dotenv_path=None, **kwargs):
     print("[dotenv_minimal] Using minimal fallback implementation")
@@ -119,7 +147,6 @@ def find_dotenv(*args, **kwargs):
 '''
 Dotenv import redirection
 '''
-from dotenv_minimal import load_dotenv, find_dotenv
 """)
             print("✅ Created dotenv fallback")
         except Exception as e:

@@ -8,6 +8,12 @@ echo "Python version: $(python --version)"
 echo "Current directory: $(pwd)"
 echo "Files in directory: $(ls -la)"
 
+# Устанавливаем базовые переменные окружения
+export PYTHONUNBUFFERED=1
+export PYTHONFAULTHANDLER=1
+export PYTHONIOENCODING=utf-8
+export PYTHONPATH=/app
+
 # Проверяем наличие файла railway_requirements.txt
 if [ -f "railway_requirements.txt" ]; then
     echo "=== INSTALLING RAILWAY REQUIREMENTS ==="
@@ -146,17 +152,40 @@ else
 fi
 
 echo "=== APPLYING PYDANTIC PATCH ==="
-# Attempt to apply pydantic patch
+# Проверяем наличие pydantic
+python -c "import pydantic; print('Pydantic уже установлен')" 2>/dev/null || {
+    echo "Pydantic не найден. Устанавливаем совместимую версию..."
+    pip install pydantic==1.10.12
+}
+
+# Применяем патч
 if [ -f "patch_pydantic.py" ]; then
     python patch_pydantic.py || {
-        echo "⚠️ Warning: Failed to apply pydantic patch. Bot may not work correctly."
+        echo "⚠️ Warning: Failed to apply pydantic patch. Installing directly..."
+        pip install aiogram==3.0.0 pydantic==1.10.12
     }
 else
-    echo "⚠️ Warning: patch_pydantic.py not found. Skipping patch."
+    echo "⚠️ Warning: patch_pydantic.py not found. Installing compatible versions directly."
+    pip install aiogram==3.0.0 pydantic==1.10.12
 fi
+
+# Проверяем существование важных модулей перед запуском
+for module in aiogram logging sqlite3 asyncio apscheduler; do
+    python -c "import $module; print(f'✅ Модуль {module} успешно импортирован')" || {
+        echo "❌ ERROR: Модуль $module не найден или не может быть импортирован!"
+        if [ "$module" = "aiogram" ]; then
+            echo "Пытаемся установить aiogram..."
+            pip install aiogram==3.0.0
+        fi
+    }
+done
+
+# Создаем необходимые директории, если их нет
+mkdir -p logs tmp
 
 echo "=== STARTING BOT ==="
 # Execute with proper error handling
+echo "Запуск основного процесса бота..."
 python main.py || {
     echo "❌ Bot crashed with error code $?"
     echo "Check logs for details"

@@ -1,3 +1,30 @@
+
+# Заглушка для AsyncOpenAI и OpenAI
+class AsyncOpenAI:
+    def __init__(self, api_key=None):
+        self.api_key = api_key
+        print(f"[{__name__}] Инициализация заглушки AsyncOpenAI")
+    
+    class chat:
+        class completions:
+            @staticmethod
+            async def create(*args, **kwargs):
+                print(f"[{__name__}] Вызов метода AsyncOpenAI.chat.completions.create")
+                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
+
+class OpenAI:
+    def __init__(self, api_key=None):
+        self.api_key = api_key
+        print(f"[{__name__}] Инициализация заглушки OpenAI")
+    
+    class chat:
+        class completions:
+            @staticmethod
+            def create(*args, **kwargs):
+                print(f"[{__name__}] Вызов метода OpenAI.chat.completions.create")
+                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
+
+
 import logging
 import os
 import tempfile
