@@ -2,33 +2,36 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Установка необходимых системных зависимостей
+# Установка базовых зависимостей и утилит
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     curl \
     procps \
     && rm -rf /var/lib/apt/lists/*
 
-# Update pip and install essential build tools
+# Обновление pip и установка базовых инструментов
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Копируем сначала только requirements.txt для кэширования слоя с зависимостями
+# Копирование файла с зависимостями
 COPY requirements.txt .
 
-# Устанавливаем критические зависимости сначала
+# Установка критических зависимостей
 RUN pip install --no-cache-dir python-dotenv==1.0.0 httpx==0.23.3 openai==1.3.3 pydantic==2.1.1 aiogram==3.0.0
 
-# Устанавливаем остальные зависимости
+# Установка остальных зависимостей
 RUN pip install --no-cache-dir -r requirements.txt || echo "Some packages failed to install, continuing anyway"
 
-# Копируем сначала критические файлы для патчинга
-COPY pre_import_fix.py patch_main.py fix_imports_global.py modify_site_packages.py fix_problem_modules.py direct_start.py ./
+# Копирование файлов для исправления импортов
+COPY pre_import_fix.py patch_main.py fix_imports_global.py direct_start.py ./
 
-# Проверяем версию openai и наличие AsyncOpenAI
-RUN pip show openai && python -c "import pre_import_fix; from openai import AsyncOpenAI; print('AsyncOpenAI доступен')" || echo "AsyncOpenAI недоступен, будут использованы патчи"
+# Проверка доступности AsyncOpenAI
+RUN pip show openai && python -c "import openai; print(f'OpenAI version: {openai.__version__}')" || echo "OpenAI not available"
 
-# Копируем остальные файлы
+# Копирование всех остальных файлов
 COPY . .
 
-# Запускаем бота напрямую через direct_start.py
+# Делаем скрипты исполняемыми
+RUN chmod +x direct_start.py railway_final.py patch_main.py main.py
+
+# Запуск бота
 CMD ["python", "direct_start.py"] 
