@@ -1,14 +1,19 @@
-aiogram==3.0.0
+# Critical dependencies - installed first
 python-dotenv==1.0.0
-APScheduler==3.10.4
-pydantic==2.1.1
-requests==2.31.0
-openai==1.3.3
 httpx==0.23.3
+openai==1.3.3
+pydantic==2.1.1
+aiogram==3.0.0
+
+# Core functionality
+APScheduler==3.10.4
+requests==2.31.0
 elevenlabs==0.2.24
 gTTS==2.3.2
 ephem==4.1.4
 PyYAML==6.0.1
+
+# Supabase-related
 postgrest-py==0.10.3
 realtime-py==0.1.2
 storage3==0.5.0
