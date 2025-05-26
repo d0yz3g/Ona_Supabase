@@ -36,10 +36,14 @@ def check_and_install_dependencies():
     """Check and install critical dependencies."""
     # List of critical packages (name, version, is_required)
     critical_packages = [
-        ("pydantic", "1.10.12", True),
+        ("pydantic", "2.1.1", True),     # Обновлено до версии, совместимой с aiogram 3.0.0
         ("aiogram", "3.0.0", True),
         ("python-dotenv", None, False),  # We have fallback for this
         ("APScheduler", None, False),
+        ("openai", "0.28.1", True),      # Добавлен OpenAI с конкретной версией
+        ("httpx", "0.23.3", True),       # Добавлен httpx с конкретной версией
+        ("elevenlabs", "0.2.24", False), # Для голосовых сообщений
+        ("gTTS", "2.3.2", False),        # Альтернатива для голосовых сообщений
     ]
     
     all_required_installed = True
@@ -59,6 +63,17 @@ def check_and_install_dependencies():
     except ImportError as e:
         print(f"❌ Failed to import aiogram modules: {e}")
         all_required_installed = False
+    
+    # Check OpenAI modules
+    try:
+        import openai
+        print("✅ openai module imported successfully")
+    except ImportError as e:
+        print(f"❌ Failed to import openai module: {e}")
+        all_required_installed = False
+        # Попытка установить с более конкретной версией в случае неудачи
+        print("Attempting to install openai with specific version...")
+        install_package("openai", "0.28.1")
     
     # Create fallback for dotenv if needed
     if not is_module_installed("dotenv"):

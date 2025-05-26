@@ -69,7 +69,7 @@ if __name__ == "__main__":\n\
 ' > check_dependencies.py && chmod +x check_dependencies.py
 
 # Install core dependencies one by one with error handling
-RUN pip install --no-cache-dir pydantic==1.10.12 || echo "Failed to install pydantic, will try again later"
+RUN pip install --no-cache-dir pydantic==2.1.1 || echo "Failed to install pydantic, will try again later"
 RUN pip install --no-cache-dir aiogram==3.0.0 || echo "Failed to install aiogram, will try again later"
 RUN pip install --no-cache-dir python-dotenv || echo "Failed to install python-dotenv, will use fallback"
 RUN pip install --no-cache-dir APScheduler || echo "Failed to install APScheduler, will try again later"
@@ -82,6 +82,12 @@ RUN pip install --no-cache-dir openai==0.28.1 && \
 # Verify critical modules are installed
 RUN python -c "import openai; print('OpenAI version:', openai.__version__)" && \
     python -c "import httpx; print('HTTPX version:', httpx.__version__)"
+
+# Copy and run compatibility check scripts
+COPY fix_pydantic.py check_aiogram_compat.py ./
+RUN python -c "import pydantic; print('Pydantic version:', pydantic.__version__)" && \
+    pip install --no-cache-dir --force-reinstall pydantic==2.1.1 && \
+    python -c "import pydantic; print('Updated Pydantic version:', pydantic.__version__)"
 
 # Copy entry point script and fallback implementations
 COPY railway_entry.sh fix_dotenv_import.py dotenv.py dotenv_fallback.py ./
