@@ -1,4 +1,0 @@
-postgrest-py==0.10.3
-realtime-py==0.1.2
-storage3==0.5.0
-supafunc==0.2.2 

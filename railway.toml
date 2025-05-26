@@ -1,9 +1,0 @@
-[build]
-builder = "nixpacks"
-buildCommand = "echo Building minimal app..."
-
-[deploy]
-startCommand = "python bare_minimal.py"
-healthcheckPath = "/"
-healthcheckTimeout = 20
-restartPolicyType = "always"

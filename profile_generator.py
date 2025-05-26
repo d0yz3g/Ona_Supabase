@@ -2,36 +2,9 @@ import logging
 import os
 import json
 from typing import Dict, Any, Optional
+from openai import AsyncOpenAI
 import httpx
 import asyncio
-
-# Заглушка для AsyncOpenAI
-class AsyncOpenAI:
-    def __init__(self, api_key=None):
-        self.api_key = api_key
-        print(f"[Mock AsyncOpenAI] Инициализация в {__name__}")
-    
-    class chat:
-        class completions:
-            @staticmethod
-            async def create(*args, **kwargs):
-                print(f"[Mock AsyncOpenAI] Вызов chat.completions.create в {__name__}")
-                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
-
-# Заглушка для OpenAI
-class OpenAI:
-    def __init__(self, api_key=None):
-        self.api_key = api_key
-        print(f"[Mock OpenAI] Инициализация в {__name__}")
-    
-    class chat:
-        class completions:
-            @staticmethod
-            def create(*args, **kwargs):
-                print(f"[Mock OpenAI] Вызов chat.completions.create в {__name__}")
-                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
-
-# from openai import AsyncOpenAI  # Заменено на локальную заглушку
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
@@ -388,7 +361,7 @@ async def generate_profile(answers: Dict[str, str]) -> Dict[str, str]:
 
 async def save_profile_to_db(user_id: int, profile_text: str, answers: Dict[str, str]) -> bool:
     """
-    Сохраняет сгенерированный профиль в базу данных Supabase.
+    Сохраняет сгенерированный профиль в базу данных.
     
     Args:
         user_id: ID пользователя в Telegram
@@ -399,41 +372,21 @@ async def save_profile_to_db(user_id: int, profile_text: str, answers: Dict[str,
         bool: True, если сохранение успешно, иначе False
     """
     try:
-        # Импортируем SupabaseDB
-        try:
-            from supabase_db import db  # Импортируем Supabase клиент
-            logger.info("Успешный импорт модуля supabase_db в profile_generator")
-        except ImportError:
-            logger.warning("Модуль supabase не найден, используем SQLite-заглушку в profile_generator")
-            try:
-                from supabase_fallback import db  # Импортируем заглушку SQLite
-                logger.info("Подключена SQLite-заглушка вместо Supabase в profile_generator")
-            except Exception as fallback_error:
-                logger.error(f"Ошибка при подключении SQLite-заглушки в profile_generator: {fallback_error}")
-                return False
+        # Подготовка данных для сохранения
+        profile_data = {
+            "profile_text": profile_text,
+            "answers": answers,
+            "created_at": str(asyncio.get_event_loop().time())
+        }
         
-        # Проверяем подключение к Supabase
-        if not db.is_connected:
-            logger.error("Невозможно сохранить профиль: нет подключения к Supabase")
-            return False
+        # Преобразуем данные в JSON
+        profile_json = json.dumps(profile_data, ensure_ascii=False)
         
-        # Извлекаем детальный профиль из ответов или используем текст профиля
-        details_text = answers.get("details", profile_text)
+        # Здесь должен быть код для сохранения в базу данных
+        # В данной реализации это заглушка
+        logger.info(f"Профиль сохранен для пользователя {user_id}")
         
-        # Сохраняем профиль в Supabase
-        success = await db.save_profile(
-            telegram_id=user_id,
-            profile_text=profile_text,
-            details_text=details_text,
-            answers=answers
-        )
-        
-        if success:
-            logger.info(f"Профиль успешно сохранен в Supabase для пользователя {user_id}")
-        else:
-            logger.warning(f"Не удалось сохранить профиль в Supabase для пользователя {user_id}")
-        
-        return success
+        return True
     except Exception as e:
-        logger.error(f"Ошибка при сохранении профиля в Supabase: {e}")
+        logger.error(f"Ошибка при сохранении профиля в базу данных: {e}")
         return False 

@@ -1,34 +1,7 @@
-
-# Заглушка для AsyncOpenAI и OpenAI
-class AsyncOpenAI:
-    def __init__(self, api_key=None):
-        self.api_key = api_key
-        print(f"[{__name__}] Инициализация заглушки AsyncOpenAI")
-    
-    class chat:
-        class completions:
-            @staticmethod
-            async def create(*args, **kwargs):
-                print(f"[{__name__}] Вызов метода AsyncOpenAI.chat.completions.create")
-                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
-
-class OpenAI:
-    def __init__(self, api_key=None):
-        self.api_key = api_key
-        print(f"[{__name__}] Инициализация заглушки OpenAI")
-    
-    class chat:
-        class completions:
-            @staticmethod
-            def create(*args, **kwargs):
-                print(f"[{__name__}] Вызов метода OpenAI.chat.completions.create")
-                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
-
-
 import logging
 import os
 import asyncio
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 from aiogram import Router, F, Bot
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup
 from aiogram.filters import Command
@@ -43,17 +16,6 @@ from apscheduler.triggers.cron import CronTrigger
 # Настройка логирования
 logger = logging.getLogger(__name__)
 
-try:
-    from supabase_db import db  # Импортируем Supabase клиент
-    logger.info("Успешный импорт модуля supabase_db в reminder_handler")
-except ImportError:
-    logger.warning("Модуль supabase не найден, используем SQLite-заглушку в reminder_handler")
-    try:
-        from supabase_fallback import db  # Импортируем заглушку SQLite
-        logger.info("Подключена SQLite-заглушка вместо Supabase в reminder_handler")
-    except Exception as fallback_error:
-        logger.error(f"Ошибка при подключении SQLite-заглушки в reminder_handler: {fallback_error}")
-
 # Создаем роутер для обработки напоминаний
 reminder_router = Router()
 
@@ -64,70 +26,8 @@ scheduler = AsyncIOScheduler()
 # {user_id: {"time": "HH:MM", "days": ["mon", "tue", ...], "active": True}}
 reminder_users = {}
 
-# Функция для загрузки напоминаний из Supabase при запуске бота
-async def load_reminders_from_db(bot: Bot):
-    """
-    Загружает все активные напоминания из Supabase и добавляет их в планировщик
-    
-    Args:
-        bot: Экземпляр бота для отправки напоминаний
-    """
-    try:
-        if not db.is_connected:
-            logger.error("Не удалось загрузить напоминания: нет подключения к Supabase")
-            return
-        
-        # Получаем все активные напоминания
-        reminders = await db.get_all_active_reminders()
-        
-        for reminder in reminders:
-            # Получаем данные напоминания
-            user_id = reminder.get("telegram_id")
-            time_str = reminder.get("time", "20:00")
-            days = reminder.get("days", ["mon", "tue", "wed", "thu", "fri", "sat", "sun"])
-            
-            # Проверяем корректность данных
-            if not user_id or not time_str or not days:
-                logger.warning(f"Пропускаем некорректное напоминание: {reminder}")
-                continue
-            
-            # Создаем уникальный ID для задачи
-            job_id = f"reminder_{user_id}"
-            
-            # Удаляем существующую задачу, если она есть
-            if scheduler.get_job(job_id):
-                scheduler.remove_job(job_id)
-            
-            try:
-                # Парсим время
-                hour, minute = map(int, time_str.split(":"))
-                
-                # Дни недели в формате APScheduler
-                day_of_week = ",".join(days)
-                
-                # Добавляем новую задачу в планировщик
-                scheduler.add_job(
-                    send_reminder,
-                    CronTrigger(hour=hour, minute=minute, day_of_week=day_of_week),
-                    id=job_id,
-                    args=[bot, user_id],
-                    replace_existing=True
-                )
-                
-                logger.info(f"Добавлено напоминание для пользователя {user_id} в {time_str} в дни: {day_of_week}")
-            except Exception as e:
-                logger.error(f"Ошибка при добавлении напоминания для пользователя {user_id}: {e}")
-    except Exception as e:
-        logger.error(f"Ошибка при загрузке напоминаний из Supabase: {e}")
-
 # Функция для создания клавиатуры напоминаний
 def get_reminder_keyboard() -> InlineKeyboardMarkup:
-    """
-    Возвращает клавиатуру для управления напоминаниями
-    
-    Returns:
-        InlineKeyboardMarkup: Клавиатура с кнопками управления напоминаниями
-    """
     builder = InlineKeyboardBuilder()
     
     # Кнопки управления напоминаниями
@@ -222,49 +122,31 @@ async def cmd_reminders(message: Message, state: FSMContext):
     """
     user_id = message.from_user.id
     
-    try:
-        # Проверяем подключение к Supabase
-        if not db.is_connected:
-            await message.answer(
-                "⚠️ <b>Ошибка подключения к базе данных</b>\n\n"
-                "В данный момент невозможно получить информацию о напоминаниях. "
-                "Пожалуйста, попробуйте позже.",
-                parse_mode="HTML"
-            )
-            return
+    # Получаем информацию о текущих напоминаниях для пользователя
+    reminder_info = reminder_users.get(user_id, None)
+    
+    if reminder_info and reminder_info.get("active", False):
+        time = reminder_info.get("time", "20:00")
+        days = reminder_info.get("days", ["mon", "tue", "wed", "thu", "fri", "sat", "sun"])
         
-        # Получаем информацию о текущих напоминаниях для пользователя
-        reminder_info = await db.get_reminder(user_id)
+        # Преобразуем коды дней недели в русские названия
+        day_names = {
+            "mon": "понедельник", "tue": "вторник", "wed": "среду", 
+            "thu": "четверг", "fri": "пятницу", "sat": "субботу", "sun": "воскресенье"
+        }
+        days_text = ", ".join([day_names[day] for day in days])
         
-        if reminder_info and reminder_info.get("active", False):
-            time = reminder_info.get("time", "20:00")
-            days = reminder_info.get("days", ["mon", "tue", "wed", "thu", "fri", "sat", "sun"])
-            
-            # Преобразуем коды дней недели в русские названия
-            day_names = {
-                "mon": "понедельник", "tue": "вторник", "wed": "среду", 
-                "thu": "четверг", "fri": "пятницу", "sat": "субботу", "sun": "воскресенье"
-            }
-            days_text = ", ".join([day_names[day] for day in days if day in day_names])
-            
-            status_text = f"✅ <b>Напоминания включены</b>\n\nВы получаете напоминания в {time} в {days_text}."
-        else:
-            status_text = "❌ <b>Напоминания выключены</b>\n\nВключите напоминания, чтобы не забывать о практиках."
-        
-        await message.answer(
-            "⏰ <b>Управление напоминаниями</b>\n\n"
-            f"{status_text}\n\n"
-            "Используйте кнопки ниже для настройки напоминаний:",
-            reply_markup=get_reminder_keyboard(),
-            parse_mode="HTML"
-        )
-    except Exception as e:
-        logger.error(f"Ошибка при получении информации о напоминаниях для пользователя {user_id}: {e}")
-        await message.answer(
-            "⚠️ <b>Произошла ошибка</b>\n\n"
-            "Не удалось получить информацию о напоминаниях. Пожалуйста, попробуйте позже.",
-            parse_mode="HTML"
-        )
+        status_text = f"✅ <b>Напоминания включены</b>\n\nВы получаете напоминания в {time} в {days_text}."
+    else:
+        status_text = "❌ <b>Напоминания выключены</b>\n\nВключите напоминания, чтобы не забывать о практиках."
+    
+    await message.answer(
+        "⏰ <b>Управление напоминаниями</b>\n\n"
+        f"{status_text}\n\n"
+        "Используйте кнопки ниже для настройки напоминаний:",
+        reply_markup=get_reminder_keyboard(),
+        parse_mode="HTML"
+    )
     
     # Устанавливаем состояние настройки напоминаний
     await state.set_state(ReminderStates.main_menu)
@@ -277,93 +159,65 @@ async def reminder_on(callback: CallbackQuery, state: FSMContext):
     """
     user_id = callback.from_user.id
     
-    try:
-        # Проверяем подключение к Supabase
-        if not db.is_connected:
-            await callback.answer("Ошибка подключения к базе данных", show_alert=True)
-            return
+    # Проверяем, есть ли уже настройки напоминаний
+    if user_id not in reminder_users:
+        # Получаем время по умолчанию из переменных окружения
+        default_time = os.getenv("DEFAULT_REMINDER_TIME", "20:00")
+        hour, minute = map(int, default_time.split(":"))
         
-        # Получаем текущие настройки напоминаний
-        reminder_info = await db.get_reminder(user_id)
-        
-        if not reminder_info:
-            # Получаем время по умолчанию из переменных окружения
-            default_time = os.getenv("DEFAULT_REMINDER_TIME", "20:00")
-            default_days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
-            
-            # Создаем настройки напоминаний по умолчанию
-            await db.save_reminder(
-                telegram_id=user_id,
-                time=default_time,
-                days=default_days,
-                active=True
-            )
-            
-            # Используем значения по умолчанию
-            hour, minute = map(int, default_time.split(":"))
-            days = default_days
-        else:
-            # Активируем существующие настройки
-            time_str = reminder_info.get("time", "20:00")
-            days = reminder_info.get("days", ["mon", "tue", "wed", "thu", "fri", "sat", "sun"])
-            
-            # Обновляем статус напоминаний в базе данных
-            await db.save_reminder(
-                telegram_id=user_id,
-                time=time_str,
-                days=days,
-                active=True
-            )
-            
-            # Парсим время
-            hour, minute = map(int, time_str.split(":"))
-        
-        # Создаем уникальный ID для задачи
-        job_id = f"reminder_{user_id}"
-        
-        # Удаляем существующую задачу, если она есть
-        if scheduler.get_job(job_id):
-            scheduler.remove_job(job_id)
-        
-        # Дни недели в формате APScheduler
-        day_of_week = ",".join(days)
-        
-        # Добавляем новую задачу в планировщик
-        scheduler.add_job(
-            send_reminder,
-            CronTrigger(hour=hour, minute=minute, day_of_week=day_of_week),
-            id=job_id,
-            args=[callback.bot, user_id],
-            replace_existing=True
-        )
-        
-        # Если планировщик не запущен, запускаем его
-        if not scheduler.running:
-            scheduler.start()
-        
-        # Преобразуем коды дней недели в русские названия
-        day_names = {
-            "mon": "понедельник", "tue": "вторник", "wed": "среду", 
-            "thu": "четверг", "fri": "пятницу", "sat": "субботу", "sun": "воскресенье"
+        # Создаем настройки напоминаний по умолчанию
+        reminder_users[user_id] = {
+            "time": default_time,
+            "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+            "active": True
         }
-        days_text = ", ".join([day_names[day] for day in days if day in day_names])
-        
-        # Обновляем текст сообщения
-        await callback.message.edit_text(
-            "⏰ <b>Управление напоминаниями</b>\n\n"
-            f"✅ <b>Напоминания включены</b>\n\nВы будете получать напоминания в {hour:02d}:{minute:02d} в {days_text}.\n\n"
-            "Используйте кнопки ниже для изменения настроек:",
-            reply_markup=get_reminder_keyboard(),
-            parse_mode="HTML"
-        )
-        
-        # Отвечаем на callback
-        await callback.answer("Напоминания включены!")
-        
-        logger.info(f"Пользователь {user_id} включил напоминания на {hour:02d}:{minute:02d} в дни: {day_of_week}")
-    except Exception as e:
-        logger.error(f"Ошибка при включении напоминаний для пользователя {user_id}: {e}")
-        await callback.answer("Произошла ошибка при включении напоминаний", show_alert=True)
+    else:
+        # Активируем существующие настройки
+        reminder_users[user_id]["active"] = True
+        default_time = reminder_users[user_id]["time"]
+        hour, minute = map(int, default_time.split(":"))
+    
+    # Создаем уникальный ID для задачи
+    job_id = f"reminder_{user_id}"
+    
+    # Удаляем существующую задачу, если она есть
+    if scheduler.get_job(job_id):
+        scheduler.remove_job(job_id)
+    
+    # Дни недели в формате APScheduler
+    days = reminder_users[user_id]["days"]
+    day_of_week = ",".join(days)
+    
+    # Добавляем новую задачу в планировщик
+    scheduler.add_job(
+        send_reminder,
+        CronTrigger(hour=hour, minute=minute, day_of_week=day_of_week),
+        id=job_id,
+        args=[callback.bot, user_id],
+        replace_existing=True
+    )
+    
+    # Если планировщик не запущен, запускаем его
+    if not scheduler.running:
+        scheduler.start()
+    
+    # Формируем текст дней недели для отображения
+    day_names = {
+        "mon": "понедельник", "tue": "вторник", "wed": "среду", 
+        "thu": "четверг", "fri": "пятницу", "sat": "субботу", "sun": "воскресенье"
+    }
+    days_text = ", ".join([day_names[day] for day in days])
+    
+    # Обновляем сообщение с информацией о включении напоминаний
+    await callback.message.edit_text(
+        f"⏰ <b>Напоминания включены</b>\n\n"
+        f"Вы будете получать ежедневные напоминания о практиках в {default_time} в {days_text}.",
+        reply_markup=get_reminder_keyboard(),
+        parse_mode="HTML"
+    )
+    
+    await callback.answer("Напоминания включены!")
+    logger.info(f"Пользователь {user_id} включил напоминания на {default_time} в дни: {days}")
 
 @reminder_router.callback_query(F.data == "reminder_off")
 async def reminder_off(callback: CallbackQuery):
@@ -372,46 +226,26 @@ async def reminder_off(callback: CallbackQuery):
     """
     user_id = callback.from_user.id
     
-    try:
-        # Проверяем подключение к Supabase
-        if not db.is_connected:
-            await callback.answer("Ошибка подключения к базе данных", show_alert=True)
-            return
-        
-        # Получаем текущие настройки напоминаний
-        reminder_info = await db.get_reminder(user_id)
-        
-        if reminder_info:
-            # Обновляем статус напоминаний в базе данных
-            await db.save_reminder(
-                telegram_id=user_id,
-                time=reminder_info.get("time", "20:00"),
-                days=reminder_info.get("days", ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]),
-                active=False
-            )
-        
-        # Удаляем задачу из планировщика
-        job_id = f"reminder_{user_id}"
-        if scheduler.get_job(job_id):
-            scheduler.remove_job(job_id)
-            logger.info(f"Удалена задача напоминания для пользователя {user_id}")
-        
-        # Обновляем текст сообщения
-        await callback.message.edit_text(
-            "⏰ <b>Управление напоминаниями</b>\n\n"
-            "❌ <b>Напоминания выключены</b>\n\nВы не будете получать напоминания о практиках.\n\n"
-            "Используйте кнопки ниже для изменения настроек:",
-            reply_markup=get_reminder_keyboard(),
-            parse_mode="HTML"
-        )
-        
-        # Отвечаем на callback
-        await callback.answer("Напоминания отключены!")
-        
-        logger.info(f"Пользователь {user_id} отключил напоминания")
-    except Exception as e:
-        logger.error(f"Ошибка при отключении напоминаний для пользователя {user_id}: {e}")
-        await callback.answer("Произошла ошибка при отключении напоминаний", show_alert=True)
+    # Проверяем, есть ли настройки напоминаний
+    if user_id in reminder_users:
+        reminder_users[user_id]["active"] = False
+    
+    # Удаляем задачу из планировщика
+    job_id = f"reminder_{user_id}"
+    if scheduler.get_job(job_id):
+        scheduler.remove_job(job_id)
+        logger.info(f"Задача напоминания {job_id} удалена из планировщика")
+    
+    await callback.message.edit_text(
+        "⏰ <b>Напоминания отключены</b>\n\n"
+        "Вы больше не будете получать напоминания о практиках. "
+        "Вы можете включить их снова в любой момент.",
+        reply_markup=get_reminder_keyboard(),
+        parse_mode="HTML"
+    )
+    
+    await callback.answer("Напоминания отключены!")
+    logger.info(f"Пользователь {user_id} отключил напоминания")
 
 @reminder_router.callback_query(F.data == "reminder_set_time")
 async def set_reminder_time(callback: CallbackQuery, state: FSMContext):
@@ -434,78 +268,60 @@ async def set_reminder_time(callback: CallbackQuery, state: FSMContext):
 @reminder_router.callback_query(F.data.startswith("time_"))
 async def process_time_selection(callback: CallbackQuery, state: FSMContext):
     """
-    Обрабатывает выбор времени для напоминаний.
+    Обрабатывает выбор времени напоминания.
     """
     user_id = callback.from_user.id
     selected_time = callback.data.split("_")[1]
+    hour, minute = map(int, selected_time.split(":"))
     
-    try:
-        # Проверяем подключение к Supabase
-        if not db.is_connected:
-            await callback.answer("Ошибка подключения к базе данных", show_alert=True)
-            return
-        
-        # Получаем текущие настройки напоминаний
-        reminder_info = await db.get_reminder(user_id)
-        
-        if reminder_info:
-            # Обновляем время напоминаний
-            await db.save_reminder(
-                telegram_id=user_id,
-                time=selected_time,
-                days=reminder_info.get("days", ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]),
-                active=reminder_info.get("active", True)
-            )
-        else:
-            # Создаем новые настройки напоминаний
-            await db.save_reminder(
-                telegram_id=user_id,
-                time=selected_time,
-                days=["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
-                active=True
-            )
-        
-        # Если напоминания активны, обновляем задачу в планировщике
-        if not reminder_info or reminder_info.get("active", False):
-            # Создаем уникальный ID для задачи
-            job_id = f"reminder_{user_id}"
-            
-            # Удаляем существующую задачу, если она есть
-            if scheduler.get_job(job_id):
-                scheduler.remove_job(job_id)
-            
-            # Парсим время
-            hour, minute = map(int, selected_time.split(":"))
-            
-            # Получаем дни недели
-            days = reminder_info.get("days", ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]) if reminder_info else ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
-            
-            # Дни недели в формате APScheduler
-            day_of_week = ",".join(days)
-            
-            # Добавляем новую задачу в планировщик
-            scheduler.add_job(
-                send_reminder,
-                CronTrigger(hour=hour, minute=minute, day_of_week=day_of_week),
-                id=job_id,
-                args=[callback.bot, user_id],
-                replace_existing=True
-            )
-            
-            # Если планировщик не запущен, запускаем его
-            if not scheduler.running:
-                scheduler.start()
-        
-        # Переходим обратно в меню напоминаний
-        await back_to_reminder_menu(callback, state)
-        
-        # Отвечаем на callback
-        await callback.answer(f"Время напоминаний установлено на {selected_time}")
-        
-        logger.info(f"Пользователь {user_id} установил время напоминаний на {selected_time}")
-    except Exception as e:
-        logger.error(f"Ошибка при установке времени напоминаний для пользователя {user_id}: {e}")
-        await callback.answer("Произошла ошибка при установке времени напоминаний", show_alert=True)
+    # Обновляем или создаем настройки напоминаний
+    if user_id not in reminder_users:
+        reminder_users[user_id] = {
+            "time": selected_time,
+            "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+            "active": True
+        }
+    else:
+        reminder_users[user_id]["time"] = selected_time
+        reminder_users[user_id]["active"] = True
+    
+    # Если напоминания активны, обновляем задачу в планировщике
+    job_id = f"reminder_{user_id}"
+    if scheduler.get_job(job_id):
+        scheduler.remove_job(job_id)
+    
+    # Дни недели в формате APScheduler
+    days = reminder_users[user_id]["days"]
+    day_of_week = ",".join(days)
+    
+    scheduler.add_job(
+        send_reminder,
+        CronTrigger(hour=hour, minute=minute, day_of_week=day_of_week),
+        id=job_id,
+        args=[callback.bot, user_id],
+        replace_existing=True
+    )
+    
+    # Если планировщик не запущен, запускаем его
+    if not scheduler.running:
+        scheduler.start()
+    
+    # Формируем текст дней недели для отображения
+    day_names = {
+        "mon": "понедельник", "tue": "вторник", "wed": "среду", 
+        "thu": "четверг", "fri": "пятницу", "sat": "субботу", "sun": "воскресенье"
+    }
+    days_text = ", ".join([day_names[day] for day in days])
+    
+    await callback.message.edit_text(
+        f"⏰ <b>Время напоминаний изменено</b>\n\n"
+        f"Вы будете получать напоминания о практиках в {selected_time} в {days_text}.",
+        reply_markup=get_reminder_keyboard(),
+        parse_mode="HTML"
+    )
+    
+    await callback.answer(f"Время напоминаний установлено на {selected_time}")
+    logger.info(f"Пользователь {user_id} установил время напоминаний на {selected_time}")
 
 @reminder_router.callback_query(F.data == "reminder_set_days")
 async def set_reminder_days(callback: CallbackQuery, state: FSMContext):
@@ -580,89 +396,73 @@ async def save_reminder_days(callback: CallbackQuery, state: FSMContext):
     Сохраняет выбранные дни недели для напоминаний.
     """
     user_id = callback.from_user.id
+    user_data = await state.get_data()
+    selected_days = user_data.get("selected_days", ["mon", "tue", "wed", "thu", "fri", "sat", "sun"])
     
-    try:
-        # Получаем выбранные дни из состояния
-        data = await state.get_data()
-        selected_days = data.get("selected_days", [])
-        
-        # Проверяем подключение к Supabase
-        if not db.is_connected:
-            await callback.answer("Ошибка подключения к базе данных", show_alert=True)
-            return
-        
-        # Получаем текущие настройки напоминаний
-        reminder_info = await db.get_reminder(user_id)
-        
-        if reminder_info:
-            # Обновляем дни напоминаний
-            await db.save_reminder(
-                telegram_id=user_id,
-                time=reminder_info.get("time", "20:00"),
-                days=selected_days,
-                active=reminder_info.get("active", True)
-            )
-        else:
-            # Создаем новые настройки напоминаний
-            await db.save_reminder(
-                telegram_id=user_id,
-                time="20:00",
-                days=selected_days,
-                active=True
-            )
-        
-        # Если напоминания активны, обновляем задачу в планировщике
-        if not reminder_info or reminder_info.get("active", False):
-            # Создаем уникальный ID для задачи
-            job_id = f"reminder_{user_id}"
-            
-            # Удаляем существующую задачу, если она есть
-            if scheduler.get_job(job_id):
-                scheduler.remove_job(job_id)
-            
-            # Проверяем, что есть выбранные дни
-            if selected_days:
-                # Получаем время
-                time_str = reminder_info.get("time", "20:00") if reminder_info else "20:00"
-                
-                # Парсим время
-                hour, minute = map(int, time_str.split(":"))
-                
-                # Дни недели в формате APScheduler
-                day_of_week = ",".join(selected_days)
-                
-                # Добавляем новую задачу в планировщик
-                scheduler.add_job(
-                    send_reminder,
-                    CronTrigger(hour=hour, minute=minute, day_of_week=day_of_week),
-                    id=job_id,
-                    args=[callback.bot, user_id],
-                    replace_existing=True
-                )
-                
-                # Если планировщик не запущен, запускаем его
-                if not scheduler.running:
-                    scheduler.start()
-        
-        # Переходим обратно в меню напоминаний
-        await back_to_reminder_menu(callback, state)
-        
-        # Отвечаем на callback
-        if selected_days:
-            # Преобразуем коды дней недели в русские названия
-            day_names = {
-                "mon": "понедельник", "tue": "вторник", "wed": "среда", 
-                "thu": "четверг", "fri": "пятница", "sat": "суббота", "sun": "воскресенье"
-            }
-            days_text = ", ".join([day_names[day] for day in selected_days if day in day_names])
-            await callback.answer(f"Дни напоминаний сохранены: {days_text}")
-        else:
-            await callback.answer("Вы не выбрали ни одного дня для напоминаний")
-        
-        logger.info(f"Пользователь {user_id} сохранил дни напоминаний: {selected_days}")
-    except Exception as e:
-        logger.error(f"Ошибка при сохранении дней напоминаний для пользователя {user_id}: {e}")
-        await callback.answer("Произошла ошибка при сохранении дней напоминаний", show_alert=True)
+    # Проверяем, что выбран хотя бы один день
+    if not selected_days:
+        await callback.answer("⚠️ Выберите хотя бы один день недели!")
+        return
+    
+    # Обновляем или создаем настройки напоминаний
+    if user_id not in reminder_users:
+        default_time = os.getenv("DEFAULT_REMINDER_TIME", "20:00")
+        reminder_users[user_id] = {
+            "time": default_time,
+            "days": selected_days,
+            "active": True
+        }
+    else:
+        reminder_users[user_id]["days"] = selected_days
+        reminder_users[user_id]["active"] = True
+    
+    # Обновляем задачу в планировщике, если напоминания активны
+    time_str = reminder_users[user_id]["time"]
+    hour, minute = map(int, time_str.split(":"))
+    
+    job_id = f"reminder_{user_id}"
+    if scheduler.get_job(job_id):
+        scheduler.remove_job(job_id)
+    
+    # Дни недели в формате APScheduler
+    day_of_week = ",".join(selected_days)
+    
+    scheduler.add_job(
+        send_reminder,
+        CronTrigger(hour=hour, minute=minute, day_of_week=day_of_week),
+        id=job_id,
+        args=[callback.bot, user_id],
+        replace_existing=True
+    )
+    
+    # Если планировщик не запущен, запускаем его
+    if not scheduler.running:
+        scheduler.start()
+    
+    # Формируем текст дней недели для отображения
+    day_names = {
+        "mon": "понедельник", "tue": "вторник", "wed": "среда", 
+        "thu": "четверг", "fri": "пятница", "sat": "суббота", "sun": "воскресенье"
+    }
+    
+    # Список выбранных дней для отображения пользователю
+    selected_day_names = [day_names[day] for day in selected_days]
+    days_text = ", ".join(selected_day_names)
+    
+    # Возвращаемся в основное меню напоминаний
+    await state.set_state(ReminderStates.main_menu)
+    
+    await callback.message.edit_text(
+        f"⏰ <b>Дни напоминаний сохранены</b>\n\n"
+        f"Вы будете получать напоминания о практиках в {time_str} по следующим дням:\n"
+        f"<b>{days_text}</b>",
+        reply_markup=get_reminder_keyboard(),
+        parse_mode="HTML"
+    )
+    
+    # Подтверждаем сохранение настроек
+    await callback.answer("✅ Настройки дней успешно сохранены!")
+    logger.info(f"Пользователь {user_id} установил дни напоминаний: {selected_days}")
 
 @reminder_router.callback_query(F.data == "reminder_help")
 async def reminder_help(callback: CallbackQuery):

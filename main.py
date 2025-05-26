@@ -4,60 +4,12 @@ import os
 import sys
 import tempfile  # Для создания временного файла блокировки
 import socket  # Для получения имени хоста
-import importlib.util  # Для проверки наличия модулей
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
+from dotenv import load_dotenv
 from aiogram.types import BufferedInputFile
-
-# Заглушка для AsyncOpenAI
-class AsyncOpenAI:
-    def __init__(self, api_key=None):
-        self.api_key = api_key
-        print(f"[Mock AsyncOpenAI] Инициализация в {__name__}")
-    
-    class chat:
-        class completions:
-            @staticmethod
-            async def create(*args, **kwargs):
-                print(f"[Mock AsyncOpenAI] Вызов chat.completions.create в {__name__}")
-                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
-
-# Заглушка для OpenAI
-class OpenAI:
-    def __init__(self, api_key=None):
-        self.api_key = api_key
-        print(f"[Mock OpenAI] Инициализация в {__name__}")
-    
-    class chat:
-        class completions:
-            @staticmethod
-            def create(*args, **kwargs):
-                print(f"[Mock OpenAI] Вызов chat.completions.create в {__name__}")
-                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
-
-# Use a try-except block for dotenv import
-try:
-    from dotenv import load_dotenv
-    print("Using standard python-dotenv")
-except ImportError:
-    print("python-dotenv not found, using fallback")
-    # Try to import from fallback modules
-    try:
-        import dotenv_fallback
-        from dotenv_fallback import load_dotenv
-        print("Using dotenv_fallback.py")
-    except ImportError:
-        try:
-            import dotenv
-            from dotenv import load_dotenv
-            print("Using local dotenv.py")
-        except ImportError:
-            # Minimal inline implementation as last resort
-            def load_dotenv(dotenv_path=None):
-                print("Using minimal inline load_dotenv implementation")
-                return True
 
 # Импортируем fcntl только для Unix-подобных систем
 if sys.platform != 'win32':
@@ -165,64 +117,14 @@ def release_lock():
     except Exception as e:
         print(f"Ошибка при освобождении блокировки: {e}")
 
-# Загружаем переменные окружения
+# Загружаем переменные окружения из .env
 load_dotenv()
-
-# Функция для проверки наличия модуля
-def is_module_available(module_name):
-    """
-    Проверяет доступность модуля без его импорта
-    
-    Args:
-        module_name: Имя проверяемого модуля
-    
-    Returns:
-        bool: True, если модуль доступен, иначе False
-    """
-    try:
-        spec = importlib.util.find_spec(module_name)
-        return spec is not None
-    except (ImportError, ValueError):
-        return False
-
-# Проверка совместимости pydantic с aiogram
-def check_pydantic_compatibility():
-    """
-    Проверяет совместимость установленной версии pydantic с aiogram
-    
-    Returns:
-        bool: True, если версии совместимы, иначе False
-    """
-    try:
-        # Попытка импорта необходимых функций из pydantic
-        from pydantic import BaseModel
-        # Проверка наличия model_validator или root_validator
-        try:
-            from pydantic import model_validator
-            railway_print("Используется pydantic с model_validator", "INFO")
-            return True
-        except ImportError:
-            try:
-                from pydantic import validator
-                railway_print("Используется pydantic со старым validator", "INFO")
-                return True
-            except ImportError:
-                railway_print("pydantic не имеет необходимых валидаторов", "ERROR")
-                return False
-    except ImportError as e:
-        railway_print(f"Ошибка при проверке pydantic: {e}", "ERROR")
-        return False
 
 # Проверка наличия railway_helper и его инициализация
 try:
     from railway_helper import ensure_modules_available, print_railway_info
     # Проверяем и обеспечиваем наличие необходимых модулей
     print_railway_info("Инициализация Railway Helper", "INFO")
-    
-    # Проверяем наличие supabase модуля
-    if not is_module_available('supabase'):
-        print_railway_info("Модуль 'supabase' не найден, будет использована SQLite-заглушка", "WARNING")
-    
     ensure_modules_available([
         "survey_handler",
         "meditation_handler",
@@ -296,102 +198,48 @@ try:
     from survey_handler import survey_router, get_main_keyboard
     from voice_handler import voice_router
     from conversation_handler import conversation_router
-    from reminder_handler import reminder_router, load_reminders_from_db
     from meditation_handler import meditation_router
-    from communication_handler import communication_router
-    
-    # Инициализация соединения с Supabase
-    try:
-        from supabase_db import db
-        railway_print("Импорт модуля supabase_db успешен", "INFO")
-        if db.is_connected:
-            railway_print("Соединение с Supabase успешно установлено", "INFO")
-        else:
-            railway_print("Не удалось установить соединение с Supabase", "WARNING")
-    except ImportError:
-        railway_print("Модуль supabase не найден, используем SQLite-заглушку", "WARNING")
-        try:
-            from supabase_fallback import db
-            railway_print("Подключена SQLite-заглушка вместо Supabase", "INFO")
-        except Exception as fallback_error:
-            railway_print(f"Ошибка при подключении SQLite-заглушки: {fallback_error}", "ERROR")
-        
+    from reminder_handler import reminder_router, scheduler
+    railway_print("Все модули успешно импортированы", "INFO")
 except ImportError as e:
-    logger.error(f"Ошибка при импорте модулей: {e}")
-    railway_print(f"Ошибка при импорте модулей: {e}", "ERROR")
-    sys.exit(1)
-
-# Проверяем совместимость зависимостей
-railway_print("Проверка совместимости зависимостей...", "INFO")
-if not check_pydantic_compatibility():
-    railway_print("Обнаружена несовместимая версия pydantic!", "WARNING")
-    railway_print("Применение патча из patch_pydantic.py...", "INFO")
+    logger.error(f"Ошибка импорта модулей: {e}")
+    railway_print(f"Ошибка импорта модулей: {e}", "ERROR")
+    railway_print("Попытка аварийной загрузки базовых модулей...", "WARNING")
     
-    # Пытаемся импортировать и применить патч из отдельного модуля
-    try:
-        import patch_pydantic
-        if patch_pydantic.apply_pydantic_patch():
-            railway_print("Патч для pydantic успешно применен", "INFO")
-        else:
-            railway_print("Не удалось применить патч для pydantic", "ERROR")
-            railway_print("Бот может работать некорректно!", "WARNING")
-    except ImportError:
-        railway_print("Модуль patch_pydantic не найден, применяем встроенный патч", "WARNING")
-        
-        # Пытаемся переопределить model_validator в pydantic (встроенный патч)
-        import sys
-        import types
-        
-        # Проверяем, есть ли pydantic в импортированных модулях
-        if 'pydantic' in sys.modules:
-            try:
-                pydantic_module = sys.modules['pydantic']
-                if not hasattr(pydantic_module, 'model_validator'):
-                    railway_print("Добавление model_validator в pydantic...", "INFO")
-                    
-                    # Создаем функцию-заглушку
-                    def dummy_model_validator(cls_method=None, *args, **kwargs):
-                        def decorator(func):
-                            return func
-                        if cls_method is None:
-                            return decorator
-                        return decorator(cls_method)
-                    
-                    # Добавляем model_validator в модуль pydantic
-                    setattr(pydantic_module, 'model_validator', dummy_model_validator)
-                    railway_print("Успешно добавлен model_validator в pydantic", "INFO")
-                
-                # Проверяем наличие ConfigDict
-                if not hasattr(pydantic_module, 'ConfigDict'):
-                    railway_print("Добавление ConfigDict в pydantic...", "INFO")
-                    
-                    # Создаем класс-заглушку для ConfigDict
-                    class DummyConfigDict(dict):
-                        def __init__(self, *args, **kwargs):
-                            super().__init__(*args, **kwargs)
-                    
-                    # Добавляем ConfigDict в модуль pydantic
-                    setattr(pydantic_module, 'ConfigDict', DummyConfigDict)
-                    railway_print("Успешно добавлен ConfigDict в pydantic", "INFO")
-            except Exception as patch_error:
-                railway_print(f"Не удалось применить патч к pydantic: {patch_error}", "ERROR")
-                railway_print("Бот может работать некорректно!", "WARNING")
-        else:
-            railway_print("Модуль pydantic не найден в импортированных модулях", "ERROR")
-            railway_print("Бот может работать некорректно!", "WARNING")
+    # Попытка аварийной загрузки базовых модулей
+    # Создаем пустые роутеры
+    from aiogram import Router
+    from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+    
+    survey_router = Router(name="survey")
+    voice_router = Router(name="voice")
+    conversation_router = Router(name="conversation")
+    meditation_router = Router(name="meditation")
+    reminder_router = Router(name="reminder")
+    
+    # Создаем базовую клавиатуру
+    def get_main_keyboard():
+        return ReplyKeyboardMarkup(
+            keyboard=[
+                [KeyboardButton(text="📝 Опрос"), KeyboardButton(text="💬 Помощь")]
+            ],
+            resize_keyboard=True
+        )
+    
+    # Создаем пустой планировщик
+    from apscheduler.schedulers.asyncio import AsyncIOScheduler
+    scheduler = AsyncIOScheduler()
+    
+    railway_print("Аварийная загрузка базовых модулей выполнена", "WARNING")
 
 # Создаем экземпляр бота и диспетчер
-try:
-    bot = Bot(
-        token=BOT_TOKEN,
-        parse_mode="HTML",  # Устанавливаем HTML-разметку по умолчанию
-        disable_web_page_preview=True,  # Отключаем предпросмотр веб-страниц
-        protect_content=False  # Разрешаем пересылку сообщений
-    )
-    dp = Dispatcher(storage=MemoryStorage())
-except Exception as e:
-    railway_print(f"Ошибка при создании бота: {e}", "ERROR")
-    sys.exit(1)
+bot = Bot(
+    token=BOT_TOKEN,
+    parse_mode="HTML",  # Устанавливаем HTML-разметку по умолчанию
+    disable_web_page_preview=True,  # Отключаем предпросмотр веб-страниц
+    protect_content=False  # Разрешаем пересылку сообщений
+)
+dp = Dispatcher(storage=MemoryStorage())
 
 # Регистрируем роутеры в правильном порядке
 # Сначала регистрируем роутер опроса, чтобы он имел приоритет при обработке сообщений в состоянии опроса
@@ -403,7 +251,6 @@ dp.include_router(meditation_router)
 dp.include_router(reminder_router)
 # Регистрируем роутер обычных сообщений последним
 dp.include_router(conversation_router)
-dp.include_router(communication_router)
 
 # Обработчик команды /start
 @dp.message(Command("start"))
@@ -538,48 +385,98 @@ async def start_scheduler():
 
 async def main():
     """
-    Основная функция запуска бота
+    Главная функция запуска бота
     """
-    railway_print("Запуск основной функции бота...", "INFO")
-    
-    # Создаем экземпляр бота и диспетчера
-    bot = Bot(token=BOT_TOKEN)
-    storage = MemoryStorage()
-    dp = Dispatcher(storage=storage)
-    
-    # Включаем логирование событий middleware для отладки
-    logging.getLogger("aiogram.middleware").setLevel(logging.DEBUG)
-    
-    # Регистрируем роутеры
-    dp.include_router(survey_router)
-    dp.include_router(reminder_router)
-    dp.include_router(meditation_router)
-    dp.include_router(voice_router)
-    dp.include_router(conversation_router)
-    dp.include_router(communication_router)
-    
-    # Инициализируем и запускаем планировщик задач
-    try:
-        railway_print("Загрузка напоминаний из Supabase...", "INFO")
-        if db.is_connected:
-            await load_reminders_from_db(bot)
-            railway_print("Напоминания успешно загружены из Supabase", "INFO")
-        else:
-            railway_print("Напоминания не загружены: нет подключения к Supabase", "WARNING")
+    # Проверяем, что нет другого запущенного экземпляра
+    if not acquire_lock():
+        logger.error("Другой экземпляр бота уже запущен. Завершение работы.")
+        railway_print("КРИТИЧЕСКАЯ ОШИБКА: Обнаружен другой запущенный экземпляр бота. Завершение работы.", "ERROR")
+        return
         
-        # Запускаем планировщик для напоминаний
-        railway_print("Запуск планировщика задач...", "INFO")
+    # Инициализируем бот
+    logger.info("Бот ОНА запускается...")
+    railway_print("Запуск основного цикла бота...", "INFO")
+    
+    try:
+        # Удаляем все обновления, которые были пропущены (если бот был отключен)
+        await bot.delete_webhook(drop_pending_updates=True)
+        railway_print("Старые обновления удалены", "INFO")
+        
+        # Удаляем webhook (если он был установлен)
+        webhook_info = await bot.get_webhook_info()
+        if webhook_info.url:
+            await bot.delete_webhook()
+            logger.info("Webhook удален, старые обновления очищены")
+        
+        # Завершаем потенциально запущенные сессии бота (для предотвращения конфликтов)
+        if hasattr(bot, "session") and bot.session:
+            try:
+                await bot.session.close()
+                logger.info("Существующая сессия бота закрыта")
+            except Exception as e:
+                logger.warning(f"Не удалось закрыть существующую сессию: {e}")
+        
+        # Создаем новую сессию
+        bot._session = None  # Сбрасываем текущую сессию, чтобы создать новую
+        
+        # Проверяем соединение с Telegram API
+        bot_info = await bot.get_me()
+        logger.info(f"Соединение с Telegram API установлено успешно. Имя бота: @{bot_info.username}")
+        railway_print(f"Бот @{bot_info.username} успешно подключен к Telegram API", "INFO")
+        
+        # Запускаем планировщик заданий
         await start_scheduler()
+        
+        # Сообщение о готовности бота
+        railway_print("=== ONA BOT ЗАПУЩЕН И ГОТОВ К РАБОТЕ ===", "INFO")
+        
+        # Запускаем бота с длинным поллингом и параметрами для предотвращения конфликтов
+        await dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
     except Exception as e:
-        railway_print(f"Ошибка при инициализации планировщика: {e}", "ERROR")
-        logger.error(f"Ошибка при инициализации планировщика: {e}")
-    
-    # Удаляем все ожидающие обновления (webhook или polling)
-    await bot.delete_webhook(drop_pending_updates=True)
-    
-    # Запускаем бота
-    railway_print("Запуск поллинга обновлений...", "INFO")
-    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+        # Проверяем, является ли ошибка конфликтом запросов
+        if "Conflict: terminated by other getUpdates" in str(e) or "TelegramConflictError" in str(e):
+            logger.error("Обнаружен конфликт запросов Telegram API - другой экземпляр бота уже запущен")
+            railway_print("КОНФЛИКТ: Другой экземпляр бота уже получает обновления. Выполняем повторную попытку через 10 секунд...", "ERROR")
+            
+            # Делаем паузу и пробуем снова
+            await asyncio.sleep(10)
+            railway_print("Повторная попытка запуска после конфликта...", "INFO")
+            
+            try:
+                # Создаем новую сессию
+                if hasattr(bot, "session") and bot.session:
+                    await bot.session.close()
+                bot._session = None
+                
+                # Пробуем запустить снова
+                await dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
+                railway_print("Повторный запуск выполнен успешно!", "INFO")
+            except Exception as retry_error:
+                logger.error(f"Повторная попытка запуска не удалась: {retry_error}")
+                railway_print(f"Повторная попытка не удалась: {str(retry_error)}", "ERROR")
+                
+                # Если мы запускаемся из restart_bot.py, повторный запуск будет выполнен автоматически
+                if 'restart_bot.py' in sys.argv[0]:
+                    railway_print("Ожидаем перезапуска через монитор...", "INFO")
+                else:
+                    railway_print("Рекомендуется запускать бота через restart_bot.py для автоматического перезапуска", "WARNING")
+        else:
+            logger.error(f"Ошибка запуска бота: {e}")
+            railway_print(f"Ошибка запуска: {str(e)}", "ERROR")
+    finally:
+        # Освобождаем блокировку при завершении
+        release_lock()
+        
+        # Останавливаем планировщик заданий при выходе
+        if scheduler and scheduler.running:
+            scheduler.shutdown()
+            logger.info("Планировщик заданий остановлен")
+        
+        if hasattr(bot, "session") and bot.session:
+            await bot.session.close()
+            logger.info("Сессия бота закрыта")
+        
+        railway_print("Бот завершил работу", "INFO")
 
 if __name__ == "__main__":
     # Запускаем бота
