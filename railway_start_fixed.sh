@@ -29,6 +29,10 @@ pip install --no-cache-dir postgrest-py==0.10.3 realtime-py==0.1.2 storage3==0.5
 echo "=== Running pydantic compatibility fix ==="
 python fix_pydantic.py
 
+# Запуск скрипта для исправления импортов openai
+echo "=== Running openai imports fix ==="
+python fix_openai_imports.py
+
 # Запуск скрипта для проверки установки зависимостей
 echo "=== Running dependency verification script ==="
 python install_all_deps.py
