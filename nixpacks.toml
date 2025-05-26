@@ -8,5 +8,11 @@ cmds = [
   "pip install -r requirements.txt || echo 'Some packages could not be installed'"
 ]
 
+[phases.build]
+cmds = [
+  "python -c \"import sys; print(f'Python version: {sys.version}')\"",
+  "python -c \"import sys; sys.path.insert(0, '.'); import pre_import_fix\" || echo 'Failed to import pre_import_fix'"
+]
+
 [start]
-cmd = "python direct_start.py" 
+cmd = "python main.py" 
