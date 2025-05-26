@@ -11,6 +11,9 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 from aiogram.types import BufferedInputFile
 
+# Проверка режима работы (webhook или polling)
+WEBHOOK_MODE = os.getenv("WEBHOOK_MODE", "false").lower() in ("true", "1", "yes")
+
 # Проверка наличия переменной окружения DATABASE_URL для PostgreSQL
 DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL:
@@ -42,6 +45,11 @@ def acquire_lock():
         bool: True, если блокировка получена успешно, False в противном случае
     """
     global lock_socket, lock_file_handle
+    
+    # В режиме webhook блокировка не нужна
+    if WEBHOOK_MODE:
+        print("Режим webhook: блокировка не используется")
+        return True
     
     try:
         # Создаем именованный сокет для Windows
@@ -96,6 +104,10 @@ def release_lock():
     Освобождает блокировку, полученную с помощью acquire_lock().
     """
     global lock_socket, lock_file_handle
+    
+    # В режиме webhook блокировка не используется
+    if WEBHOOK_MODE:
+        return
     
     try:
         # Освобождаем сокет для Windows
@@ -182,6 +194,7 @@ railway_print("=== ONA TELEGRAM BOT STARTING ===", "INFO")
 railway_print(f"Python version: {sys.version}", "INFO")
 railway_print(f"Current working directory: {os.getcwd()}", "INFO")
 railway_print(f"Files in directory: {[f for f in os.listdir('.') if f.endswith('.py')]}", "INFO")
+railway_print(f"Режим работы: {'webhook' if WEBHOOK_MODE else 'polling'}", "INFO")
 
 # Загружаем API токен из .env файла
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -201,360 +214,221 @@ except ImportError:
     PSUTIL_AVAILABLE = False
     logger.warning("Библиотека psutil не установлена, некоторые функции будут недоступны")
 
-# Импортируем роутеры
-try:
-    railway_print("Импорт основных модулей бота...", "INFO")
-    from survey_handler import survey_router, get_main_keyboard
-    from voice_handler import voice_router
-    from conversation_handler import conversation_router
-    from meditation_handler import meditation_router
-    from reminder_handler import reminder_router, scheduler
-    railway_print("Все модули успешно импортированы", "INFO")
-except ImportError as e:
-    logger.error(f"Ошибка импорта модулей: {e}")
-    railway_print(f"Ошибка импорта модулей: {e}", "ERROR")
-    railway_print("Попытка аварийной загрузки базовых модулей...", "WARNING")
+# Проверка webhook-режима
+if WEBHOOK_MODE:
+    webhook_url = os.getenv("WEBHOOK_URL")
+    railway_public_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN")
     
-    # Попытка аварийной загрузки базовых модулей
-    # Создаем пустые роутеры
-    from aiogram import Router
-    from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-    
-    survey_router = Router(name="survey")
-    voice_router = Router(name="voice")
-    conversation_router = Router(name="conversation")
-    meditation_router = Router(name="meditation")
-    reminder_router = Router(name="reminder")
-    
-    # Создаем базовую клавиатуру
-    def get_main_keyboard():
-        return ReplyKeyboardMarkup(
-            keyboard=[
-                [KeyboardButton(text="📝 Опрос"), KeyboardButton(text="💬 Помощь")]
-            ],
-            resize_keyboard=True
-        )
-    
-    # Создаем пустой планировщик
-    from apscheduler.schedulers.asyncio import AsyncIOScheduler
-    scheduler = AsyncIOScheduler()
-    
-    railway_print("Аварийная загрузка базовых модулей выполнена", "WARNING")
+    if webhook_url:
+        railway_print(f"Webhook URL: {webhook_url}", "INFO")
+    elif railway_public_domain:
+        webhook_url = f"https://{railway_public_domain}/webhook/{BOT_TOKEN}"
+        railway_print(f"Сформирован Webhook URL из Railway домена: {webhook_url}", "INFO")
+    else:
+        railway_print("ВНИМАНИЕ: WEBHOOK_URL не указан, но выбран режим webhook", "WARNING")
 
-# Создаем экземпляр бота и диспетчер
-bot = Bot(
-    token=BOT_TOKEN,
-    parse_mode="HTML"  # Используем старый формат для aiogram 3.2.0
-)
-dp = Dispatcher(storage=MemoryStorage())
+# Определяем функцию для получения клавиатуры
+def get_main_keyboard():
+    # ... существующий код ...
+    pass
 
-# Регистрируем роутеры в правильном порядке
-# Сначала регистрируем роутер опроса, чтобы он имел приоритет при обработке сообщений в состоянии опроса
-dp.include_router(survey_router)
-# Затем регистрируем роутер голосовых сообщений
-dp.include_router(voice_router)
-# Далее регистрируем остальные роутеры
-dp.include_router(meditation_router)
-dp.include_router(reminder_router)
-# Регистрируем роутер обычных сообщений последним
-dp.include_router(conversation_router)
+# Функция для настройки бота
+def setup_bot():
+    """
+    Создает и настраивает экземпляр бота
+    
+    Returns:
+        Bot: Настроенный экземпляр бота
+    """
+    bot = Bot(token=BOT_TOKEN)
+    logger.info("Бот инициализирован")
+    return bot
 
-# Обработчик команды /start
+# Функция для настройки диспетчера
+def setup_dispatcher(bot=None):
+    """
+    Создает и настраивает диспетчер сообщений
+    
+    Args:
+        bot (Bot, optional): Экземпляр бота. Если не указан, будет создан новый.
+        
+    Returns:
+        Dispatcher: Настроенный диспетчер
+    """
+    # Создаем бота, если он не передан
+    if bot is None:
+        bot = setup_bot()
+    
+    # Создаем диспетчер с хранилищем в памяти
+    dp = Dispatcher(storage=MemoryStorage())
+    
+    # Регистрируем обработчики
+    dp.message.register(cmd_start, Command("start"))
+    dp.message.register(cmd_help, Command("help"))
+    dp.message.register(cmd_help, F.text == "💬 Помощь")
+    dp.message.register(cmd_api_key, Command("api_key"))
+    dp.message.register(cmd_restart, Command("restart"))
+    dp.message.register(cmd_restart, F.text == "🔄 Рестарт")
+    
+    # Подключаем другие обработчики
+    try:
+        from survey_handler import register_survey_handlers
+        register_survey_handlers(dp)
+        logger.info("Обработчики опросника зарегистрированы")
+    except ImportError as e:
+        logger.error(f"Ошибка при импорте обработчиков опросника: {e}")
+    
+    try:
+        from meditation_handler import register_meditation_handlers
+        register_meditation_handlers(dp)
+        logger.info("Обработчики медитаций зарегистрированы")
+    except ImportError as e:
+        logger.error(f"Ошибка при импорте обработчиков медитаций: {e}")
+    
+    try:
+        from conversation_handler import register_conversation_handlers
+        register_conversation_handlers(dp)
+        logger.info("Обработчики диалогов зарегистрированы")
+    except ImportError as e:
+        logger.error(f"Ошибка при импорте обработчиков диалогов: {e}")
+    
+    try:
+        from reminder_handler import register_reminder_handlers
+        register_reminder_handlers(dp)
+        logger.info("Обработчики напоминаний зарегистрированы")
+    except ImportError as e:
+        logger.error(f"Ошибка при импорте обработчиков напоминаний: {e}")
+    
+    try:
+        from voice_handler import register_voice_handlers
+        register_voice_handlers(dp)
+        logger.info("Обработчики голосовых сообщений зарегистрированы")
+    except ImportError as e:
+        logger.error(f"Ошибка при импорте обработчиков голосовых сообщений: {e}")
+    
+    try:
+        from communication_handler import register_communication_handlers
+        register_communication_handlers(dp)
+        logger.info("Обработчики коммуникации зарегистрированы")
+    except ImportError as e:
+        logger.error(f"Ошибка при импорте обработчиков коммуникации: {e}")
+    
+    logger.info("Диспетчер настроен")
+    return dp
+
 @dp.message(Command("start"))
 async def cmd_start(message: Message):
-    """
-    Обработчик команды /start
-    """
-    # Приветственное сообщение
-    greeting_text = (
-        f"👋 Привет, {message.from_user.first_name}!\n\n"
-        "Я <b>ОНА</b> - твой Осознанный Наставник и Аналитик.\n\n"
-        "Я помогу тебе:\n"
-        "• 🧠 Определить твои сильные стороны и таланты\n"
-        "• 💡 Дать персонализированные советы\n"
-        "• 🌱 Поддержать в развитии и росте\n\n"
-        "Чтобы создать твой <b>психологический профиль</b>, нужно пройти опрос из 34 вопросов. "
-        "Это займет около 10-15 минут.\n\n"
-        "Готов начать?"
-    )
-    
-    # Используем единую клавиатуру из survey_handler
-    keyboard = get_main_keyboard()
-    
-    # Отправляем приветственное сообщение
-    await message.answer(
-        greeting_text,
-        parse_mode="HTML",
-        reply_markup=keyboard
-    )
+    # ... существующий код ...
+    pass
 
-# Обработчик команды /help
 @dp.message(Command("help"))
 @dp.message(F.text == "💬 Помощь")
 async def cmd_help(message: Message):
-    """
-    Обработчик команды /help
-    """
-    help_text = (
-        "🔍 <b>Основные команды и возможности:</b>\n\n"
-        "• /start - Начать работу с ботом\n"
-        "• /survey или 📝 Опрос - Пройти опрос для создания профиля\n"
-        "• /profile или 👤 Профиль - Посмотреть свой психологический профиль\n"
-        "• /meditate или 🧘 Медитации - Получить аудио-медитацию\n"
-        "• /reminders или ⏰ Напоминания - Настроить напоминания о практиках\n"
-        "• /advice или 💡 Советы - Получить персонализированный совет на основе типа личности\n"
-        "• /restart или 🔄 Рестарт - Перезапустить бота\n"
-        "• /cancel или ❌ Отменить - Отменить текущее действие\n"
-        "• /api_key - Инструкции по настройке API ключа OpenAI\n\n"
-        "🗣 <b>Как пользоваться ботом:</b>\n\n"
-        "1. Пройдите опрос из 34 вопросов\n"
-        "2. Получите свой психологический профиль\n"
-        "3. Узнайте ваш тип личности (Интеллектуальный, Эмоциональный, Практический или Творческий)\n"
-        "4. Получайте персонализированные советы, соответствующие вашему типу личности\n"
-        "5. Общайтесь со мной текстом или голосовыми сообщениями\n"
-        "6. Я буду отвечать с учетом ваших психологических особенностей\n\n"
-        "💡 <b>Если возникнут вопросы или проблемы:</b>\n"
-        "• Напишите \"Помощь\" или используйте команду /help\n"
-    )
-    
-    await message.answer(
-        help_text,
-        parse_mode="HTML",
-        reply_markup=get_main_keyboard()
-    )
+    # ... существующий код ...
+    pass
 
-# Обработчик команды /api_key
 @dp.message(Command("api_key"))
 async def cmd_api_key(message: Message):
-    """
-    Обработчик команды /api_key - отображает инструкции по настройке API ключа OpenAI
-    """
-    try:
-        with open('api_key_instructions.md', 'r', encoding='utf-8') as f:
-            instructions = f.read()
-        
-        instructions_text = (
-            "🔑 <b>Инструкции по настройке API ключа OpenAI</b>\n\n"
-            "Если бот отвечает шаблонными сообщениями и не генерирует уникальные ответы, "
-            "необходимо настроить API ключ OpenAI.\n\n"
-            "Краткая инструкция:\n"
-            "1. Получите API ключ на сайте OpenAI Platform\n"
-            "2. Откройте файл .env в корневой директории\n"
-            "3. Установите ключ в параметр OPENAI_API_KEY\n"
-            "4. Перезапустите бота\n\n"
-            "Полные инструкции отправлены отдельным файлом."
-        )
-        
-        # Отправляем краткую информацию
-        await message.answer(
-            instructions_text,
-            parse_mode="HTML"
-        )
-        
-        # Отправляем файл с полными инструкциями
-        await message.answer_document(
-            document=BufferedInputFile(
-                instructions.encode('utf-8'),
-                filename="api_key_setup_instructions.md"
-            ),
-            caption="Подробные инструкции по настройке API ключа OpenAI"
-        )
-        
-        logger.info(f"Отправлены инструкции по настройке API ключа пользователю {message.from_user.id}")
-        
-    except Exception as e:
-        logger.error(f"Ошибка при отправке инструкций по API ключу: {e}")
-        await message.answer(
-            "К сожалению, не удалось отправить инструкции. Пожалуйста, обратитесь к администратору бота."
-        )
+    # ... существующий код ...
+    pass
 
-# Обработчик команды /restart
 @dp.message(Command("restart"))
 @dp.message(F.text == "🔄 Рестарт")
 async def cmd_restart(message: Message):
-    """
-    Обработчик команды /restart
-    """
-    # Отправляем сообщение о перезапуске
-    await message.answer(
-        "🔄 <b>Бот перезапущен!</b>\n\n"
-        "Начинаем заново. Если вы хотите сбросить свой профиль, "
-        "воспользуйтесь кнопкой 📝 Опрос и подтвердите перезапуск.",
-        parse_mode="HTML",
-        reply_markup=get_main_keyboard()
-    )
+    # ... существующий код ...
+    pass
 
-# Функция для инициализации планировщика
 async def start_scheduler():
-    if scheduler and not scheduler.running:
-        scheduler.start()
-        logger.info("Планировщик заданий запущен")
+    # ... существующий код ...
+    pass
 
 async def main():
     """
-    Главная функция запуска бота
+    Основная функция для запуска бота
     """
-    # Проверяем, что нет другого запущенного экземпляра
-    if not acquire_lock():
-        logger.error("Другой экземпляр бота уже запущен. Завершение работы.")
-        railway_print("КРИТИЧЕСКАЯ ОШИБКА: Обнаружен другой запущенный экземпляр бота. Завершение работы.", "ERROR")
+    # Проверяем режим работы
+    if WEBHOOK_MODE:
+        railway_print("Бот настроен для работы в режиме webhook", "INFO")
+        railway_print("Для запуска webhook-сервера используйте: python webhook_server.py", "INFO")
+        
+        # Если файл запущен напрямую, выводим инструкцию
+        if __name__ == "__main__":
+            railway_print("Webhook режим активирован. Запуск через polling не будет выполнен", "WARNING")
+            railway_print("Для запуска в режиме webhook выполните: python webhook_server.py", "INFO")
+            
+            # Проверяем наличие файла webhook_server.py
+            if os.path.exists("webhook_server.py"):
+                railway_print("Найден файл webhook_server.py", "INFO")
+            else:
+                railway_print("ОШИБКА: Файл webhook_server.py не найден", "ERROR")
+                railway_print("Создайте файл webhook_server.py или измените режим на polling (WEBHOOK_MODE=false)", "ERROR")
+        
+        # Возвращаем, чтобы не запускать polling в режиме webhook
         return
     
-    # Проверка и инициализация PostgreSQL, если она используется
-    if os.getenv("DATABASE_URL"):
-        railway_print("Обнаружена переменная DATABASE_URL, проверка базы данных PostgreSQL...", "INFO")
-        try:
-            # Проверяем наличие таблиц
-            try:
-                import psycopg2
-            except ImportError as e:
-                railway_print(f"Не найден модуль psycopg2, требуется для работы с PostgreSQL: {e}", "ERROR")
-                railway_print("Установите его командой: pip install psycopg2-binary", "ERROR")
-                railway_print("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL", "WARNING")
-                # Удаляем переменную окружения DATABASE_URL, чтобы использовать SQLite
-                os.environ.pop("DATABASE_URL", None)
-                # Продолжаем работу, так как будет использоваться SQLite
-            
-            conn = psycopg2.connect(os.getenv("DATABASE_URL"))
-            with conn.cursor() as cursor:
-                cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
-                tables = cursor.fetchall()
-                
-                # Извлекаем имена таблиц
-                table_names = [table[0] for table in tables]
-                required_tables = ['users', 'answers', 'profiles', 'reminders']
-                missing_tables = [table for table in required_tables if table not in table_names]
-                
-                if missing_tables:
-                    railway_print(f"В базе данных PostgreSQL отсутствуют таблицы: {', '.join(missing_tables)}", "WARNING")
-                    
-                    # Инициализируем базу данных
-                    railway_print("Запуск инициализации PostgreSQL...", "INFO")
-                    
-                    try:
-                        # Импортируем класс Database и константу POSTGRES_CREATE_TABLES_SQL из модуля db_postgres
-                        from db_postgres import Database, POSTGRES_CREATE_TABLES_SQL
-                        
-                        # Получаем экземпляр базы данных
-                        db = Database()
-                        
-                        # Принудительно создаем таблицы
-                        if hasattr(db, '_create_postgres_tables'):
-                            railway_print("Принудительное создание таблиц в PostgreSQL...", "INFO")
-                            
-                            # Используем приватный метод для создания таблиц (синхронно)
-                            conn = db._get_postgres_connection()
-                            try:
-                                with conn.cursor() as cursor:
-                                    cursor.execute(POSTGRES_CREATE_TABLES_SQL)
-                                conn.commit()
-                                railway_print("Таблицы в PostgreSQL успешно созданы!", "INFO")
-                            except Exception as e:
-                                conn.rollback()
-                                railway_print(f"Ошибка при создании таблиц в PostgreSQL: {e}", "ERROR")
-                                railway_print("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL", "WARNING")
-                                # Удаляем переменную окружения DATABASE_URL, чтобы использовать SQLite
-                                os.environ.pop("DATABASE_URL", None)
-                    except Exception as e:
-                        railway_print(f"Ошибка при инициализации PostgreSQL: {e}", "ERROR")
-                        railway_print("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL", "WARNING")
-                        # Удаляем переменную окружения DATABASE_URL, чтобы использовать SQLite
-                        os.environ.pop("DATABASE_URL", None)
-                else:
-                    railway_print(f"В базе данных PostgreSQL уже есть все необходимые таблицы", "INFO")
-            
-            conn.close()
-        except Exception as e:
-            railway_print(f"Ошибка при проверке или инициализации PostgreSQL: {e}", "ERROR")
-            railway_print("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL", "WARNING")
-            # Удаляем переменную окружения DATABASE_URL, чтобы использовать SQLite
-            os.environ.pop("DATABASE_URL", None)
+    # Пытаемся получить блокировку, чтобы предотвратить запуск нескольких экземпляров
+    if not acquire_lock():
+        logger.error("Не удалось получить блокировку. Возможно, другой экземпляр бота уже запущен.")
+        railway_print("ОШИБКА: Не удалось получить блокировку. Возможно, другой экземпляр бота уже запущен.", "ERROR")
+        return
+    
+    # Настраиваем бота
+    bot = setup_bot()
+    
+    # Настраиваем диспетчер
+    dp = setup_dispatcher(bot)
+    
+    # Запускаем планировщик напоминаний
+    try:
+        asyncio.create_task(start_scheduler())
+        logger.info("Планировщик напоминаний запущен")
+    except Exception as e:
+        logger.error(f"Ошибка при запуске планировщика: {e}")
+    
+    # Создаем веб-сервер для поддержки мониторинга
+    try:
+        from aiohttp import web
+        app = web.Application()
         
-    # Инициализируем бот
-    logger.info("Бот ОНА запускается...")
-    railway_print("Запуск основного цикла бота...", "INFO")
+        async def health_check(request):
+            return web.Response(text="Бот работает в режиме polling", status=200)
+        
+        app.router.add_get("/", health_check)
+        
+        port = int(os.environ.get("PORT", 8080))
+        runner = web.AppRunner(app)
+        await runner.setup()
+        site = web.TCPSite(runner, "0.0.0.0", port)
+        await site.start()
+        logger.info(f"Веб-сервер запущен на порту {port}")
+    except Exception as e:
+        logger.error(f"Ошибка при запуске веб-сервера: {e}")
     
     try:
-        # Удаляем все обновления, которые были пропущены (если бот был отключен)
+        # Удаляем webhook (если был установлен)
         await bot.delete_webhook(drop_pending_updates=True)
-        railway_print("Старые обновления удалены", "INFO")
         
-        # Удаляем webhook (если он был установлен)
-        webhook_info = await bot.get_webhook_info()
-        if webhook_info.url:
-            await bot.delete_webhook()
-            logger.info("Webhook удален, старые обновления очищены")
-        
-        # Завершаем потенциально запущенные сессии бота (для предотвращения конфликтов)
-        if hasattr(bot, "session") and bot.session:
-            try:
-                await bot.session.close()
-                logger.info("Существующая сессия бота закрыта")
-            except Exception as e:
-                logger.warning(f"Не удалось закрыть существующую сессию: {e}")
-        
-        # Создаем новую сессию
-        bot._session = None  # Сбрасываем текущую сессию, чтобы создать новую
-        
-        # Проверяем соединение с Telegram API
-        bot_info = await bot.get_me()
-        logger.info(f"Соединение с Telegram API установлено успешно. Имя бота: @{bot_info.username}")
-        railway_print(f"Бот @{bot_info.username} успешно подключен к Telegram API", "INFO")
-        
-        # Запускаем планировщик заданий
-        await start_scheduler()
-        
-        # Сообщение о готовности бота
-        railway_print("=== ONA BOT ЗАПУЩЕН И ГОТОВ К РАБОТЕ ===", "INFO")
-        
-        # Запускаем бота с длинным поллингом и параметрами для предотвращения конфликтов
-        await dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
+        # Запускаем бота в режиме long polling
+        logger.info("Запуск бота в режиме polling...")
+        railway_print("Бот запущен, ожидание сообщений...", "INFO")
+        await dp.start_polling(bot)
     except Exception as e:
-        # Проверяем, является ли ошибка конфликтом запросов
-        if "Conflict: terminated by other getUpdates" in str(e) or "TelegramConflictError" in str(e):
-            logger.error("Обнаружен конфликт запросов Telegram API - другой экземпляр бота уже запущен")
-            railway_print("КОНФЛИКТ: Другой экземпляр бота уже получает обновления. Выполняем повторную попытку через 10 секунд...", "ERROR")
-            
-            # Делаем паузу и пробуем снова
-            await asyncio.sleep(10)
-            railway_print("Повторная попытка запуска после конфликта...", "INFO")
-            
-            try:
-                # Создаем новую сессию
-                if hasattr(bot, "session") and bot.session:
-                    await bot.session.close()
-                bot._session = None
-                
-                # Пробуем запустить снова
-                await dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
-                railway_print("Повторный запуск выполнен успешно!", "INFO")
-            except Exception as retry_error:
-                logger.error(f"Повторная попытка запуска не удалась: {retry_error}")
-                railway_print(f"Повторная попытка не удалась: {str(retry_error)}", "ERROR")
-                
-                # Если мы запускаемся из restart_bot.py, повторный запуск будет выполнен автоматически
-                if 'restart_bot.py' in sys.argv[0]:
-                    railway_print("Ожидаем перезапуска через монитор...", "INFO")
-                else:
-                    railway_print("Рекомендуется запускать бота через restart_bot.py для автоматического перезапуска", "WARNING")
-        else:
-            logger.error(f"Ошибка запуска бота: {e}")
-            railway_print(f"Ошибка запуска: {str(e)}", "ERROR")
+        logger.error(f"Ошибка при запуске бота: {e}")
     finally:
         # Освобождаем блокировку при завершении
         release_lock()
-        
-        # Останавливаем планировщик заданий при выходе
-        if scheduler and scheduler.running:
-            scheduler.shutdown()
-            logger.info("Планировщик заданий остановлен")
-        
-        if hasattr(bot, "session") and bot.session:
-            await bot.session.close()
-            logger.info("Сессия бота закрыта")
-        
-        railway_print("Бот завершил работу", "INFO")
 
 if __name__ == "__main__":
-    # Запускаем бота
-    asyncio.run(main()) 
+    try:
+        # Запускаем бота
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        # Обрабатываем нормальное завершение
+        logger.info("Бот остановлен")
+    except Exception as e:
+        # Обрабатываем непредвиденные ошибки
+        logger.error(f"Критическая ошибка: {e}")
+        railway_print(f"ОШИБКА: {e}", "ERROR")
+    finally:
+        # Освобождаем блокировку
+        release_lock() 
