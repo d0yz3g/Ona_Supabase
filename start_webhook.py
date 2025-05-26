@@ -261,7 +261,7 @@ def start_webhook_server():
         )
         
         # Запускаем веб-сервер для обработки webhook-запросов
-        port = int(os.environ.get("PORT", 8080))
+        port = int(os.environ.get("WEBHOOK_SERVER_PORT", os.environ.get("PORT", 8080)))
         
         # Создаем простое веб-приложение для обработки webhook-запросов
         app = web.Application()

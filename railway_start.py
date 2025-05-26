@@ -25,12 +25,22 @@ def start_webhook_process():
     logger.info("Запуск webhook-сервера...")
     
     try:
+        # Запускаем процесс webhook-сервера с переменной окружения для другого порта
+        env = os.environ.copy()
+        env["WEBHOOK_SERVER_PORT"] = "8081"  # Use a different port for the webhook server
+        
+        # Формируем WEBHOOK_URL из RAILWAY_PUBLIC_DOMAIN, если он доступен
+        if "RAILWAY_PUBLIC_DOMAIN" in os.environ and "BOT_TOKEN" in os.environ:
+            env["WEBHOOK_URL"] = f"https://{os.environ['RAILWAY_PUBLIC_DOMAIN']}/webhook/{os.environ['BOT_TOKEN']}"
+            logger.info(f"Автоматически установлен WEBHOOK_URL: {env['WEBHOOK_URL']}")
+        
         # Запускаем процесс webhook-сервера
         process = subprocess.Popen(
             [sys.executable, "start_webhook.py"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True
+            text=True,
+            env=env
         )
         
         # Создаем потоки для вывода stdout и stderr

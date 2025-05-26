@@ -42,15 +42,33 @@ class HealthCheckHandler(BaseHTTPRequestHandler):
 
 def start_health_server(port=8080):
     """Start a simple health check server"""
-    server_address = ('', port)
-    httpd = HTTPServer(server_address, HealthCheckHandler)
-    logger.info(f"Starting health check server on port {port}")
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        logger.info("Health check server stopped")
-    except Exception as e:
-        logger.error(f"Error in health check server: {e}")
+    max_retries = 3
+    current_retry = 0
+    
+    while current_retry < max_retries:
+        try:
+            server_address = ('', port)
+            httpd = HTTPServer(server_address, HealthCheckHandler)
+            logger.info(f"Starting health check server on port {port}")
+            httpd.serve_forever()
+            return  # If successful, exit the function
+        except OSError as e:
+            if e.errno == 98:  # Address already in use
+                current_retry += 1
+                logger.warning(f"Port {port} already in use, trying alternate port {port + 10}")
+                port += 10  # Try a different port
+            else:
+                logger.error(f"Error starting health server: {e}")
+                raise
+        except KeyboardInterrupt:
+            logger.info("Health check server stopped")
+            return
+        except Exception as e:
+            logger.error(f"Error in health check server: {e}")
+            raise
+    
+    logger.error(f"Failed to start health server after {max_retries} attempts")
+    raise RuntimeError("Could not find an available port for health check server")
 
 def run_health_server_in_thread():
     """Run the health check server in a separate thread"""
