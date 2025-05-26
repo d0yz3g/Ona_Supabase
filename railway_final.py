@@ -9,6 +9,7 @@ import time
 import logging
 import threading
 import traceback
+import platform
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # Настройка логирования
@@ -19,6 +20,9 @@ logging.basicConfig(
 logger = logging.getLogger("railway_final")
 
 logger.info("Скрипт railway_final.py запущен")
+logger.info(f"Платформа: {platform.platform()}")
+logger.info(f"Python версия: {platform.python_version()}")
+logger.info(f"Railway версия: {os.environ.get('RAILWAY_ENVIRONMENT_ID', 'Не определено')}")
 
 # Проверяем и добавляем текущую директорию в sys.path
 if os.getcwd() not in sys.path:
@@ -30,6 +34,7 @@ os.environ["RAILWAY_ENV"] = "1"
 
 # Порт для healthcheck (можно переопределить через переменную окружения)
 PORT = int(os.environ.get("PORT", 8080))
+logger.info(f"Используемый порт: {PORT}")
 
 # Время запуска
 START_TIME = time.time()
@@ -37,7 +42,10 @@ START_TIME = time.time()
 # Глобальный флаг статуса бота
 BOT_STATUS = {
     "running": False,
-    "message": "Initializing..."
+    "message": "Initializing...",
+    "startup_time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(START_TIME)),
+    "platform": platform.platform(),
+    "python_version": platform.python_version()
 }
 
 # HTTP-обработчик для healthcheck
@@ -59,7 +67,10 @@ class HealthHandler(BaseHTTPRequestHandler):
         
         status_message = f"Status: {'OK' if BOT_STATUS['running'] else 'Initializing'}\n"
         status_message += f"Message: {BOT_STATUS['message']}\n"
-        status_message += f"Uptime: {uptime_str}"
+        status_message += f"Uptime: {uptime_str}\n"
+        status_message += f"Startup Time: {BOT_STATUS['startup_time']}\n"
+        status_message += f"Platform: {BOT_STATUS['platform']}\n"
+        status_message += f"Python Version: {BOT_STATUS['python_version']}"
         
         self.wfile.write(status_message.encode("utf-8"))
 
@@ -96,6 +107,7 @@ def run_bot():
         BOT_STATUS["message"] = "Bot is running"
         
         logger.info("✅ Бот запущен успешно через импорт main")
+        logger.info("✅ Bot started") # Ключевое сообщение для проверки запуска
         return True
     except Exception as e:
         # Обновляем статус
@@ -111,6 +123,13 @@ if __name__ == "__main__":
     logger.info(f"Python версия: {sys.version}")
     logger.info(f"Текущая директория: {os.getcwd()}")
     logger.info(f"Содержимое директории: {os.listdir('.')}")
+    
+    # Проверяем наличие критически важных скриптов
+    for script in ["main.py", "startup.sh", "direct_start.py"]:
+        if os.path.exists(script):
+            logger.info(f"✅ Файл {script} найден")
+        else:
+            logger.warning(f"⚠️ Файл {script} не найден")
     
     # Запускаем healthcheck сервер в отдельном потоке
     health_thread = threading.Thread(target=run_healthcheck_server, daemon=True)

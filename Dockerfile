@@ -15,8 +15,9 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt || echo "Некоторые пакеты не установлены, продолжаем"
 
 # Копирование скриптов запуска
-COPY startup.sh .
-RUN chmod +x startup.sh
+COPY startup.sh extra_setup.sh ./
+RUN chmod +x startup.sh extra_setup.sh && \
+    ls -la
 
 # Копирование файлов проекта
 COPY . .
