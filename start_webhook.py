@@ -12,6 +12,7 @@ import subprocess
 import requests
 from aiohttp import web
 from dotenv import load_dotenv
+from health_check import run_health_server_in_thread
 
 # Настройка логирования
 logging.basicConfig(
@@ -227,6 +228,11 @@ def start_webhook_server():
     """
     # Устанавливаем флаг режима webhook
     os.environ['WEBHOOK_MODE'] = 'true'
+    
+    # Запускаем сервер для проверки работоспособности
+    logger.info("Запуск health check сервера...")
+    health_thread = run_health_server_in_thread()
+    logger.info("✅ Health check сервер запущен")
     
     # Проверяем и инициализируем PostgreSQL
     if not check_postgres():
