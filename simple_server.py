@@ -12,6 +12,10 @@ import asyncio
 import requests
 from aiohttp import web
 from dotenv import load_dotenv
+import time
+
+# Отслеживаем время запуска
+start_time = time.time()
 
 # Настройка логирования
 logging.basicConfig(
@@ -51,16 +55,23 @@ def setup_webhook():
     railway_service_id = os.environ.get('RAILWAY_SERVICE_ID')
     railway_project_id = os.environ.get('RAILWAY_PROJECT_ID')
     
+    # Проверяем если WEBHOOK_HOST установлен отдельно
+    webhook_host = os.environ.get('WEBHOOK_HOST')
+    
     # Формируем URL для webhook
     if webhook_url:
         # Если напрямую указан WEBHOOK_URL, используем его
         logger.info(f"Используется предоставленный WEBHOOK_URL: {webhook_url}")
+    elif webhook_host:
+        # Формируем из WEBHOOK_HOST
+        webhook_url = f"https://{webhook_host}/webhook/{BOT_TOKEN}"
+        logger.info(f"Сформирован WEBHOOK_URL на основе WEBHOOK_HOST: {webhook_url}")
     elif railway_public_domain:
         # Формируем из RAILWAY_PUBLIC_DOMAIN
         webhook_url = f"https://{railway_public_domain}/webhook/{BOT_TOKEN}"
         logger.info(f"Сформирован WEBHOOK_URL на основе Railway-домена: {webhook_url}")
-    elif railway_service_id and railway_project_id:
-        # Формируем из ID сервиса и проекта Railway
+    elif railway_service_id:
+        # Формируем из ID сервиса Railway
         webhook_url = f"https://{railway_service_id}.up.railway.app/webhook/{BOT_TOKEN}"
         logger.info(f"Сформирован WEBHOOK_URL на основе ID сервиса Railway: {webhook_url}")
     else:
@@ -82,14 +93,31 @@ def setup_webhook():
             json={
                 'url': webhook_url,
                 'allowed_updates': ['message', 'callback_query', 'inline_query'],
-                'drop_pending_updates': True
-            }
+                'drop_pending_updates': True,
+                'secret_token': os.environ.get('WEBHOOK_SECRET', 'telegram_webhook_secret')
+            },
+            timeout=30
         )
         
         # Проверяем результат
         if response.status_code == 200 and response.json().get('ok'):
             description = response.json().get('description', 'Нет описания')
             logger.info(f"✅ Webhook успешно установлен: {description}")
+            
+            # Проверяем текущие настройки webhook для подтверждения
+            check_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo"
+            try:
+                check_response = requests.get(check_url, timeout=30)
+                if check_response.status_code == 200:
+                    webhook_info = check_response.json().get('result', {})
+                    logger.info(f"ℹ️ Текущий webhook URL: {webhook_info.get('url')}")
+                    logger.info(f"ℹ️ Последняя ошибка: {webhook_info.get('last_error_message', 'нет')}")
+                    logger.info(f"ℹ️ Ожидающие обновления: {webhook_info.get('pending_update_count', 0)}")
+                else:
+                    logger.error(f"❌ Ошибка при проверке webhook: {check_response.text}")
+            except Exception as e:
+                logger.error(f"❌ Исключение при проверке webhook: {e}")
+            
             return True
         else:
             logger.error(f"❌ Ошибка при установке webhook: {response.text}")
@@ -208,6 +236,16 @@ async def start_simple_server():
     
     # Обработчик для корневого пути (для проверки доступности)
     async def health_check(request):
+        # Собираем информацию о состоянии приложения
+        status = {
+            "status": "ok",
+            "timestamp": time.time(),
+            "service": os.environ.get('RAILWAY_SERVICE_NAME', 'Ona Bot'),
+            "bot_info": None,
+            "webhook_info": None,
+            "uptime": time.time() - start_time
+        }
+        
         # Сохраняем информацию о хосте для определения webhook URL
         if not host_info['detected_host'] and 'Host' in request.headers:
             host = request.headers.get('Host')
@@ -225,11 +263,32 @@ async def start_simple_server():
                 # Вызываем настройку webhook
                 setup_webhook()
         
-        return web.Response(
-            text="OK - Bot is healthy and running",
-            status=200,
-            content_type="text/plain"
-        )
+        # Получаем информацию о боте
+        try:
+            api_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getMe"
+            response = requests.get(api_url, timeout=5)
+            if response.status_code == 200:
+                status["bot_info"] = response.json().get('result')
+        except Exception as e:
+            logger.error(f"Ошибка при получении информации о боте: {e}")
+            status["bot_info_error"] = str(e)
+        
+        # Получаем информацию о webhook
+        try:
+            api_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo"
+            response = requests.get(api_url, timeout=5)
+            if response.status_code == 200:
+                status["webhook_info"] = response.json().get('result')
+        except Exception as e:
+            logger.error(f"Ошибка при получении информации о webhook: {e}")
+            status["webhook_info_error"] = str(e)
+        
+        # Логируем информацию о запросе для отладки
+        client_ip = request.headers.get('X-Forwarded-For') or request.remote
+        user_agent = request.headers.get('User-Agent', 'Unknown')
+        logger.info(f"{client_ip} [{time.strftime('%d/%b/%Y:%H:%M:%S +0000')}] \"{request.method} {request.path} {request.version}\" 200 {len(str(status))} \"-\" \"{user_agent}\"")
+        
+        return web.json_response(status)
     
     # Обработчик для webhook
     async def webhook_handler(request):
@@ -245,15 +304,32 @@ async def start_simple_server():
             headers_str = '\n'.join([f"{k}: {v}" for k, v in request.headers.items()])
             logger.info(f"Webhook headers:\n{headers_str}")
             
+            # Более подробное логирование тела запроса
             logger.info(f"Получен webhook-запрос: {json.dumps(update_data, ensure_ascii=False)}")
             
-            # Пересылаем данные в Telegram API
-            asyncio.create_task(forward_to_telegram(update_data))
+            # Логируем IP-адрес отправителя
+            peer_name = request.transport.get_extra_info('peername')
+            if peer_name:
+                logger.info(f"Запрос получен с IP: {peer_name[0]}:{peer_name[1]}")
+            
+            # Пересылаем данные в Telegram API и ждем результата
+            success = await forward_to_telegram(update_data)
+            if success:
+                logger.info("✅ Webhook обработан успешно")
+            else:
+                logger.error("❌ Ошибка при обработке webhook")
             
             # Возвращаем успешный ответ
             return web.Response(status=200, text="OK")
+        except json.JSONDecodeError as e:
+            logger.error(f"❌ Ошибка декодирования JSON в webhook-запросе: {e}")
+            logger.error(f"Тело запроса: {await request.text()}")
+            return web.Response(status=400, text="Bad Request - Invalid JSON")
         except Exception as e:
             logger.error(f"❌ Ошибка при обработке webhook-запроса: {e}")
+            # Печатаем полный traceback для отладки
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
             return web.Response(status=500, text="Internal Server Error")
     
     # Регистрируем обработчики
@@ -281,9 +357,13 @@ async def start_simple_server():
     # Функция для периодического пинга, чтобы поддерживать сервер активным
     async def keep_alive():
         """Периодически отправляет запрос к API Telegram для поддержания активности"""
+        last_webhook_check = 0
         while True:
             try:
-                # Запрашиваем информацию о боте каждые 5 минут
+                # Текущее время
+                current_time = time.time()
+                
+                # Запрашиваем информацию о боте
                 api_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getMe"
                 response = requests.get(api_url, timeout=10)
                 if response.status_code == 200:
@@ -293,8 +373,33 @@ async def start_simple_server():
                     logger.info(f"🤖 Бот активен: {bot_name} (@{bot_username})")
                 else:
                     logger.warning(f"⚠️ Пинг API вернул статус {response.status_code}: {response.text}")
+                
+                # Проверяем webhook каждые 30 минут
+                if current_time - last_webhook_check > 1800:  # 30 минут в секундах
+                    check_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo"
+                    check_response = requests.get(check_url, timeout=10)
+                    if check_response.status_code == 200:
+                        webhook_info = check_response.json().get('result', {})
+                        webhook_url = webhook_info.get('url', '')
+                        last_error = webhook_info.get('last_error_message')
+                        pending_updates = webhook_info.get('pending_update_count', 0)
+                        
+                        logger.info(f"🔄 Проверка webhook: URL = {webhook_url}")
+                        logger.info(f"🔄 Последняя ошибка webhook: {last_error or 'нет'}")
+                        logger.info(f"🔄 Ожидающие обновления: {pending_updates}")
+                        
+                        # Если последняя ошибка указывает на проблемы с webhook или нет URL,
+                        # перенастраиваем webhook
+                        if last_error or not webhook_url:
+                            logger.warning("⚠️ Обнаружены проблемы с webhook, переустанавливаем...")
+                            setup_webhook()
+                    else:
+                        logger.error(f"❌ Ошибка при проверке webhook: {check_response.text}")
+                    
+                    # Обновляем время последней проверки
+                    last_webhook_check = current_time
             except Exception as e:
-                logger.error(f"❌ Ошибка при пинге API: {e}")
+                logger.error(f"❌ Ошибка в задаче keep_alive: {e}")
             
             # Ждем 5 минут перед следующим пингом
             await asyncio.sleep(300)
