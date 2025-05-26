@@ -4,9 +4,7 @@ nixPkgs = ["python311", "gcc", "python311Packages.pip"]
 [phases.install]
 cmds = [
   "python -m pip install --upgrade pip setuptools wheel",
-  "pip install -r requirements.txt",
-  "chmod +x *.py",
-  "ls -la"
+  "pip install -r requirements.txt"
 ]
 
 [phases.build]
@@ -16,4 +14,4 @@ cmds = [
 ]
 
 [start]
-cmd = "bash -c 'python railway_final.py'" 
+cmd = "python railway_final.py" 
