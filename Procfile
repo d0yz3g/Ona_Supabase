@@ -1,1 +1,1 @@
-web: bash start.sh 
+web: ./railway_start.sh 
