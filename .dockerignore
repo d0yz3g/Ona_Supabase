@@ -1,6 +1,7 @@
 # Git
-.git
+.git/
 .gitignore
+.gitattributes
 
 # Python
 __pycache__/
@@ -8,10 +9,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-env/
-venv/
-ENV/
-.venv/
 build/
 develop-eggs/
 dist/
@@ -27,20 +24,33 @@ var/
 .installed.cfg
 *.egg
 
-# IDEs and editors
+# Виртуальные окружения
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE
 .idea/
 .vscode/
 *.swp
 *.swo
 
+# Логи и временные файлы
+*.log
+logs/
+tmp/
+.tmp/
+.cache/
+*.bak
+*.old
+
 # OS specific
 .DS_Store
 Thumbs.db
 
-# Local files
-.env
+# База данных
 *.db
 *.sqlite
-*.sqlite3
-*.log
-logs/ 
+*.sqlite3 
