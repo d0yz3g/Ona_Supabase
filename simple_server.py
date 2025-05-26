@@ -117,6 +117,13 @@ async def forward_to_telegram(update_data):
             chat_id = update_data['message']['chat']['id']
             text = update_data['message'].get('text', '')
             
+            # Логируем сообщение от пользователя
+            user_info = update_data['message']['from']
+            username = user_info.get('username', 'нет')
+            first_name = user_info.get('first_name', '')
+            last_name = user_info.get('last_name', '')
+            logger.info(f"Получено сообщение от пользователя @{username} ({first_name} {last_name}): {text}")
+            
             if text.startswith('/'):
                 # Обрабатываем команды
                 command = text.split()[0].lower()
@@ -125,39 +132,64 @@ async def forward_to_telegram(update_data):
                     method = "sendMessage"
                     params = {
                         'chat_id': chat_id,
-                        'text': "Привет! Я бот Она. Чем могу помочь?"
+                        'text': "👋 Привет! Я Она - твой бот-помощник.\n\nЯ могу помочь тебе разобраться в себе и своих эмоциях.\n\nНапиши /help чтобы узнать, что я умею."
                     }
                 elif command == '/help':
                     method = "sendMessage"
                     params = {
                         'chat_id': chat_id,
-                        'text': "Доступные команды:\n/start - Начать диалог\n/help - Помощь"
+                        'text': "📋 Доступные команды:\n\n/start - Начать диалог\n/help - Показать эту справку\n/about - О боте\n/meditate - Получить медитацию"
+                    }
+                elif command == '/about':
+                    method = "sendMessage"
+                    params = {
+                        'chat_id': chat_id,
+                        'text': "ℹ️ Я - Она, бот-помощник, созданный чтобы помогать тебе в трудные моменты. Я использую современные технологии искусственного интеллекта для анализа твоих сообщений и предоставления поддержки."
+                    }
+                elif command == '/meditate':
+                    method = "sendMessage"
+                    params = {
+                        'chat_id': chat_id,
+                        'text': "🧘‍♀️ Медитация поможет тебе успокоиться и сосредоточиться. Глубоко вдохни и медленно выдохни. Повторяй этот процесс, концентрируясь на своем дыхании."
                     }
                 else:
                     method = "sendMessage"
                     params = {
                         'chat_id': chat_id,
-                        'text': f"Команда {command} не распознана."
+                        'text': f"🤔 Команда {command} не распознана. Напиши /help чтобы увидеть список команд."
                     }
             else:
-                # Простой ответ на текстовое сообщение
+                # Эхо-ответ на текстовое сообщение (в будущем здесь будет интеграция с OpenAI)
                 method = "sendMessage"
                 params = {
                     'chat_id': chat_id,
-                    'text': f"Вы написали: {text}"
+                    'text': f"🤖 Ты написал: {text}\n\nВ будущих версиях я смогу поддерживать полноценный диалог."
                 }
         
         # Если метод был определен, вызываем API
         if method:
             api_url = f"https://api.telegram.org/bot{BOT_TOKEN}/{method}"
-            response = requests.post(api_url, json=params)
             
-            if response.status_code == 200:
-                logger.info(f"✅ API вызов успешен: {method}")
-                return True
-            else:
-                logger.error(f"❌ Ошибка при вызове API {method}: {response.text}")
-                return False
+            # Повторяем запрос до трех раз в случае ошибки
+            max_retries = 3
+            for attempt in range(max_retries):
+                try:
+                    response = requests.post(api_url, json=params, timeout=10)
+                    if response.status_code == 200:
+                        logger.info(f"✅ API вызов успешен: {method}")
+                        return True
+                    else:
+                        logger.error(f"❌ Ошибка при вызове API {method} (попытка {attempt+1}/{max_retries}): {response.text}")
+                        if attempt == max_retries - 1:  # Последняя попытка
+                            return False
+                        # Пауза перед повторной попыткой
+                        await asyncio.sleep(1)
+                except (requests.RequestException, asyncio.TimeoutError) as e:
+                    logger.error(f"❌ Исключение при вызове API {method} (попытка {attempt+1}/{max_retries}): {e}")
+                    if attempt == max_retries - 1:  # Последняя попытка
+                        return False
+                    # Пауза перед повторной попыткой
+                    await asyncio.sleep(1)
         
         return True
     except Exception as e:
@@ -202,11 +234,17 @@ async def start_simple_server():
     # Обработчик для webhook
     async def webhook_handler(request):
         if request.match_info.get('token') != BOT_TOKEN:
+            logger.warning(f"Получен запрос с неверным токеном: {request.match_info.get('token')}")
             return web.Response(status=403, text="Forbidden")
         
         try:
             # Получаем данные запроса
             update_data = await request.json()
+            
+            # Логируем все заголовки для отладки
+            headers_str = '\n'.join([f"{k}: {v}" for k, v in request.headers.items()])
+            logger.info(f"Webhook headers:\n{headers_str}")
+            
             logger.info(f"Получен webhook-запрос: {json.dumps(update_data, ensure_ascii=False)}")
             
             # Пересылаем данные в Telegram API
@@ -239,6 +277,30 @@ async def start_simple_server():
     logger.info(f"Запуск сервера на порту {port}...")
     await site.start()
     logger.info(f"✅ Сервер успешно запущен на порту {port}")
+    
+    # Функция для периодического пинга, чтобы поддерживать сервер активным
+    async def keep_alive():
+        """Периодически отправляет запрос к API Telegram для поддержания активности"""
+        while True:
+            try:
+                # Запрашиваем информацию о боте каждые 5 минут
+                api_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getMe"
+                response = requests.get(api_url, timeout=10)
+                if response.status_code == 200:
+                    bot_info = response.json().get('result', {})
+                    bot_name = bot_info.get('first_name', 'Unknown')
+                    bot_username = bot_info.get('username', 'Unknown')
+                    logger.info(f"🤖 Бот активен: {bot_name} (@{bot_username})")
+                else:
+                    logger.warning(f"⚠️ Пинг API вернул статус {response.status_code}: {response.text}")
+            except Exception as e:
+                logger.error(f"❌ Ошибка при пинге API: {e}")
+            
+            # Ждем 5 минут перед следующим пингом
+            await asyncio.sleep(300)
+    
+    # Запускаем задачу поддержания активности
+    asyncio.create_task(keep_alive())
     
     # Ждем завершения
     while True:
