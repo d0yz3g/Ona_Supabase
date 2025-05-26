@@ -18,6 +18,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger("railway_final")
 
+logger.info("Скрипт railway_final.py запущен")
+
 # Проверяем и добавляем текущую директорию в sys.path
 if os.getcwd() not in sys.path:
     sys.path.insert(0, os.getcwd())
@@ -108,6 +110,7 @@ if __name__ == "__main__":
     logger.info("=== Запуск бота на Railway ===")
     logger.info(f"Python версия: {sys.version}")
     logger.info(f"Текущая директория: {os.getcwd()}")
+    logger.info(f"Содержимое директории: {os.listdir('.')}")
     
     # Запускаем healthcheck сервер в отдельном потоке
     health_thread = threading.Thread(target=run_healthcheck_server, daemon=True)
