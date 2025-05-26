@@ -30,14 +30,5 @@ RUN pip show openai && python -c "import pre_import_fix; from openai import Asyn
 # Копируем остальные файлы
 COPY . .
 
-# Make the startup script executable
-RUN chmod +x railway_start.sh
-
-# Экспонируем порт для health check
-EXPOSE 8080
-
-# Устанавливаем переменную окружения для порта
-ENV PORT=8080
-
-# Запускаем бота напрямую через наш direct_start.py
+# Запускаем бота напрямую через direct_start.py
 CMD ["python", "direct_start.py"] 

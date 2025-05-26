@@ -24,15 +24,36 @@ def setup_paths():
         sys.path.insert(0, os.getcwd())
         logger.info(f"Добавлен {os.getcwd()} в sys.path")
 
-def import_modules():
-    """Пытается импортировать критические модули"""
+def check_imports():
+    """Проверяет и исправляет импорты"""
     try:
-        # Импортируем pre_import_fix перед всем остальным
+        logger.info("Применяю fix_imports_global...")
+        import fix_imports_global
+        logger.info("✅ fix_imports_global успешно импортирован")
+        
+        logger.info("Импортирую pre_import_fix...")
         import pre_import_fix
-        logger.info("✅ pre_import_fix импортирован успешно")
-        return True
+        logger.info("✅ pre_import_fix успешно импортирован")
+        
+        # Проверяем доступность AsyncOpenAI
+        try:
+            logger.info("Проверка AsyncOpenAI...")
+            from openai import AsyncOpenAI
+            logger.info("✅ AsyncOpenAI успешно импортирован")
+            return True
+        except ImportError as e:
+            logger.error(f"❌ Ошибка импорта AsyncOpenAI: {e}")
+            
+            # Пытаемся установить правильную версию OpenAI
+            logger.info("Попытка установить OpenAI 1.3.3...")
+            subprocess.run([
+                sys.executable, "-m", "pip", "install", "--force-reinstall",
+                "openai==1.3.3"
+            ], check=False)
+            
+            return False
     except Exception as e:
-        logger.error(f"❌ Ошибка при импорте pre_import_fix: {e}")
+        logger.error(f"❌ Ошибка при проверке импортов: {e}")
         return False
 
 def run_bot_directly():
@@ -41,7 +62,16 @@ def run_bot_directly():
         # Устанавливаем переменную окружения для Railway
         os.environ["RAILWAY_ENV"] = "1"
         
+        # Применяем патч к main.py
+        try:
+            import patch_main
+            patch_main.patch_main_py()
+            logger.info("✅ Файл main.py успешно пропатчен")
+        except Exception as e:
+            logger.error(f"❌ Не удалось пропатчить main.py: {e}")
+        
         # Импортируем main
+        logger.info("Импортирую main...")
         import main
         logger.info("✅ Бот запущен успешно через main")
         
@@ -50,6 +80,25 @@ def run_bot_directly():
             time.sleep(3600)  # Ждем час и повторяем
     except Exception as e:
         logger.error(f"❌ Ошибка при запуске бота через main: {e}")
+        logger.error(traceback.format_exc())
+        return False
+
+def run_bootstrap():
+    """Запускает бота через bootstrap"""
+    try:
+        # Устанавливаем переменную окружения для Railway
+        os.environ["RAILWAY_ENV"] = "1"
+        
+        # Импортируем bootstrap
+        logger.info("Импортирую railway_bootstrap...")
+        import railway_bootstrap
+        logger.info("✅ Бот запущен успешно через bootstrap")
+        
+        # Ждем бесконечно, чтобы процесс не завершился
+        while True:
+            time.sleep(3600)  # Ждем час и повторяем
+    except Exception as e:
+        logger.error(f"❌ Ошибка при запуске бота через bootstrap: {e}")
         logger.error(traceback.format_exc())
         return False
 
@@ -85,43 +134,33 @@ def run_bot_subprocess():
         logger.error(f"❌ Ошибка при запуске бота через subprocess: {e}")
         return False
 
-def run_bootstrap():
-    """Запускает бота через bootstrap"""
-    try:
-        # Устанавливаем переменную окружения для Railway
-        os.environ["RAILWAY_ENV"] = "1"
-        
-        # Импортируем bootstrap
-        import railway_bootstrap
-        logger.info("✅ Бот запущен успешно через bootstrap")
-        
-        # Ждем бесконечно, чтобы процесс не завершился
-        while True:
-            time.sleep(3600)  # Ждем час и повторяем
-    except Exception as e:
-        logger.error(f"❌ Ошибка при запуске бота через bootstrap: {e}")
-        logger.error(traceback.format_exc())
-        return False
-
 def main():
     """Основная функция, запускает бота и поддерживает процесс живым"""
     logger.info("=== Прямой запуск бота на Railway ===")
+    logger.info(f"Python версия: {sys.version}")
+    logger.info(f"Текущая директория: {os.getcwd()}")
     
     # Устанавливаем пути
     setup_paths()
     
-    # Импортируем критические модули
-    import_result = import_modules()
+    # Проверяем и исправляем импорты
+    imports_ok = check_imports()
     
     # Пробуем разные способы запуска бота
     while True:
         try:
-            if import_result:
-                # Если импортировать pre_import_fix удалось, запускаем напрямую
+            logger.info("Запускаю бота...")
+            
+            # Сначала пробуем запустить через main напрямую
+            if imports_ok:
                 run_bot_directly()
             else:
-                # Иначе пробуем через bootstrap
+                # Если импорты не работают, пробуем через bootstrap
                 run_bootstrap()
+            
+            # Если дошли сюда, значит ни один способ не сработал до конца
+            # Пробуем запустить через subprocess как последний вариант
+            run_bot_subprocess()
         except Exception as e:
             logger.error(f"❌ Критическая ошибка: {e}")
             logger.error(traceback.format_exc())
