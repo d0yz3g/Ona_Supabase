@@ -399,6 +399,57 @@ async def main():
         logger.error("Другой экземпляр бота уже запущен. Завершение работы.")
         railway_print("КРИТИЧЕСКАЯ ОШИБКА: Обнаружен другой запущенный экземпляр бота. Завершение работы.", "ERROR")
         return
+    
+    # Проверка и инициализация PostgreSQL, если она используется
+    if os.getenv("DATABASE_URL"):
+        railway_print("Обнаружена переменная DATABASE_URL, проверка базы данных PostgreSQL...", "INFO")
+        try:
+            # Проверяем наличие таблиц
+            import psycopg2
+            
+            conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
+                tables = cursor.fetchall()
+                
+                # Извлекаем имена таблиц
+                table_names = [table[0] for table in tables]
+                required_tables = ['users', 'answers', 'profiles', 'reminders']
+                missing_tables = [table for table in required_tables if table not in table_names]
+                
+                if missing_tables:
+                    railway_print(f"В базе данных PostgreSQL отсутствуют таблицы: {', '.join(missing_tables)}", "WARNING")
+                    
+                    # Инициализируем базу данных
+                    railway_print("Запуск инициализации PostgreSQL...", "INFO")
+                    
+                    # Импортируем класс Database и константу POSTGRES_CREATE_TABLES_SQL из модуля db_postgres
+                    from db_postgres import Database, POSTGRES_CREATE_TABLES_SQL
+                    
+                    # Получаем экземпляр базы данных
+                    db = Database()
+                    
+                    # Принудительно создаем таблицы
+                    if hasattr(db, '_create_postgres_tables'):
+                        railway_print("Принудительное создание таблиц в PostgreSQL...", "INFO")
+                        
+                        # Используем приватный метод для создания таблиц (синхронно)
+                        conn = db._get_postgres_connection()
+                        try:
+                            with conn.cursor() as cursor:
+                                cursor.execute(POSTGRES_CREATE_TABLES_SQL)
+                            conn.commit()
+                            railway_print("Таблицы в PostgreSQL успешно созданы!", "INFO")
+                        except Exception as e:
+                            conn.rollback()
+                            railway_print(f"Ошибка при создании таблиц в PostgreSQL: {e}", "ERROR")
+                else:
+                    railway_print(f"В базе данных PostgreSQL уже есть все необходимые таблицы", "INFO")
+            
+            conn.close()
+        except Exception as e:
+            railway_print(f"Ошибка при проверке или инициализации PostgreSQL: {e}", "ERROR")
+            # Продолжаем работу, даже если инициализация не удалась
         
     # Инициализируем бот
     logger.info("Бот ОНА запускается...")

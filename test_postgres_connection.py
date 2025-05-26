@@ -1,120 +1,128 @@
 #!/usr/bin/env python
 """
-Скрипт для тестирования соединения с PostgreSQL на Railway.
-Запустите этот скрипт после настройки переменной окружения DATABASE_URL.
+Скрипт для проверки соединения с PostgreSQL
 """
 
 import os
 import sys
+import logging
 import asyncio
-from datetime import datetime
 from dotenv import load_dotenv
 
-# Загружаем переменные окружения из .env файла
-load_dotenv()
+# Настройка логирования
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - [DB_TEST] - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()]
+)
+logger = logging.getLogger("pg_test")
 
-# Проверяем наличие переменной окружения DATABASE_URL
-DATABASE_URL = os.getenv("DATABASE_URL")
+# Загружаем переменные окружения
+load_dotenv()
 
 async def test_postgres_connection():
     """
-    Проверяет соединение с PostgreSQL или SQLite в зависимости от переменной окружения
+    Проверяет соединение с PostgreSQL и наличие таблиц
     """
-    print("=" * 50)
-    print(f"Начало теста соединения с базой данных: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("=" * 50)
+    # Проверяем наличие DATABASE_URL
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        logger.error("Переменная окружения DATABASE_URL не найдена!")
+        logger.error("Установите DATABASE_URL с вашей строкой подключения PostgreSQL")
+        return False
     
-    if not DATABASE_URL:
-        print("\n❌ Переменная окружения DATABASE_URL не найдена.")
-        print("   Будет использоваться локальная SQLite база данных.")
-        print("\n   Для настройки PostgreSQL выполните следующие шаги:")
-        print("   1. Создайте базу данных PostgreSQL в Railway")
-        print("   2. Получите строку подключения")
-        print("   3. Добавьте в .env файл строку:")
-        print("      DATABASE_URL=postgres://username:password@hostname:port/database_name")
-        print("\n   Подробные инструкции: docs/railway_postgres_setup.md")
-        
-        # Проверяем соединение с SQLite
-        try:
-            from db_postgres import db
-            print("\n✅ Подключение к SQLite успешно установлено")
-            print(f"   Путь к файлу базы данных: {db._db_path}")
-            
-            # Создаем тестового пользователя
-            user_id = await db.get_or_create_user(
-                tg_id=99999,
-                username="test_postgres",
-                first_name="PostgreSQL",
-                last_name="Test"
-            )
-            print(f"✅ Тестовый пользователь создан с ID: {user_id}")
-            
-        except Exception as e:
-            print(f"\n❌ Ошибка при подключении к SQLite: {e}")
-            return
-    else:
-        print("\n✅ Переменная окружения DATABASE_URL найдена.")
-        print(f"   Значение: {DATABASE_URL[:20]}...")  # Показываем только начало URL для безопасности
-        
-        # Проверяем соединение с PostgreSQL
+    logger.info(f"Найдена переменная DATABASE_URL: {database_url[:20]}...")
+    
+    try:
+        # Пробуем импортировать psycopg2
         try:
             import psycopg2
-            print("\n✅ Библиотека psycopg2 успешно импортирована")
+            import psycopg2.extras
+            logger.info("Библиотека psycopg2 найдена")
         except ImportError:
-            print("\n❌ Библиотека psycopg2 не установлена.")
-            print("   Установите ее командой: pip install psycopg2-binary")
-            return
+            logger.error("Библиотека psycopg2 не установлена!")
+            logger.error("Установите psycopg2: pip install psycopg2-binary")
+            return False
         
+        # Проверяем соединение напрямую через psycopg2
+        logger.info("Проверка соединения с PostgreSQL...")
         try:
-            from db_postgres import db
+            conn = psycopg2.connect(database_url)
+            logger.info("Соединение с PostgreSQL установлено успешно!")
             
-            if db._use_postgres:
-                print("✅ Модуль db_postgres настроен для работы с PostgreSQL")
-            else:
-                print("❌ Модуль db_postgres не использует PostgreSQL, несмотря на наличие DATABASE_URL")
-                return
+            # Проверяем наличие таблиц
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
+                tables = cursor.fetchall()
+                
+                if not tables:
+                    logger.warning("В базе данных нет таблиц!")
+                    logger.warning("Необходимо запустить инициализацию: python init_postgres.py")
+                else:
+                    table_names = [table[0] for table in tables]
+                    logger.info(f"Обнаружены таблицы: {', '.join(table_names)}")
+                    
+                    # Проверяем, есть ли все необходимые таблицы
+                    required_tables = ['users', 'answers', 'profiles', 'reminders']
+                    missing_tables = [table for table in required_tables if table not in table_names]
+                    
+                    if missing_tables:
+                        logger.warning(f"Отсутствуют таблицы: {', '.join(missing_tables)}")
+                        logger.warning("Необходимо запустить инициализацию: python init_postgres.py")
+                    else:
+                        logger.info("Все необходимые таблицы присутствуют в базе данных")
+                        
+                        # Проверяем количество записей в таблицах
+                        for table in required_tables:
+                            try:
+                                cursor.execute(f"SELECT COUNT(*) FROM {table}")
+                                count = cursor.fetchone()[0]
+                                logger.info(f"Таблица {table}: {count} записей")
+                            except Exception as e:
+                                logger.error(f"Ошибка при проверке таблицы {table}: {e}")
             
-            # Создаем тестового пользователя
-            user_id = await db.get_or_create_user(
-                tg_id=99999,
-                username="test_postgres",
-                first_name="PostgreSQL",
-                last_name="Test"
-            )
-            print(f"✅ Тестовый пользователь создан с ID: {user_id}")
+            conn.close()
+            return True
+        except psycopg2.OperationalError as e:
+            logger.error(f"Ошибка соединения с PostgreSQL: {e}")
             
-            # Сохраняем и получаем тестовый ответ
-            await db.save_answer(user_id, "test_question", f"Test answer at {datetime.now()}")
-            answers = await db.get_answers(user_id)
-            print(f"✅ Тестовый ответ сохранен и получен: {answers.get('test_question')}")
+            # Проверяем распространенные проблемы
+            error_str = str(e)
+            if "could not connect to server" in error_str:
+                logger.error("Не удалось подключиться к серверу PostgreSQL")
+                logger.error("Проверьте, что сервер запущен и доступен")
+            elif "password authentication failed" in error_str:
+                logger.error("Ошибка аутентификации: неверный пароль")
+                logger.error("Проверьте правильность строки подключения DATABASE_URL")
+            elif "database" in error_str and "does not exist" in error_str:
+                logger.error("Указанная база данных не существует")
+                logger.error("Проверьте имя базы данных в строке подключения")
+            elif "SSL" in error_str:
+                logger.error("Проблема с SSL-соединением")
+                logger.error("Попробуйте добавить ?sslmode=require к строке подключения")
             
-            # Создаем тестовый профиль
-            profile_data = {
-                "test": True,
-                "timestamp": datetime.now().isoformat(),
-                "db_type": "PostgreSQL"
-            }
-            profile_id = await db.save_profile(user_id, profile_data)
-            print(f"✅ Тестовый профиль создан с ID: {profile_id}")
-            
-            print("\n✅ Соединение с PostgreSQL работает корректно!")
-            
-        except Exception as e:
-            print(f"\n❌ Ошибка при подключении к PostgreSQL: {e}")
-            import traceback
-            traceback.print_exc()
-            return
+            return False
+    except Exception as e:
+        logger.error(f"Ошибка при проверке соединения: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return False
+
+def main():
+    """
+    Основная функция для запуска проверки соединения
+    """
+    logger.info("Запуск проверки соединения с PostgreSQL...")
     
-    print("\n" + "=" * 50)
-    print("Тест соединения завершен")
-    print("=" * 50)
+    # Запускаем асинхронную функцию
+    success = asyncio.run(test_postgres_connection())
+    
+    if success:
+        logger.info("Проверка соединения с PostgreSQL завершена успешно!")
+        return 0
+    else:
+        logger.error("Проверка соединения с PostgreSQL завершилась с ошибками")
+        return 1
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(test_postgres_connection())
-    except KeyboardInterrupt:
-        print("\nТест прерван пользователем")
-    except Exception as e:
-        print(f"\nОшибка при выполнении теста: {e}")
-        import traceback
-        traceback.print_exc() 
+    sys.exit(main()) 
