@@ -5,6 +5,7 @@ from typing import Dict, Any, Optional
 from openai import AsyncOpenAI
 import httpx
 import asyncio
+from datetime import datetime
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
@@ -461,19 +462,34 @@ async def save_profile_to_db(user_id: int, profile_text: str, answers: Dict[str,
         bool: True, если сохранение успешно, иначе False
     """
     try:
+        # Импортируем Database из db_postgres.py
+        from db_postgres import Database
+        
         # Подготовка данных для сохранения
         profile_data = {
             "profile_text": profile_text,
             "answers": answers,
-            "created_at": str(asyncio.get_event_loop().time())
+            "created_at": datetime.now().isoformat()
         }
         
-        # Преобразуем данные в JSON
-        profile_json = json.dumps(profile_data, ensure_ascii=False)
+        # Инициализируем соединение с базой данных
+        db = Database()
         
-        # Здесь должен быть код для сохранения в базу данных
-        # В данной реализации это заглушка
-        logger.info(f"Профиль сохранен для пользователя {user_id}")
+        # Получаем или создаем пользователя в базе данных
+        db_user_id = await db.get_or_create_user(tg_id=user_id)
+        
+        # Сохраняем ответы пользователя
+        for q_code, value in answers.items():
+            await db.save_answer(db_user_id, q_code, value)
+        
+        # Сохраняем профиль пользователя
+        profile_id = await db.save_profile(db_user_id, profile_data)
+        
+        # Создаем резервную копию базы данных
+        backup_path = await db.backup_database()
+        
+        logger.info(f"Профиль id={profile_id} сохранен для пользователя {user_id}")
+        logger.info(f"Создана резервная копия базы данных: {backup_path}")
         
         return True
     except Exception as e:
