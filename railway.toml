@@ -1,13 +1,9 @@
 [build]
-builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile"
+builder = "nixpacks"
+buildCommand = "echo Building minimal app..."
 
 [deploy]
-startCommand = "./railway_start.sh"
+startCommand = "python bare_minimal.py"
 healthcheckPath = "/"
-healthcheckTimeout = 300
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
-
-[nixpacks]
-install_packages = ["python3", "python3-pip", "libffi-dev", "python3-dev", "gcc"]
+healthcheckTimeout = 20
+restartPolicyType = "always"
