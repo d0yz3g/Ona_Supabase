@@ -31,103 +31,105 @@ def check_postgres_initialization():
     
     logger.info(f"Обнаружена переменная DATABASE_URL, проверка базы данных PostgreSQL...")
     
-    # Проверяем наличие файла инициализации
-    if not os.path.exists("init_postgres.py"):
-        logger.warning("Файл init_postgres.py не найден, пропускаем инициализацию PostgreSQL")
-        return True
-    
-    # Проверяем таблицы в PostgreSQL
+    # Проверяем наличие psycopg2-binary
     try:
+        import psycopg2
+        logger.info("Модуль psycopg2 успешно импортирован")
+    except ImportError:
+        logger.error("Не найден модуль psycopg2, требуется для работы с PostgreSQL")
+        logger.error("Установка psycopg2-binary...")
+        
         try:
+            # Пытаемся установить psycopg2-binary
+            subprocess.run([sys.executable, "-m", "pip", "install", "psycopg2-binary"], check=True)
+            logger.info("psycopg2-binary успешно установлен")
+            
+            # Пытаемся снова импортировать psycopg2
             import psycopg2
-            import psycopg2.extras
-        except ImportError as e:
-            logger.error(f"Не найден модуль psycopg2, требуется для работы с PostgreSQL: {e}")
-            logger.error("Установите его командой: pip install psycopg2-binary")
+            logger.info("Модуль psycopg2 успешно импортирован после установки")
+        except Exception as e:
+            logger.error(f"Ошибка при установке psycopg2-binary: {e}")
             logger.warning("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL")
             # Устанавливаем временную переменную, чтобы бот использовал SQLite
             os.environ.pop("DATABASE_URL", None)
             return True
+    
+    # Проверяем наличие файла ensure_postgres.py для нового подхода
+    if os.path.exists("ensure_postgres.py"):
+        logger.info("Используем ensure_postgres.py для настройки PostgreSQL...")
         
-        # Проверяем наличие таблиц
         try:
-            logger.info("Проверка наличия таблиц в PostgreSQL...")
-            conn = psycopg2.connect(database_url)
-            with conn.cursor() as cursor:
-                cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
-                tables = cursor.fetchall()
-                
-                # Извлекаем имена таблиц
-                table_names = [table[0] for table in tables]
-                
-                # Проверяем наличие необходимых таблиц
-                required_tables = ['users', 'answers', 'profiles', 'reminders']
-                missing_tables = [table for table in required_tables if table not in table_names]
-                
-                if missing_tables:
-                    logger.warning(f"В базе данных отсутствуют таблицы: {', '.join(missing_tables)}")
-                    logger.warning("Требуется инициализация базы данных PostgreSQL")
-                    
-                    # Запускаем инициализацию PostgreSQL
-                    logger.info("Запуск автоматической инициализации PostgreSQL...")
-                    result = subprocess.run(
-                        [sys.executable, "init_postgres.py"], 
-                        capture_output=True, 
-                        text=True,
-                        check=False
-                    )
-                    
-                    if result.returncode == 0:
-                        logger.info("Автоматическая инициализация PostgreSQL успешно завершена")
-                    else:
-                        logger.warning(f"Автоматическая инициализация PostgreSQL завершилась с ошибкой (код {result.returncode})")
-                        logger.warning(f"Вывод: {result.stdout}")
-                        logger.error(f"Ошибки: {result.stderr}")
-                        logger.warning("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL")
-                        # Устанавливаем временную переменную, чтобы бот использовал SQLite
-                        os.environ.pop("DATABASE_URL", None)
-                else:
-                    logger.info(f"Обнаружены все необходимые таблицы в PostgreSQL: {', '.join(required_tables)}")
-            
-            conn.close()
-            return True
-        except Exception as e:
-            logger.error(f"Ошибка при проверке таблиц в PostgreSQL: {e}")
-            
-            # Запускаем скрипт инициализации PostgreSQL
-            logger.info("Запуск инициализации PostgreSQL...")
+            # Запускаем ensure_postgres.py
             result = subprocess.run(
-                [sys.executable, "init_postgres.py"], 
+                [sys.executable, "ensure_postgres.py"], 
                 capture_output=True, 
                 text=True,
                 check=False
             )
             
             if result.returncode == 0:
-                logger.info("Инициализация PostgreSQL успешно завершена")
+                logger.info("PostgreSQL успешно настроен через ensure_postgres.py")
                 return True
             else:
-                logger.warning(f"Инициализация PostgreSQL завершилась с ошибкой (код {result.returncode})")
+                logger.warning(f"Настройка PostgreSQL через ensure_postgres.py завершилась с ошибкой (код {result.returncode})")
                 logger.warning(f"Вывод: {result.stdout}")
                 logger.error(f"Ошибки: {result.stderr}")
                 
-                # Продолжаем работу с SQLite вместо PostgreSQL
-                logger.warning("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL")
-                # Устанавливаем временную переменную, чтобы бот использовал SQLite
+                # Пробуем запустить init_postgres.py как запасной вариант
+                if os.path.exists("init_postgres.py"):
+                    logger.info("Пробуем использовать init_postgres.py в качестве запасного варианта...")
+                    return _use_init_postgres()
+                else:
+                    logger.warning("init_postgres.py не найден, продолжаем без PostgreSQL")
+                    os.environ.pop("DATABASE_URL", None)
+                    return True
+        except Exception as e:
+            logger.error(f"Ошибка при запуске ensure_postgres.py: {e}")
+            
+            # Пробуем запустить init_postgres.py как запасной вариант
+            if os.path.exists("init_postgres.py"):
+                logger.info("Пробуем использовать init_postgres.py в качестве запасного варианта...")
+                return _use_init_postgres()
+            else:
+                logger.warning("init_postgres.py не найден, продолжаем без PostgreSQL")
                 os.environ.pop("DATABASE_URL", None)
                 return True
-    except ImportError:
-        logger.error("Не найден модуль psycopg2, требуется для работы с PostgreSQL")
-        logger.error("Установите его командой: pip install psycopg2-binary")
-        logger.warning("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL")
-        # Устанавливаем временную переменную, чтобы бот использовал SQLite
+    elif os.path.exists("init_postgres.py"):
+        # Если ensure_postgres.py отсутствует, но есть init_postgres.py
+        logger.info("ensure_postgres.py не найден, используем init_postgres.py...")
+        return _use_init_postgres()
+    else:
+        logger.warning("Ни ensure_postgres.py, ни init_postgres.py не найдены, пропускаем инициализацию PostgreSQL")
         os.environ.pop("DATABASE_URL", None)
         return True
+
+def _use_init_postgres():
+    """
+    Вспомогательная функция для использования init_postgres.py
+    """
+    try:
+        result = subprocess.run(
+            [sys.executable, "init_postgres.py"], 
+            capture_output=True, 
+            text=True,
+            check=False
+        )
+        
+        if result.returncode == 0:
+            logger.info("Инициализация PostgreSQL через init_postgres.py успешно завершена")
+            return True
+        else:
+            logger.warning(f"Инициализация PostgreSQL через init_postgres.py завершилась с ошибкой (код {result.returncode})")
+            logger.warning(f"Вывод: {result.stdout}")
+            logger.error(f"Ошибки: {result.stderr}")
+            
+            # Продолжаем работу с SQLite вместо PostgreSQL
+            logger.warning("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL")
+            os.environ.pop("DATABASE_URL", None)
+            return True
     except Exception as e:
-        logger.error(f"Ошибка при запуске инициализации PostgreSQL: {e}")
-        # Продолжаем работу с SQLite вместо PostgreSQL
+        logger.error(f"Ошибка при запуске init_postgres.py: {e}")
         logger.warning("Продолжаем запуск бота с использованием SQLite вместо PostgreSQL")
-        # Устанавливаем временную переменную, чтобы бот использовал SQLite
         os.environ.pop("DATABASE_URL", None)
         return True
 
