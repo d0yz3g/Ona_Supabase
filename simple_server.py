@@ -374,7 +374,7 @@ async def start_simple_server():
         try:
             # Получаем данные запроса
             webhook_data = await request.text()
-            logger.info(f"📥 Получены сырые данные webhook: {webhook_data}")
+            logger.info(f"📥 ПОЛУЧЕНЫ ДАННЫЕ WEBHOOK: {webhook_data}")
             
             # Парсим JSON
             try:
@@ -386,15 +386,15 @@ async def start_simple_server():
             
             # Логируем все заголовки для отладки
             headers_str = '\n'.join([f"{k}: {v}" for k, v in request.headers.items()])
-            logger.info(f"🔍 Webhook headers:\n{headers_str}")
+            logger.info(f"🔍 WEBHOOK HEADERS:\n{headers_str}")
             
             # Более подробное логирование тела запроса
-            logger.info(f"📦 Получен webhook-запрос: {json.dumps(update_data, ensure_ascii=False)}")
+            logger.info(f"📦 ПОЛУЧЕН WEBHOOK-ЗАПРОС: {json.dumps(update_data, ensure_ascii=False)}")
             
             # Логируем IP-адрес отправителя
             peer_name = request.transport.get_extra_info('peername')
             if peer_name:
-                logger.info(f"🌐 Запрос получен с IP: {peer_name[0]}:{peer_name[1]}")
+                logger.info(f"🌐 ЗАПРОС ПОЛУЧЕН С IP: {peer_name[0]}:{peer_name[1]}")
             
             # Проверяем структуру данных
             if not update_data:
@@ -404,16 +404,17 @@ async def start_simple_server():
             # Проверяем наличие нужных полей
             if 'update_id' not in update_data:
                 logger.error("❌ В JSON отсутствует поле update_id")
+                logger.error(f"❌ Содержимое JSON: {webhook_data}")
                 return web.Response(status=400, text="Bad Request - Missing update_id")
             
-            logger.info(f"✨ Начинаем обработку update_id={update_data['update_id']}")
+            logger.info(f"✨ НАЧИНАЕМ ОБРАБОТКУ UPDATE_ID={update_data['update_id']}")
             
             # Пересылаем данные в Telegram API и ждем результата
             success = await forward_to_telegram(update_data)
             if success:
-                logger.info(f"✅ Webhook обработан успешно для update_id={update_data['update_id']}")
+                logger.info(f"✅ WEBHOOK ОБРАБОТАН УСПЕШНО ДЛЯ UPDATE_ID={update_data['update_id']}")
             else:
-                logger.error(f"❌ Ошибка при обработке webhook для update_id={update_data['update_id']}")
+                logger.error(f"❌ ОШИБКА ПРИ ОБРАБОТКЕ WEBHOOK ДЛЯ UPDATE_ID={update_data['update_id']}")
             
             # Возвращаем успешный ответ
             return web.Response(status=200, text="OK")
