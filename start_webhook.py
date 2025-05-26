@@ -262,7 +262,11 @@ def start_webhook_server():
         
         # Обработчик для корневого пути (для проверки доступности)
         async def health_check(request):
-            return web.Response(text="Бот работает в режиме webhook", status=200)
+            return web.Response(
+                text="OK - Bot is healthy and running in webhook mode",
+                status=200,
+                content_type="text/plain"
+            )
         
         # Обработчик для webhook-запросов
         async def webhook_handler(request):

@@ -89,7 +89,11 @@ def setup_webhook_app(dp: Dispatcher, bot: Bot):
     
     # Добавляем простой обработчик для корневого пути
     async def health_check(request):
-        return web.Response(text="Бот работает в режиме webhook", status=200)
+        return web.Response(
+            text="OK - Bot is healthy and running in webhook mode",
+            status=200,
+            content_type="text/plain"
+        )
     
     app.router.add_get("/", health_check)
     
