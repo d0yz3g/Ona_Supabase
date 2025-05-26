@@ -14,6 +14,13 @@ from aiohttp import web
 from dotenv import load_dotenv
 import time
 
+# Импортируем функции из railway_helper.py
+try:
+    from railway_helper import get_railway_service_url, is_running_on_railway
+    RAILWAY_HELPER_AVAILABLE = True
+except ImportError:
+    RAILWAY_HELPER_AVAILABLE = False
+
 # Отслеживаем время запуска
 start_time = time.time()
 
@@ -49,32 +56,57 @@ def setup_webhook():
     Returns:
         bool: True если webhook успешно настроен, False в противном случае
     """
-    # Получаем необходимые переменные
-    webhook_url = os.environ.get('WEBHOOK_URL')
-    railway_public_domain = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
-    railway_service_id = os.environ.get('RAILWAY_SERVICE_ID')
-    railway_project_id = os.environ.get('RAILWAY_PROJECT_ID')
+    # Сначала используем railway_helper если доступен
+    service_url = None
+    if RAILWAY_HELPER_AVAILABLE:
+        service_base_url = get_railway_service_url()
+        if service_base_url:
+            service_url = f"{service_base_url}/webhook/{BOT_TOKEN}"
+            logger.info(f"Получен URL для webhook из railway_helper: {service_url}")
     
-    # Проверяем если WEBHOOK_HOST установлен отдельно
-    webhook_host = os.environ.get('WEBHOOK_HOST')
+    # Если не удалось получить URL из railway_helper, используем стандартный подход
+    if not service_url:
+        # Получаем необходимые переменные
+        webhook_url = os.environ.get('WEBHOOK_URL')
+        railway_public_domain = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+        railway_service_id = os.environ.get('RAILWAY_SERVICE_ID')
+        railway_project_id = os.environ.get('RAILWAY_PROJECT_ID')
+        
+        # Проверяем если WEBHOOK_HOST установлен отдельно
+        webhook_host = os.environ.get('WEBHOOK_HOST')
+        
+        # Формируем URL для webhook
+        if webhook_url:
+            # Если напрямую указан WEBHOOK_URL, используем его
+            # Но проверяем, не содержит ли он healthcheck.railway.app
+            if "healthcheck.railway.app" in webhook_url:
+                logger.warning("⚠️ Обнаружен URL с healthcheck.railway.app - это неправильный URL!")
+                webhook_url = None  # Сбрасываем, чтобы использовать другие варианты
+            else:
+                logger.info(f"Используется предоставленный WEBHOOK_URL: {webhook_url}")
+                service_url = webhook_url
+        
+        # Если webhook_url не установлен или был сброшен, пробуем другие варианты
+        if not service_url:
+            if webhook_host:
+                # Формируем из WEBHOOK_HOST
+                # Проверяем на healthcheck.railway.app
+                if "healthcheck.railway.app" not in webhook_host:
+                    service_url = f"https://{webhook_host}/webhook/{BOT_TOKEN}"
+                    logger.info(f"Сформирован WEBHOOK_URL на основе WEBHOOK_HOST: {service_url}")
+            elif railway_public_domain:
+                # Формируем из RAILWAY_PUBLIC_DOMAIN
+                # Проверяем на healthcheck.railway.app
+                if "healthcheck.railway.app" not in railway_public_domain:
+                    service_url = f"https://{railway_public_domain}/webhook/{BOT_TOKEN}"
+                    logger.info(f"Сформирован WEBHOOK_URL на основе Railway-домена: {service_url}")
+            elif railway_service_id:
+                # Формируем из ID сервиса Railway
+                service_url = f"https://{railway_service_id}.up.railway.app/webhook/{BOT_TOKEN}"
+                logger.info(f"Сформирован WEBHOOK_URL на основе ID сервиса Railway: {service_url}")
     
-    # Формируем URL для webhook
-    if webhook_url:
-        # Если напрямую указан WEBHOOK_URL, используем его
-        logger.info(f"Используется предоставленный WEBHOOK_URL: {webhook_url}")
-    elif webhook_host:
-        # Формируем из WEBHOOK_HOST
-        webhook_url = f"https://{webhook_host}/webhook/{BOT_TOKEN}"
-        logger.info(f"Сформирован WEBHOOK_URL на основе WEBHOOK_HOST: {webhook_url}")
-    elif railway_public_domain:
-        # Формируем из RAILWAY_PUBLIC_DOMAIN
-        webhook_url = f"https://{railway_public_domain}/webhook/{BOT_TOKEN}"
-        logger.info(f"Сформирован WEBHOOK_URL на основе Railway-домена: {webhook_url}")
-    elif railway_service_id:
-        # Формируем из ID сервиса Railway
-        webhook_url = f"https://{railway_service_id}.up.railway.app/webhook/{BOT_TOKEN}"
-        logger.info(f"Сформирован WEBHOOK_URL на основе ID сервиса Railway: {webhook_url}")
-    else:
+    # Если все ещё нет URL, значит все варианты не подошли
+    if not service_url:
         # Если нет информации для формирования URL, пропускаем настройку webhook
         logger.warning("⚠️ Не удалось определить URL для webhook, работаем без него")
         logger.warning("⚠️ Установите переменную WEBHOOK_URL для правильной работы webhook")
@@ -93,7 +125,7 @@ def setup_webhook():
         logger.error(f"❌ Ошибка при удалении webhook: {e}")
     
     logger.info(f"Настройка webhook для бота с токеном: {BOT_TOKEN[:5]}...{BOT_TOKEN[-5:]}")
-    logger.info(f"Webhook URL: {webhook_url}")
+    logger.info(f"Webhook URL: {service_url}")
     
     # Формируем URL для API Telegram
     api_url = f"https://api.telegram.org/bot{BOT_TOKEN}/setWebhook"
@@ -103,7 +135,7 @@ def setup_webhook():
         response = requests.post(
             api_url,
             json={
-                'url': webhook_url,
+                'url': service_url,
                 'allowed_updates': ['message', 'callback_query', 'inline_query'],
                 'drop_pending_updates': True,
                 'secret_token': os.environ.get('WEBHOOK_SECRET', 'telegram_webhook_secret')
@@ -115,6 +147,9 @@ def setup_webhook():
         if response.status_code == 200 and response.json().get('ok'):
             description = response.json().get('description', 'Нет описания')
             logger.info(f"✅ Webhook успешно установлен: {description}")
+            
+            # Сохраняем успешно установленный URL в переменных окружения
+            os.environ['WEBHOOK_URL'] = service_url
             
             # Проверяем текущие настройки webhook для подтверждения
             check_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo"
@@ -152,12 +187,34 @@ def test_webhook():
             logger.warning("⚠️ ADMIN_CHAT_ID не указан, тестовое сообщение не будет отправлено")
             return
         
+        # Получаем информацию о текущем webhook
+        webhook_info = None
+        try:
+            check_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo"
+            check_response = requests.get(check_url, timeout=10)
+            if check_response.status_code == 200:
+                webhook_info = check_response.json().get('result', {})
+        except Exception as e:
+            logger.error(f"❌ Ошибка получения информации о webhook: {e}")
+        
+        # Формируем текст сообщения
+        webhook_url = os.environ.get('WEBHOOK_URL', 'неизвестный URL')
+        if webhook_info and webhook_info.get('url'):
+            actual_webhook_url = webhook_info.get('url')
+            message_text = f"🤖 Бот перезапущен и готов к работе! Webhook настроен на {actual_webhook_url}."
+            
+            # Добавляем предупреждение, если URL содержит healthcheck.railway.app
+            if "healthcheck.railway.app" in actual_webhook_url:
+                message_text += "\n⚠️ ВНИМАНИЕ: Webhook настроен на healthcheck.railway.app, что может вызвать проблемы. Необходимо настроить правильный URL."
+        else:
+            message_text = f"🤖 Бот перезапущен и готов к работе! Webhook настроен на {webhook_url}."
+        
         # Отправляем тестовое сообщение
         response = requests.post(
             api_url,
             json={
                 'chat_id': admin_id,
-                'text': f"🤖 Бот перезапущен и готов к работе! Webhook настроен на {os.environ.get('WEBHOOK_URL', 'неизвестный URL')}."
+                'text': message_text
             },
             timeout=10
         )
@@ -324,8 +381,8 @@ async def start_simple_server():
             host_info['detected_host'] = host
             logger.info(f"Обнаружен хост из заголовка запроса: {host}")
             
-            # Пробуем настроить webhook с обнаруженным хостом
-            if BOT_TOKEN and not os.environ.get('WEBHOOK_URL'):
+            # Проверяем, не является ли хост healthcheck.railway.app
+            if "healthcheck.railway.app" not in host and BOT_TOKEN and not os.environ.get('WEBHOOK_URL'):
                 webhook_url = f"https://{host}/webhook/{BOT_TOKEN}"
                 logger.info(f"Попытка настройки webhook с обнаруженным хостом: {webhook_url}")
                 
@@ -337,6 +394,8 @@ async def start_simple_server():
                 
                 # Отправляем тестовое сообщение
                 test_webhook()
+            elif "healthcheck.railway.app" in host:
+                logger.warning(f"⚠️ Обнаружен хост healthcheck.railway.app - игнорируем для настройки webhook")
         
         # Получаем информацию о боте
         try:
@@ -488,9 +547,17 @@ async def start_simple_server():
                         logger.info(f"🔄 Последняя ошибка webhook: {last_error or 'нет'}")
                         logger.info(f"🔄 Ожидающие обновления: {pending_updates}")
                         
+                        # Проверка на healthcheck.railway.app и другие проблемы
+                        if "healthcheck.railway.app" in webhook_url:
+                            logger.warning("⚠️ Обнаружен некорректный URL webhook (healthcheck.railway.app), переустанавливаем...")
+                            # Очищаем переменную, чтобы заставить setup_webhook искать другие варианты
+                            if os.environ.get('WEBHOOK_URL') and "healthcheck.railway.app" in os.environ.get('WEBHOOK_URL'):
+                                logger.warning("⚠️ Удаляем некорректную переменную WEBHOOK_URL с healthcheck.railway.app")
+                                os.environ.pop('WEBHOOK_URL')
+                            setup_webhook()
                         # Если последняя ошибка указывает на проблемы с webhook или нет URL,
                         # перенастраиваем webhook
-                        if last_error or not webhook_url:
+                        elif last_error or not webhook_url:
                             logger.warning("⚠️ Обнаружены проблемы с webhook, переустанавливаем...")
                             setup_webhook()
                     else:

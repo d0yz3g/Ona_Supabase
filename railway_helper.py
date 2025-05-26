@@ -12,6 +12,7 @@ import pkgutil
 import inspect
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
+import requests
 
 # Настройка логирования
 logging.basicConfig(
@@ -269,6 +270,59 @@ scheduler = None
         print(f"{prefix}: {message}")
         sys.stdout.flush()
 
+def get_railway_service_url():
+    """
+    Определяет URL для сервиса на Railway, избегая healthcheck.railway.app
+    
+    Returns:
+        str: URL сервиса или None если не удалось определить
+    """
+    # Проверяем наличие переменных окружения Railway
+    railway_service_id = os.environ.get('RAILWAY_SERVICE_ID')
+    railway_project_id = os.environ.get('RAILWAY_PROJECT_ID')
+    railway_public_domain = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+    
+    logger.info("=== Информация о Railway ===")
+    logger.info(f"RAILWAY_SERVICE_ID: {railway_service_id}")
+    logger.info(f"RAILWAY_PROJECT_ID: {railway_project_id}")
+    logger.info(f"RAILWAY_PUBLIC_DOMAIN: {railway_public_domain}")
+    logger.info("==========================")
+    
+    # Проверяем RAILWAY_PUBLIC_DOMAIN
+    if railway_public_domain and "healthcheck.railway.app" not in railway_public_domain:
+        logger.info(f"Используем RAILWAY_PUBLIC_DOMAIN: {railway_public_domain}")
+        return f"https://{railway_public_domain}"
+    
+    # Если есть RAILWAY_SERVICE_ID, формируем URL на основе него
+    if railway_service_id:
+        service_url = f"https://{railway_service_id}.up.railway.app"
+        logger.info(f"Используем URL на основе RAILWAY_SERVICE_ID: {service_url}")
+        return service_url
+    
+    # Пытаемся получить URL из других источников
+    webhook_host = os.environ.get('WEBHOOK_HOST')
+    if webhook_host and "healthcheck.railway.app" not in webhook_host:
+        logger.info(f"Используем WEBHOOK_HOST: {webhook_host}")
+        return f"https://{webhook_host}"
+    
+    # Если ничего не найдено
+    logger.warning("⚠️ Не удалось определить URL сервиса Railway")
+    return None
+
+def is_running_on_railway():
+    """
+    Проверяет, запущено ли приложение на платформе Railway
+    
+    Returns:
+        bool: True если запущено на Railway, False в противном случае
+    """
+    # Проверяем наличие переменных окружения Railway
+    railway_service_id = os.environ.get('RAILWAY_SERVICE_ID')
+    railway_project_id = os.environ.get('RAILWAY_PROJECT_ID')
+    
+    # Если хотя бы одна из переменных определена, считаем что запущено на Railway
+    return bool(railway_service_id or railway_project_id)
+
 # Создаем глобальный экземпляр Railway Helper
 railway_helper = RailwayHelper()
 
@@ -302,4 +356,16 @@ if __name__ == "__main__":
     
     print("=" * 50)
     print("ЗАВЕРШЕНИЕ RAILWAY HELPER")
-    print("=" * 50) 
+    print("=" * 50)
+
+    # Если запущен как скрипт, выводим информацию о Railway
+    railway_url = get_railway_service_url()
+    if railway_url:
+        print(f"Railway service URL: {railway_url}")
+    else:
+        print("Railway service URL could not be determined")
+    
+    if is_running_on_railway():
+        print("Application is running on Railway")
+    else:
+        print("Application is not running on Railway") 
