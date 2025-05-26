@@ -11,6 +11,15 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 from aiogram.types import BufferedInputFile
 
+# Проверка наличия переменной окружения DATABASE_URL для PostgreSQL
+DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL:
+    railway_print = print if 'railway_print' not in globals() else railway_print
+    railway_print(f"Обнаружена переменная DATABASE_URL: PostgreSQL будет использоваться как база данных", "INFO")
+else:
+    railway_print = print if 'railway_print' not in globals() else railway_print
+    railway_print("Переменная DATABASE_URL не найдена: будет использоваться локальная SQLite база данных", "INFO")
+
 # Импортируем fcntl только для Unix-подобных систем
 if sys.platform != 'win32':
     try:
