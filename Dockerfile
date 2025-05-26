@@ -14,14 +14,17 @@ RUN pip install --no-cache-dir python-dotenv==1.0.0 httpx==0.23.3 openai==1.3.3 
 # Устанавливаем остальные зависимости
 RUN pip install --no-cache-dir -r requirements.txt || echo "Some packages failed to install, continuing anyway"
 
+# Копируем сначала критические файлы для патчинга
+COPY pre_import_fix.py patch_main.py fix_imports_global.py modify_site_packages.py fix_problem_modules.py ./
+
+# Проверяем версию openai и наличие AsyncOpenAI
+RUN pip show openai && python -c "import pre_import_fix; from openai import AsyncOpenAI; print('AsyncOpenAI доступен')" || echo "AsyncOpenAI недоступен, будут использованы патчи"
+
 # Копируем остальные файлы
 COPY . .
 
 # Make the startup script executable
 RUN chmod +x railway_start.sh
-
-# Проверяем установку openai
-RUN python -c "from openai import AsyncOpenAI; print('AsyncOpenAI is available')" || echo "AsyncOpenAI check failed, will use patch system"
 
 # Запускаем бота с нашим скриптом запуска
 CMD ["./railway_start.sh"] 
