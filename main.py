@@ -10,6 +10,7 @@ from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 from aiogram.types import BufferedInputFile
+from aiogram.client.default import DefaultBotProperties
 
 # Проверка наличия переменной окружения DATABASE_URL для PostgreSQL
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -244,9 +245,11 @@ except ImportError as e:
 # Создаем экземпляр бота и диспетчер
 bot = Bot(
     token=BOT_TOKEN,
-    parse_mode="HTML",  # Устанавливаем HTML-разметку по умолчанию
-    disable_web_page_preview=True,  # Отключаем предпросмотр веб-страниц
-    protect_content=False  # Разрешаем пересылку сообщений
+    default=DefaultBotProperties(
+        parse_mode="HTML",
+        link_preview_is_disabled=True,
+        protect_content=False
+    )
 )
 dp = Dispatcher(storage=MemoryStorage())
 
