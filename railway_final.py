@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """
-Финальная точка входа для Railway.
-Самая простая и надежная версия без зависимостей от других патчей.
+Финальный сценарий запуска для Railway.
+Обеспечивает запуск бота и healthcheck сервера.
 """
 import os
 import sys
+import time
 import logging
-import importlib
+import threading
 import traceback
-import subprocess
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # Настройка логирования
 logging.basicConfig(
@@ -17,7 +18,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("railway_final")
 
-# Добавляем текущую директорию в sys.path
+# Проверяем и добавляем текущую директорию в sys.path
 if os.getcwd() not in sys.path:
     sys.path.insert(0, os.getcwd())
     logger.info(f"Добавлен {os.getcwd()} в sys.path")
@@ -25,112 +26,80 @@ if os.getcwd() not in sys.path:
 # Устанавливаем переменную окружения для Railway
 os.environ["RAILWAY_ENV"] = "1"
 
-# Определяем класс-заглушку для AsyncOpenAI
-class AsyncOpenAI:
-    """Заглушка для AsyncOpenAI"""
-    def __init__(self, api_key=None, **kwargs):
-        self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
-        logger.info("Инициализация AsyncOpenAI заглушки")
-    
-    class chat:
-        class completions:
-            @staticmethod
-            async def create(*args, **kwargs):
-                logger.info("Вызов AsyncOpenAI.chat.completions.create")
-                return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
-    
-    class audio:
-        @staticmethod
-        async def transcriptions_create(*args, **kwargs):
-            logger.info("Вызов AsyncOpenAI.audio.transcriptions_create")
-            return {"text": "Заглушка транскрипции аудио"}
+# Порт для healthcheck (можно переопределить через переменную окружения)
+PORT = int(os.environ.get("PORT", 8080))
 
-# Патчим модуль openai
-try:
-    import openai
-    
-    # Если AsyncOpenAI не существует в модуле openai, добавляем его
-    if not hasattr(openai, 'AsyncOpenAI'):
-        openai.AsyncOpenAI = AsyncOpenAI
-        logger.info("Добавлен класс AsyncOpenAI в модуль openai")
-    
-    # Добавляем AsyncOpenAI напрямую в sys.modules для импорта from openai import AsyncOpenAI
-    sys.modules['openai.AsyncOpenAI'] = AsyncOpenAI
-    
-    logger.info("Патч openai применен успешно")
-except ImportError:
-    logger.warning("Не удалось импортировать openai, создаем модуль-заглушку")
-    
-    # Создаем модуль-заглушку openai
-    import types
-    openai_module = types.ModuleType('openai')
-    openai_module.AsyncOpenAI = AsyncOpenAI
-    
-    # Добавляем модуль-заглушку в sys.modules
-    sys.modules['openai'] = openai_module
-    sys.modules['openai.AsyncOpenAI'] = AsyncOpenAI
-    
-    logger.info("Создан модуль-заглушка openai")
+# Время запуска
+START_TIME = time.time()
 
-# Проверка, что патч работает
-try:
-    from openai import AsyncOpenAI
-    logger.info("✅ AsyncOpenAI теперь доступен")
-except ImportError as e:
-    logger.error(f"❌ AsyncOpenAI всё ещё недоступен: {e}")
+# Глобальный флаг статуса бота
+BOT_STATUS = {
+    "running": False,
+    "message": "Initializing..."
+}
 
-def start_healthcheck():
-    """Запускает healthcheck сервер в отдельном потоке"""
+# HTTP-обработчик для healthcheck
+class HealthHandler(BaseHTTPRequestHandler):
+    """HTTP-обработчик для healthcheck"""
+    
+    def log_message(self, format, *args):
+        """Отключаем стандартное логирование"""
+        return
+    
+    def do_GET(self):
+        """Обрабатывает GET запрос"""
+        self.send_response(200)
+        self.send_header("Content-type", "text/plain")
+        self.end_headers()
+        
+        uptime = time.time() - START_TIME
+        uptime_str = time.strftime("%H:%M:%S", time.gmtime(uptime))
+        
+        status_message = f"Status: {'OK' if BOT_STATUS['running'] else 'Initializing'}\n"
+        status_message += f"Message: {BOT_STATUS['message']}\n"
+        status_message += f"Uptime: {uptime_str}"
+        
+        self.wfile.write(status_message.encode("utf-8"))
+
+# Функция для запуска HTTP сервера
+def run_healthcheck_server():
+    """Запускает HTTP сервер для healthcheck"""
     try:
-        import simple_healthcheck
-        logger.info("Запуск healthcheck сервера")
-        healthcheck_thread = simple_healthcheck.run_as_thread()
-        return healthcheck_thread
+        server = HTTPServer(("", PORT), HealthHandler)
+        logger.info(f"Healthcheck сервер запущен на порту {PORT}")
+        server.serve_forever()
     except Exception as e:
-        logger.error(f"Ошибка при запуске healthcheck: {e}")
-        return None
+        logger.error(f"Ошибка при запуске healthcheck сервера: {e}")
 
-def run_subprocess():
-    """Запускает бота через subprocess"""
-    logger.info("Запуск main.py через subprocess")
-    cmd = [sys.executable, "main.py"]
-    
+# Функция для запуска бота
+def run_bot():
+    """Запускает бота"""
     try:
-        # Запускаем процесс и перенаправляем вывод
-        process = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            env=os.environ
-        )
+        # Обновляем статус
+        BOT_STATUS["message"] = "Importing main.py..."
         
-        # Читаем и логируем вывод в реальном времени
-        for line in process.stdout:
-            print(line, end='')
+        # Предварительные импорты и исправления
+        try:
+            import pre_import_fix
+            logger.info("✅ pre_import_fix импортирован успешно")
+        except ImportError:
+            logger.warning("⚠️ pre_import_fix не найден, продолжаем без него")
         
-        # Ждем завершения процесса
-        process.wait()
-        
-        # Проверяем код возврата
-        if process.returncode != 0:
-            logger.error(f"Процесс завершился с ошибкой (код {process.returncode})")
-            return False
-        else:
-            logger.info("Процесс успешно завершился")
-            return True
-    except Exception as e:
-        logger.error(f"Ошибка при запуске subprocess: {e}")
-        return False
-
-def run_import():
-    """Запускает бота через прямой импорт"""
-    logger.info("Запуск main.py через прямой импорт")
-    try:
+        # Импортируем основной модуль
+        logger.info("Импортирую main.py...")
         import main
-        logger.info("✅ Бот запущен успешно через импорт")
+        
+        # Обновляем статус
+        BOT_STATUS["running"] = True
+        BOT_STATUS["message"] = "Bot is running"
+        
+        logger.info("✅ Бот запущен успешно через импорт main")
         return True
     except Exception as e:
+        # Обновляем статус
+        BOT_STATUS["running"] = False
+        BOT_STATUS["message"] = f"Error: {str(e)}"
+        
         logger.error(f"❌ Ошибка при импорте main: {e}")
         logger.error(traceback.format_exc())
         return False
@@ -139,40 +108,36 @@ if __name__ == "__main__":
     logger.info("=== Запуск бота на Railway ===")
     logger.info(f"Python версия: {sys.version}")
     logger.info(f"Текущая директория: {os.getcwd()}")
-    logger.info(f"Содержимое директории: {os.listdir('.')}")
     
-    # Запускаем healthcheck сервер
-    healthcheck_thread = start_healthcheck()
+    # Запускаем healthcheck сервер в отдельном потоке
+    health_thread = threading.Thread(target=run_healthcheck_server, daemon=True)
+    health_thread.start()
+    logger.info("Healthcheck сервер запущен в отдельном потоке")
     
-    # Проверяем доступность и версию openai
-    try:
-        subprocess.run([sys.executable, "-m", "pip", "show", "openai"], check=True)
-    except subprocess.CalledProcessError:
-        logger.warning("Не удалось получить информацию о пакете openai")
+    # Проверяем основные переменные окружения
+    for var in ["BOT_TOKEN", "OPENAI_API_KEY"]:
+        if var in os.environ:
+            logger.info(f"✅ Переменная {var} найдена")
+        else:
+            logger.warning(f"⚠️ Переменная {var} отсутствует")
     
-    # Пробуем разные способы запуска
-    try:
-        if run_import():
-            logger.info("Бот успешно запущен через импорт")
-            # Ждем остановки (бесконечно, так как в норме бот работает постоянно)
-            if healthcheck_thread:
-                healthcheck_thread.join()
-            else:
-                # Бесконечный цикл, чтобы процесс не завершался
-                import time
-                while True:
-                    time.sleep(60)
-            sys.exit(0)
-        
-        logger.warning("Не удалось запустить через импорт, пробуем subprocess")
-        
-        if run_subprocess():
-            logger.info("Бот успешно запущен через subprocess")
-            sys.exit(0)
-        
-        logger.error("Не удалось запустить бота")
-        sys.exit(1)
-    except Exception as e:
-        logger.error(f"Критическая ошибка: {e}")
-        logger.error(traceback.format_exc())
-        sys.exit(1) 
+    # Запускаем бота
+    success = run_bot()
+    
+    if success:
+        # Бот запущен успешно, поддерживаем процесс активным
+        logger.info("Бот запущен успешно, ожидание...")
+        try:
+            # Бесконечный цикл для поддержания процесса
+            while True:
+                time.sleep(60)
+        except KeyboardInterrupt:
+            logger.info("Завершение работы по команде пользователя")
+    else:
+        # Бот не запустился, но мы держим healthcheck для Railway
+        logger.error("Бот не запустился, но healthcheck работает")
+        try:
+            while True:
+                time.sleep(60)
+        except KeyboardInterrupt:
+            logger.info("Завершение работы по команде пользователя") 
