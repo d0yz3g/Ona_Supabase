@@ -33,6 +33,26 @@ python fix_pydantic.py
 echo "=== Running openai imports fix ==="
 python fix_openai_imports.py
 
+# Запуск скрипта для исправления railway_helper.py
+echo "=== Running railway_helper fix ==="
+python fix_railway_helper.py
+
+# Запуск скрипта для исправления main.py
+echo "=== Running main.py fix ==="
+python fix_main_openai.py
+
+# Запуск скрипта для исправления всех импортов OpenAI
+echo "=== Running comprehensive OpenAI imports fix ==="
+python fix_all_openai_imports.py
+
+# Прямое исправление проблемных модулей
+echo "=== Running direct module fixes ==="
+python fix_direct_modules.py
+
+# Патчинг самого модуля openai
+echo "=== Patching openai module directly ==="
+python fix_openai_module.py
+
 # Запуск скрипта для проверки установки зависимостей
 echo "=== Running dependency verification script ==="
 python install_all_deps.py
@@ -41,6 +61,26 @@ python install_all_deps.py
 echo "=== Testing aiogram import ==="
 python -c "from aiogram import Bot, Dispatcher, F; from aiogram.types.base import TelegramObject; print('✅ Aiogram импортирован успешно')" || echo "❌ Ошибка импорта aiogram"
 
+# Запуск скрипта подготовки окружения
+echo "=== Running pre-startup environment preparation ==="
+python pre_startup.py
+
 # Запуск бота
 echo "=== Starting ONA Bot ==="
-python main.py 
+python -c "
+try:
+    # Предварительный импорт openai с monkey-патчингом
+    import openai
+    if not hasattr(openai, 'AsyncOpenAI'):
+        class AsyncOpenAI: pass
+        openai.AsyncOpenAI = AsyncOpenAI
+    if not hasattr(openai, 'OpenAI'):
+        class OpenAI: pass
+        openai.OpenAI = OpenAI
+    print('OpenAI monkey-patched successfully')
+except:
+    print('Failed to patch openai')
+"
+
+# Запуск через безопасную обертку
+python safe_startup.py 

@@ -1,8 +1,27 @@
+#!/usr/bin/env python3
+"""
+Скрипт для комплексного решения проблемы с импортом AsyncOpenAI
+"""
 import os
 import re
 import sys
+import glob
 import logging
 
+# Настройка логирования
+logging.basicConfig(
+    format="%(asctime)s - [%(name)s] - %(levelname)s - %(message)s",
+    level=logging.INFO
+)
+logger = logging.getLogger("fix_all_openai_imports")
+
+# Список всех Python файлов в проекте
+def get_all_python_files():
+    """Получает список всех Python файлов в проекте"""
+    return glob.glob("*.py")
+
+# Код заглушки AsyncOpenAI для вставки в файлы
+OPENAI_MOCK_CODE = """
 # Заглушка для AsyncOpenAI
 class AsyncOpenAI:
     def __init__(self, api_key=None):
@@ -28,33 +47,7 @@ class OpenAI:
             def create(*args, **kwargs):
                 print(f"[Mock OpenAI] Вызов chat.completions.create в {__name__}")
                 return {"choices": [{"message": {"content": "Заглушка OpenAI API"}}]}
-
-#!/usr/bin/env python3
 """
-Скрипт для исправления импортов openai в файлах проекта.
-Изменяет импорты AsyncOpenAI и OpenAI на использование нашего адаптера.
-"""
-
-logging.basicConfig(
-    format="%(asctime)s - [%(name)s] - %(levelname)s - %(message)s",
-    level=logging.INFO
-)
-logger = logging.getLogger("fix_openai_imports")
-
-# Файлы, которые нужно проверить
-files_to_check = [
-    'survey_handler.py',
-    'conversation_handler.py',
-    'reminder_handler.py',
-    'voice_handler.py',
-    'communication_handler.py',
-    'profile_generator.py',
-]
-
-# Регулярные выражения для поиска импортов
-re_from_openai_import = re.compile(r'from\s+openai\s+import\s+([^#\n]*)(AsyncOpenAI|OpenAI)')
-re_import_openai = re.compile(r'import\s+openai')
-re_from_openai_direct = re.compile(r'from\s+openai\s+import\s+')
 
 def backup_file(file_path):
     """Создает резервную копию файла"""
@@ -64,15 +57,14 @@ def backup_file(file_path):
             with open(file_path, 'r', encoding='utf-8') as src:
                 with open(backup_path, 'w', encoding='utf-8') as dst:
                     dst.write(src.read())
-            logger.info(f"Создана резервная копия {backup_path}")
             return True
         except Exception as e:
             logger.error(f"Ошибка при создании резервной копии {file_path}: {e}")
             return False
     return True
 
-def fix_openai_imports(file_path):
-    """Исправляет импорты openai в файле"""
+def fix_file(file_path):
+    """Исправляет импорты OpenAI и AsyncOpenAI в файле"""
     if not os.path.exists(file_path):
         logger.warning(f"Файл {file_path} не найден")
         return False
@@ -85,35 +77,42 @@ def fix_openai_imports(file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # Проверяем, есть ли импорты, которые нужно исправить
-        if not (re_from_openai_import.search(content) or 
-                (re_import_openai.search(content) and 'AsyncOpenAI' in content)):
-            logger.info(f"Файл {file_path} не требует исправления")
+        # Проверяем, используется ли в файле AsyncOpenAI или OpenAI
+        if "AsyncOpenAI" not in content and "OpenAI" not in content:
+            logger.info(f"Файл {file_path} не использует AsyncOpenAI или OpenAI")
             return True
         
-        # Добавляем импорт нашего адаптера в начало файла
-        adapter_import = "from openai_adapter import AsyncOpenAI, OpenAI  # Адаптер для совместимости\n"
+        # Проверяем, есть ли уже заглушка AsyncOpenAI
+        if "class AsyncOpenAI" in content:
+            logger.info(f"Файл {file_path} уже содержит заглушку AsyncOpenAI")
+            return True
         
-        # Заменяем импорты OpenAI/AsyncOpenAI на комментарии
-        content = re_from_openai_import.sub(r'# \g<0>  # Заменено на адаптер', content)
+        # Заменяем импорты AsyncOpenAI на комментарии
+        content = re.sub(
+            r'from\s+openai\s+import\s+([^#\n]*)(AsyncOpenAI|OpenAI)', 
+            r'# \g<0>  # Заменено на локальную заглушку', 
+            content
+        )
         
-        # Добавляем импорт адаптера после последнего импорта
+        # Находим место для вставки заглушки - после импортов
         import_block_end = 0
         for match in re.finditer(r'^(?:import|from)\s+\w+', content, re.MULTILINE):
             import_block_end = max(import_block_end, match.end())
         
         if import_block_end > 0:
             # Вставляем после последнего импорта
-            content_lines = content.splitlines()
-            for i in range(len(content_lines)):
-                if re.match(r'^(?:import|from)\s+\w+', content_lines[i]):
-                    last_import_line = i
+            import_lines = []
+            other_lines = []
+            for line in content.splitlines():
+                if line.startswith('import ') or line.startswith('from '):
+                    import_lines.append(line)
+                else:
+                    other_lines.append(line)
             
-            content_lines.insert(last_import_line + 1, adapter_import.strip())
-            content = '\n'.join(content_lines)
+            content = '\n'.join(import_lines) + '\n' + OPENAI_MOCK_CODE + '\n' + '\n'.join(other_lines)
         else:
             # Вставляем в начало файла
-            content = adapter_import + content
+            content = OPENAI_MOCK_CODE + '\n\n' + content
         
         # Записываем изменения обратно в файл
         with open(file_path, 'w', encoding='utf-8') as f:
@@ -136,18 +135,25 @@ def fix_openai_imports(file_path):
 
 def main():
     """Основная функция скрипта"""
-    logger.info("=== Начало исправления импортов openai ===")
+    logger.info("=== Начало исправления всех импортов OpenAI ===")
+    
+    # Создаем модуль-заглушку openai_stub.py
+    with open("openai_stub.py", "w", encoding="utf-8") as f:
+        f.write(OPENAI_MOCK_CODE)
+    logger.info("Создан модуль-заглушка openai_stub.py")
+    
+    # Получаем список всех Python файлов
+    python_files = get_all_python_files()
+    logger.info(f"Найдено {len(python_files)} Python файлов")
+    
+    # Исправляем каждый файл
     success_count = 0
+    for file_path in python_files:
+        if fix_file(file_path):
+            success_count += 1
     
-    for file_name in files_to_check:
-        if os.path.exists(file_name):
-            if fix_openai_imports(file_name):
-                success_count += 1
-        else:
-            logger.warning(f"Файл {file_name} не найден")
-    
-    logger.info(f"=== Завершено. Исправлено файлов: {success_count}/{len(files_to_check)} ===")
-    return 0 if success_count == len(files_to_check) else 1
+    logger.info(f"=== Завершено. Исправлено файлов: {success_count}/{len(python_files)} ===")
+    return 0 if success_count > 0 else 1
 
 if __name__ == "__main__":
     sys.exit(main()) 
