@@ -1,4 +1,8 @@
-{
+import json
+import os
+
+# Создаем тестовые профили
+profiles = {
     "123456789": {
         "answers": {
             "name": "Test User",
@@ -7,7 +11,7 @@
             "birthplace": "Test City",
             "timezone": "UTC+3"
         },
-        "profile_completed": true,
+        "profile_completed": True,
         "profile_text": "This is a test profile for the persistence functionality.",
         "profile_details": "This is a detailed test profile for the persistence functionality.",
         "personality_type": "Интеллектуальный",
@@ -27,7 +31,7 @@
             "birthplace": "Test City 2",
             "timezone": "UTC+4"
         },
-        "profile_completed": true,
+        "profile_completed": True,
         "profile_text": "This is a new test profile for the persistence functionality.",
         "profile_details": "This is a detailed new test profile for the persistence functionality.",
         "personality_type": "Эмоциональный",
@@ -40,3 +44,20 @@
         }
     }
 }
+
+# Путь к файлу
+file_path = "user_profiles.json"
+
+# Сохраняем профили в файл
+with open(file_path, 'w', encoding='utf-8') as f:
+    json.dump(profiles, f, ensure_ascii=False, indent=4)
+
+print(f"Файл {file_path} обновлен. Добавлено {len(profiles)} профилей.")
+
+# Проверяем содержимое файла
+print(f"\nСодержимое файла {file_path}:")
+with open(file_path, 'r', encoding='utf-8') as f:
+    content = f.read()
+    print(content)
+
+print(f"\nРазмер файла: {os.path.getsize(file_path)} байт") 
