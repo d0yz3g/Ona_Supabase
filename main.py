@@ -225,6 +225,9 @@ if WEBHOOK_MODE:
         railway_print(f"Сформирован Webhook URL из Railway домена: {webhook_url}", "INFO")
     else:
         railway_print("ВНИМАНИЕ: WEBHOOK_URL не указан, но выбран режим webhook", "WARNING")
+        railway_print("Переключение на режим polling, так как URL webhook не настроен", "INFO")
+        # Переключаемся на режим polling, так как webhook URL не настроен
+        WEBHOOK_MODE = False
 
 # Определяем функцию для получения клавиатуры
 def get_main_keyboard():
@@ -330,6 +333,9 @@ def setup_dispatcher(bot=None):
 
 async def cmd_start(message: Message):
     """Обработчик команды /start"""
+    logger.info(f"Получена команда /start от пользователя {message.from_user.id} ({message.from_user.username})")
+    railway_print(f"Получена команда /start от пользователя {message.from_user.username or message.from_user.id}", "INFO")
+    
     await message.answer(
         f"Привет, {message.from_user.first_name}! Я ONA - твой бот-помощник.\n"
         f"Используй команду /help, чтобы узнать, что я умею.",
@@ -338,6 +344,9 @@ async def cmd_start(message: Message):
 
 async def cmd_help(message: Message):
     """Обработчик команды /help"""
+    logger.info(f"Получена команда /help от пользователя {message.from_user.id} ({message.from_user.username})")
+    railway_print(f"Получена команда /help от пользователя {message.from_user.username or message.from_user.id}", "INFO")
+    
     help_text = (
         "Вот что я умею:\n\n"
         "📋 /profile - Показать твой профиль\n"
@@ -351,12 +360,18 @@ async def cmd_help(message: Message):
 
 async def cmd_api_key(message: Message):
     """Обработчик команды /api_key"""
+    logger.info(f"Получена команда /api_key от пользователя {message.from_user.id} ({message.from_user.username})")
+    railway_print(f"Получена команда /api_key от пользователя {message.from_user.username or message.from_user.id}", "INFO")
+    
     await message.answer(
         "Чтобы обновить API ключи, отредактируйте файл .env и перезапустите бота."
     )
 
 async def cmd_restart(message: Message):
     """Обработчик команды /restart"""
+    logger.info(f"Получена команда /restart от пользователя {message.from_user.id} ({message.from_user.username})")
+    railway_print(f"Получена команда /restart от пользователя {message.from_user.username or message.from_user.id}", "INFO")
+    
     await message.answer("Перезапуск бота...")
     # Перезапуск будет выполнен внешним скриптом или службой
     release_lock()
@@ -410,23 +425,31 @@ async def main():
     """
     # Проверяем режим работы
     if WEBHOOK_MODE:
-        railway_print("Бот настроен для работы в режиме webhook", "INFO")
-        railway_print("Для запуска webhook-сервера используйте: python webhook_server.py", "INFO")
+        webhook_url = os.getenv("WEBHOOK_URL")
+        railway_public_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN")
         
-        # Если файл запущен напрямую, выводим инструкцию
-        if __name__ == "__main__":
-            railway_print("Webhook режим активирован. Запуск через polling не будет выполнен", "WARNING")
-            railway_print("Для запуска в режиме webhook выполните: python webhook_server.py", "INFO")
+        # Проверяем наличие URL для webhook
+        if not webhook_url and not railway_public_domain:
+            railway_print("WEBHOOK_MODE=true, но URL webhook не настроен. Переключение на режим polling", "WARNING")
+            # Выполняем код для режима polling
+        else:
+            railway_print("Бот настроен для работы в режиме webhook", "INFO")
+            railway_print("Для запуска webhook-сервера используйте: python webhook_server.py", "INFO")
             
-            # Проверяем наличие файла webhook_server.py
-            if os.path.exists("webhook_server.py"):
-                railway_print("Найден файл webhook_server.py", "INFO")
-            else:
-                railway_print("ОШИБКА: Файл webhook_server.py не найден", "ERROR")
-                railway_print("Создайте файл webhook_server.py или измените режим на polling (WEBHOOK_MODE=false)", "ERROR")
-        
-        # Возвращаем, чтобы не запускать polling в режиме webhook
-        return
+            # Если файл запущен напрямую, выводим инструкцию
+            if __name__ == "__main__":
+                railway_print("Webhook режим активирован. Запуск через polling не будет выполнен", "WARNING")
+                railway_print("Для запуска в режиме webhook выполните: python webhook_server.py", "INFO")
+                
+                # Проверяем наличие файла webhook_server.py
+                if os.path.exists("webhook_server.py"):
+                    railway_print("Найден файл webhook_server.py", "INFO")
+                else:
+                    railway_print("ОШИБКА: Файл webhook_server.py не найден", "ERROR")
+                    railway_print("Создайте файл webhook_server.py или измените режим на polling (WEBHOOK_MODE=false)", "ERROR")
+            
+            # Возвращаем, чтобы не запускать polling в режиме webhook
+            return
     
     # Пытаемся получить блокировку, чтобы предотвратить запуск нескольких экземпляров
     if not acquire_lock():
@@ -440,6 +463,12 @@ async def main():
         
         # Настраиваем диспетчер
         dp = setup_dispatcher(bot)
+        
+        # Добавляем общий обработчик текстовых сообщений для логирования
+        @dp.message(F.text)
+        async def handle_text_message(message: Message):
+            logger.info(f"Получено текстовое сообщение от пользователя {message.from_user.id} ({message.from_user.username}): {message.text[:50]}...")
+            railway_print(f"Получено сообщение от пользователя {message.from_user.username or message.from_user.id}: {message.text[:50]}...", "INFO")
         
         # Запускаем планировщик напоминаний
         asyncio.create_task(start_scheduler())
@@ -473,7 +502,7 @@ async def main():
             
             # Запускаем бота в режиме long polling
             logger.info("Запуск бота в режиме polling...")
-            railway_print("Бот запущен, ожидание сообщений...", "INFO")
+            railway_print("Бот запущен в режиме polling, ожидание сообщений...", "INFO")
             await dp.start_polling(bot)
         except Exception as e:
             logger.error(f"Ошибка при запуске бота: {e}")

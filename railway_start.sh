@@ -54,6 +54,16 @@ fi
 echo "Ожидание 10 секунд для освобождения соединений Telegram API..."
 sleep 10
 
+# Проверка наличия переменных для webhook
+echo "Проверка переменных для webhook..."
+if [ -z "$WEBHOOK_URL" ] && [ -z "$RAILWAY_PUBLIC_DOMAIN" ]; then
+    echo "WEBHOOK_URL и RAILWAY_PUBLIC_DOMAIN не заданы, устанавливаем WEBHOOK_MODE=false"
+    export WEBHOOK_MODE=false
+    echo "WEBHOOK_MODE установлен в 'false'"
+else
+    echo "✓ Обнаружены переменные для webhook, режим webhook будет использоваться, если WEBHOOK_MODE=true"
+fi
+
 # Проверка наличия файлов бота
 echo "Проверка наличия ключевых файлов бота..."
 REQUIRED_FILES=("main.py" "restart_bot.py" "railway_logging.py" "create_placeholders.py" "fix_imports.py")
