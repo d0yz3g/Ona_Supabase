@@ -20,6 +20,16 @@ WEBHOOK_MODE = os.getenv("WEBHOOK_MODE", "false").lower() in ("true", "1", "yes"
 # Переменная для определения запуска на Railway
 RAILWAY_ENV = os.getenv("RAILWAY", "false").lower() in ("true", "1", "yes") or os.getenv("RAILWAY_STATIC_URL") is not None
 
+# Проверка webhook_url и RAILWAY_PUBLIC_DOMAIN
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+RAILWAY_PUBLIC_DOMAIN = os.getenv("RAILWAY_PUBLIC_DOMAIN")
+
+# Если WEBHOOK_MODE=true, но URL не настроен, переключаемся на polling
+if WEBHOOK_MODE and not WEBHOOK_URL and not RAILWAY_PUBLIC_DOMAIN:
+    print("ПРЕДУПРЕЖДЕНИЕ: WEBHOOK_MODE=true, но ни WEBHOOK_URL, ни RAILWAY_PUBLIC_DOMAIN не настроены")
+    print("ПРЕДУПРЕЖДЕНИЕ: Переключение на режим polling")
+    WEBHOOK_MODE = False
+
 # Проверка наличия переменной окружения DATABASE_URL для PostgreSQL
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -288,6 +298,15 @@ def setup_dispatcher(bot=None):
     dp.message.register(cmd_restart, Command("restart"))
     dp.message.register(cmd_restart, F.text == "🔄 Рестарт")
     
+    # Глобальный обработчик текстовых сообщений
+    @dp.message(F.text)
+    async def handle_text_message(message: Message):
+        """Обработчик текстовых сообщений для логирования"""
+        user_id = message.from_user.id
+        username = message.from_user.username or f"user_{user_id}"
+        logger.info(f"Получено сообщение от {username}: {message.text[:50]}{'...' if len(message.text) > 50 else ''}")
+        railway_print(f"Получено сообщение от {username}: {message.text[:50]}{'...' if len(message.text) > 50 else ''}", "INFO")
+    
     # Импортируем и регистрируем обработчики
     try:
         # Импортируем обработчики опросов
@@ -463,12 +482,6 @@ async def main():
         
         # Настраиваем диспетчер
         dp = setup_dispatcher(bot)
-        
-        # Добавляем общий обработчик текстовых сообщений для логирования
-        @dp.message(F.text)
-        async def handle_text_message(message: Message):
-            logger.info(f"Получено текстовое сообщение от пользователя {message.from_user.id} ({message.from_user.username}): {message.text[:50]}...")
-            railway_print(f"Получено сообщение от пользователя {message.from_user.username or message.from_user.id}: {message.text[:50]}...", "INFO")
         
         # Запускаем планировщик напоминаний
         asyncio.create_task(start_scheduler())

@@ -42,6 +42,9 @@ def is_port_available(port):
         logger.error(f"Ошибка при проверке порта {port}: {e}")
         return False
 
+# Переменная для отслеживания времени запуска
+start_time = time.time()
+
 async def on_startup(bot: Bot):
     """
     Функция, вызываемая при запуске сервера
