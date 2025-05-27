@@ -242,7 +242,17 @@ def setup_webhook_app(dp: Dispatcher, bot: Bot):
             print(f"WEBHOOK SERVER ОШИБКА: Проверка health check не удалась: {e}")
             # Railway ожидает статус 200 для успешного health check, 
             # поэтому возвращаем 200 даже при ошибке, чтобы приложение не перезапускалось
-            return web.Response(text=f"OK (with warnings)", status=200, content_type="text/plain")
+            
+            # Формируем ответ с информацией об ошибке, но со статусом 200
+            error_response = (
+                f"Status: OK (with errors)\n"
+                f"Error: {str(e)}\n"
+                f"Uptime: {int(time.time() - start_time)} seconds\n"
+                f"Mode: webhook\n"
+                f"Railway: {'yes' if RAILWAY_ENV else 'no'}\n"
+                f"Timestamp: {datetime.now().isoformat()}\n"
+            )
+            return web.Response(text=error_response, status=200, content_type="text/plain")
     
     # Добавляем обработчики для проверки здоровья приложения
     app.router.add_get("/", health_check)
