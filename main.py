@@ -488,9 +488,12 @@ async def main():
             dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
         )
         
+        # Создаем задачу для ожидания события завершения
+        shutdown_wait_task = asyncio.create_task(shutdown_event.wait())
+        
         # Ожидаем сигнала завершения или ошибки в поллинге
         await asyncio.wait(
-            [polling_task, shutdown_event.wait()],
+            [polling_task, shutdown_wait_task],
             return_when=asyncio.FIRST_COMPLETED
         )
         
@@ -522,9 +525,12 @@ async def main():
                     dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
                 )
                 
+                # Создаем задачу для ожидания события завершения
+                shutdown_wait_task = asyncio.create_task(shutdown_event.wait())
+                
                 # Ожидаем сигнала завершения или ошибки в поллинге
                 await asyncio.wait(
-                    [polling_task, shutdown_event.wait()],
+                    [polling_task, shutdown_wait_task],
                     return_when=asyncio.FIRST_COMPLETED
                 )
                 
