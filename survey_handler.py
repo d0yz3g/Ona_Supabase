@@ -478,13 +478,6 @@ async def complete_survey(message: Message, state: FSMContext, answers: Dict[str
         logger.info(f"Получен краткий профиль длиной {len(profile_text)} символов")
         logger.info(f"Получен детальный профиль длиной {len(detailed_profile)} символов")
         
-        # Сохраняем профиль в базу данных
-        saved = await save_profile_to_db(message.from_user.id, profile_text, answers)
-        if saved:
-            logger.info(f"Профиль успешно сохранен в базу данных для пользователя {message.from_user.id}")
-        else:
-            logger.warning(f"Не удалось сохранить профиль в базу данных для пользователя {message.from_user.id}")
-        
         # Сбрасываем состояние опроса
         await state.set_state(None)
         
@@ -952,7 +945,7 @@ async def command_survey(message: Message, state: FSMContext):
 @survey_router.message(F.text == "👤 Профиль")
 async def command_profile(message: Message, state: FSMContext):
     """
-    Обработчик команды /profile для просмотра профиля пользователя.
+    Обработчик команды /profile и кнопки "Профиль".
     
     Args:
         message: Сообщение от пользователя
@@ -960,78 +953,68 @@ async def command_profile(message: Message, state: FSMContext):
     """
     # Получаем данные пользователя
     user_data = await state.get_data()
-    
-    # Проверяем, есть ли у пользователя сохраненный профиль в состоянии
     profile_completed = user_data.get("profile_completed", False)
-    profile_text = user_data.get("profile_text", "")
     
-    # Если в состоянии нет профиля, пробуем загрузить его из базы данных
-    if not profile_completed or not profile_text:
-        try:
-            from db_postgres import Database
-            
-            # Инициализируем соединение с базой данных
-            db = Database()
-            
-            # Получаем или создаем пользователя в базе данных
-            db_user_id = await db.get_or_create_user(tg_id=message.from_user.id)
-            
-            # Получаем профиль пользователя из базы данных
-            profile = await db.get_profile(db_user_id)
-            
-            if profile and "data" in profile and "profile_text" in profile["data"]:
-                profile_text = profile["data"]["profile_text"]
-                
-                # Также загружаем ответы пользователя из базы данных
-                answers = await db.get_answers(db_user_id)
-                
-                # Импортируем функцию для определения типа личности
-                from questions import get_personality_type_from_answers
-                
-                # Определяем тип личности на основе ответов
-                type_counts, primary_type, secondary_type = get_personality_type_from_answers(answers)
-                
-                # Обновляем данные состояния
-                await state.update_data(
-                    answers=answers,
-                    profile_completed=True,
-                    profile_text=profile_text,
-                    personality_type=primary_type,
-                    secondary_type=secondary_type,
-                    type_counts=type_counts
-                )
-                
-                # Обновляем переменные для дальнейшей обработки
-                profile_completed = True
-                logger.info(f"Профиль загружен из базы данных для пользователя {message.from_user.id}")
-        except Exception as e:
-            logger.error(f"Ошибка при загрузке профиля из базы данных: {e}")
-    
-    if profile_completed and profile_text:
-        # Создаем клавиатуру с кнопками
-        builder = InlineKeyboardBuilder()
-        builder.button(text="📊 Статистика", callback_data="show_stats")
-        builder.button(text="📋 Детальный анализ", callback_data="show_details")
-        builder.button(text="💡 Получить совет", callback_data="get_advice")
-        builder.button(text="🔄 Пройти опрос заново", callback_data="restart_survey")
-        builder.adjust(1)  # Располагаем кнопки в столбик
+    if profile_completed:
+        # Получаем тип личности и ответы пользователя
+        personality_type = user_data.get("personality_type", "Интеллектуальный")
+        secondary_type = user_data.get("secondary_type", "")
+        answers = user_data.get("answers", {})
+        
+        # Извлекаем личные данные пользователя
+        name = answers.get("name", "пользователь")
+        age = answers.get("age", "")
+        birthdate = answers.get("birthdate", "")
+        birthplace = answers.get("birthplace", "")
+        timezone = answers.get("timezone", "")
+        
+        # Формируем личную информацию и тип личности
+        profile_text = f"👤 <b>Личная информация</b>:\n"
+        if name:
+            profile_text += f"• Имя: {name}\n"
+        if age:
+            profile_text += f"• Возраст: {age}\n"
+        if birthdate:
+            profile_text += f"• Дата рождения: {birthdate}\n"
+        if birthplace:
+            profile_text += f"• Место рождения: {birthplace}\n"
+        if timezone:
+            profile_text += f"• Часовой пояс: {timezone}\n"
+        
+        # Добавляем информацию о типе личности
+        profile_text += f"\n🧠 <b>Ваш психологический тип: {personality_type}</b>"
+        if secondary_type:
+            profile_text += f" <i>(с элементами {secondary_type})</i>"
         
         # Отправляем профиль
         await message.answer(
             profile_text,
-            parse_mode="HTML",
-            reply_markup=builder.as_markup()
+            parse_mode="HTML"
         )
-    else:
-        # Если профиля нет, предлагаем пройти опрос
+        
+        # Добавляем кнопки для действий с профилем
         builder = InlineKeyboardBuilder()
-        builder.button(text="📝 Начать опрос", callback_data="start_survey")
+        builder.button(text="🔄 Пройти опрос заново", callback_data="restart_survey")
+        builder.button(text="📊 Подробная статистика", callback_data="show_stats")
+        builder.button(text="📋 Детальный анализ", callback_data="show_details")
+        builder.button(text="💡 Получить совет", callback_data="get_advice")
+        builder.button(text="◀️ Вернуться в меню", callback_data="main_menu")
+        builder.adjust(1)
         
         await message.answer(
-            "🔍 <b>Профиль не найден</b>\n\n"
-            "Вы еще не прошли опрос для определения вашего психологического профиля.\n"
-            "Хотите пройти его сейчас?",
-            parse_mode="HTML",
+            "Что вы хотите сделать с вашим профилем?",
+            reply_markup=builder.as_markup()
+        )
+        
+        # Устанавливаем состояние просмотра профиля
+        await state.set_state(ProfileStates.viewing)
+    else:
+        # Предлагаем пройти опрос, если профиля нет
+        builder = InlineKeyboardBuilder()
+        builder.button(text="✅ Начать опрос", callback_data="start_survey")
+        
+        await message.answer(
+            "У вас пока нет психологического профиля. Чтобы создать его, нужно пройти опрос.",
             reply_markup=builder.as_markup()
         )
 
@@ -1304,17 +1287,3 @@ async def test_interpretations():
 if __name__ == "__main__":
     import asyncio
     asyncio.run(test_interpretations()) 
-
-# Функция для регистрации обработчиков в диспетчере
-def register_survey_handlers(dp):
-    """
-    Регистрирует все обработчики опросов в диспетчере.
-    
-    Args:
-        dp: Диспетчер
-    """
-    # Включаем роутер опросов в диспетчер
-    dp.include_router(survey_router)
-    
-    # Логируем успешную регистрацию
-    logger.info("Обработчики опросов успешно зарегистрированы") 

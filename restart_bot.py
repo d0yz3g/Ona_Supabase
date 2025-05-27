@@ -10,7 +10,7 @@ import sys
 import os
 import logging
 import signal
-from datetime import datetime, timedelta
+import datetime
 import threading
 
 # Настройка логирования с приоритетом на вывод в консоль для Railway
@@ -27,7 +27,7 @@ logger = logging.getLogger("restart_bot")
 # Явный вывод для Railway
 print("=" * 50)
 print("RESTART MONITOR: Запуск монитора перезапуска Telegram бота")
-print(f"Текущее время: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+print(f"Текущее время: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 print("=" * 50)
 
 # Проверка наличия psutil
@@ -52,7 +52,7 @@ RESTART_INTERVAL = 5
 
 def get_today():
     """Получить текущую дату в формате строки."""
-    return datetime.now().strftime("%Y-%m-%d")
+    return datetime.datetime.now().strftime("%Y-%m-%d")
 
 def parse_log_level(line):
     """
@@ -281,9 +281,9 @@ class BotRunner:
                 print(f"ОШИБКА: {error_msg}")
                 
                 # Ждем до следующего дня
-                tomorrow = datetime.now() + timedelta(days=1)
+                tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
                 tomorrow = tomorrow.replace(hour=0, minute=0, second=0, microsecond=0)
-                seconds_until_tomorrow = (tomorrow - datetime.now()).total_seconds()
+                seconds_until_tomorrow = (tomorrow - datetime.datetime.now()).total_seconds()
                 print(f"МОНИТОР: Ожидание {seconds_until_tomorrow} секунд до сброса счетчика...")
                 time.sleep(seconds_until_tomorrow)
                 continue

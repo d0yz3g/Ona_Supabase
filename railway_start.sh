@@ -54,35 +54,6 @@ fi
 echo "Ожидание 10 секунд для освобождения соединений Telegram API..."
 sleep 10
 
-# Проверка наличия переменных для webhook
-echo "Проверка переменных для webhook..."
-if [ -z "$WEBHOOK_URL" ] && [ -z "$RAILWAY_PUBLIC_DOMAIN" ]; then
-    echo "WEBHOOK_URL и RAILWAY_PUBLIC_DOMAIN не заданы, устанавливаем WEBHOOK_MODE=false"
-    export WEBHOOK_MODE=false
-    echo "WEBHOOK_MODE установлен в 'false'"
-    
-    # Изменяем скрипт запуска в процессе работы
-    echo "Модифицируем railway.json для использования polling..."
-    # Проверка наличия jq
-    if command -v jq >/dev/null 2>&1; then
-        # Используем jq для изменения файла
-        jq '.deploy.startCommand = "python main.py"' railway.json > railway.json.tmp && mv railway.json.tmp railway.json
-        echo "✓ Модифицирован railway.json для использования polling"
-    else
-        echo "ПРЕДУПРЕЖДЕНИЕ: jq не установлен, невозможно автоматически изменить railway.json"
-        echo "ПРЕДУПРЕЖДЕНИЕ: Рекомендуется вручную изменить railway.json для использования python main.py"
-    fi
-else
-    echo "✓ Обнаружены переменные для webhook, режим webhook будет использоваться, если WEBHOOK_MODE=true"
-    
-    # Проверяем, что WEBHOOK_MODE=true
-    if [ "$WEBHOOK_MODE" != "true" ] && [ "$WEBHOOK_MODE" != "1" ] && [ "$WEBHOOK_MODE" != "yes" ]; then
-        echo "ПРЕДУПРЕЖДЕНИЕ: Найдены переменные для webhook, но WEBHOOK_MODE не установлен в 'true'"
-        echo "Установка WEBHOOK_MODE=true..."
-        export WEBHOOK_MODE=true
-    fi
-fi
-
 # Проверка наличия файлов бота
 echo "Проверка наличия ключевых файлов бота..."
 REQUIRED_FILES=("main.py" "restart_bot.py" "railway_logging.py" "create_placeholders.py" "fix_imports.py")

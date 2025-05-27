@@ -33,7 +33,6 @@ tmp/
 *.db
 *.sqlite
 *.sqlite3
-!data/database.db
 
 # Файлы IDE
 .idea/
