@@ -73,9 +73,15 @@ async def on_startup(bot: Bot):
     if webhook_url:
         # Устанавливаем webhook
         try:
+            # Получаем текущие настройки webhook для диагностики
+            current_webhook = await bot.get_webhook_info()
+            print(f"WEBHOOK SERVER: Текущие настройки webhook до изменения: URL={current_webhook.url}, has_custom_certificate={current_webhook.has_custom_certificate}, pending_updates={current_webhook.pending_update_count}")
+            logger.info(f"Текущий webhook до изменения: URL={current_webhook.url}, has_custom_certificate={current_webhook.has_custom_certificate}")
+            
             # Сначала удаляем старый webhook, чтобы избежать конфликтов
             await bot.delete_webhook(drop_pending_updates=True)
             logger.info("Старый webhook удален")
+            print("WEBHOOK SERVER: Старый webhook удален")
             
             # Устанавливаем новый webhook
             await bot.set_webhook(
@@ -89,6 +95,7 @@ async def on_startup(bot: Bot):
             # Проверяем, что webhook действительно установлен
             webhook_info = await bot.get_webhook_info()
             logger.info(f"Проверка webhook: URL={webhook_info.url}, pending_updates={webhook_info.pending_update_count}")
+            print(f"WEBHOOK SERVER: Проверка webhook после установки: URL={webhook_info.url}, pending_updates={webhook_info.pending_update_count}")
             
             if webhook_info.last_error_date:
                 logger.warning(f"⚠️ Последняя ошибка webhook: {webhook_info.last_error_message}")
@@ -148,6 +155,57 @@ def setup_webhook_app(dp: Dispatcher, bot: Bot):
     # Настраиваем пути веб-приложения
     webhook_handler.register(app, path=webhook_path)
     
+    # Добавим дополнительный обработчик запросов для диагностики
+    @web.middleware
+    async def logging_middleware(request, handler):
+        print(f"WEBHOOK SERVER: Входящий запрос на {request.path} [метод: {request.method}]")
+        logger.info(f"Входящий запрос на {request.path} [метод: {request.method}]")
+        try:
+            response = await handler(request)
+            print(f"WEBHOOK SERVER: Ответ на запрос {request.path}: статус {response.status}")
+            logger.info(f"Ответ на запрос {request.path}: статус {response.status}")
+            return response
+        except Exception as e:
+            print(f"WEBHOOK SERVER ОШИБКА: Ошибка при обработке запроса {request.path}: {e}")
+            logger.error(f"Ошибка при обработке запроса {request.path}: {e}")
+            raise
+    
+    # Применяем middleware
+    app.middlewares.append(logging_middleware)
+    
+    # Создаем отдельный обработчик для явной проверки webhook-запросов
+    async def debug_webhook(request):
+        try:
+            body = await request.read()
+            headers = dict(request.headers)
+            
+            # Логируем содержимое запроса
+            print(f"WEBHOOK SERVER: Получен debug webhook запрос:")
+            print(f"Путь: {request.path}")
+            print(f"Метод: {request.method}")
+            print(f"Длина тела: {len(body)} байт")
+            print(f"Заголовки: {headers}")
+            
+            logger.info(f"Получен debug webhook запрос на {request.path}, метод {request.method}, длина тела {len(body)} байт")
+            
+            # Попытаемся распарсить тело, если это JSON
+            try:
+                if body and b'{' in body:
+                    json_data = await request.json()
+                    print(f"JSON данные: {json_data}")
+                    logger.info(f"Содержимое webhook-запроса: {json_data}")
+            except Exception as e:
+                logger.error(f"Ошибка при парсинге JSON: {e}")
+            
+            # Просто возвращаем успешный ответ
+            return web.Response(text="DEBUG OK", status=200)
+        except Exception as e:
+            logger.error(f"Ошибка в debug_webhook: {e}")
+            return web.Response(text=f"Error: {e}", status=500)
+    
+    # Добавляем debug-обработчик
+    app.router.add_post("/debug_webhook", debug_webhook)
+    
     # Функция для проверки здоровья приложения
     async def health_check(request):
         try:
@@ -190,9 +248,67 @@ def setup_webhook_app(dp: Dispatcher, bot: Bot):
     app.router.add_get("/", health_check)
     app.router.add_get("/health", health_check)  # Добавляем для Railway health check
     
+    # Добавляем обработчик для явного сохранения webhook URL
+    async def set_webhook(request):
+        try:
+            # Получаем URL из query параметра
+            data = await request.post()
+            url = data.get('url')
+            
+            if not url:
+                return web.Response(text="Error: missing 'url' parameter", status=400)
+            
+            # Устанавливаем webhook
+            await bot.set_webhook(url=url)
+            
+            # Получаем информацию о webhook
+            webhook_info = await bot.get_webhook_info()
+            
+            # Возвращаем результат
+            return web.Response(
+                text=f"Webhook set to: {webhook_info.url}\nPending updates: {webhook_info.pending_update_count}",
+                status=200
+            )
+        except Exception as e:
+            logger.error(f"Error setting webhook: {e}")
+            return web.Response(text=f"Error: {e}", status=500)
+    
+    # Добавляем обработчик для проверки текущего webhook
+    async def get_webhook_info(request):
+        try:
+            # Получаем информацию о webhook
+            webhook_info = await bot.get_webhook_info()
+            
+            # Возвращаем результат
+            info_text = (
+                f"Webhook URL: {webhook_info.url}\n"
+                f"Has custom certificate: {webhook_info.has_custom_certificate}\n"
+                f"Pending updates: {webhook_info.pending_update_count}\n"
+            )
+            
+            if webhook_info.last_error_date:
+                from datetime import datetime
+                error_time = datetime.fromtimestamp(webhook_info.last_error_date)
+                info_text += f"Last error: {webhook_info.last_error_message} at {error_time.isoformat()}\n"
+            
+            return web.Response(text=info_text, status=200)
+        except Exception as e:
+            logger.error(f"Error getting webhook info: {e}")
+            return web.Response(text=f"Error: {e}", status=500)
+    
+    # Добавляем обработчики для настройки webhook
+    app.router.add_post("/set_webhook", set_webhook)
+    app.router.add_get("/webhook_info", get_webhook_info)
+    
     # Выводим информацию о настроенных путях
     logger.info(f"Настроен webhook-обработчик на пути: {webhook_path}")
     logger.info(f"Доступен health-check эндпоинт на путях: / и /health")
+    print(f"WEBHOOK SERVER: Настроены следующие эндпоинты:")
+    print(f"- Webhook: {webhook_path}")
+    print(f"- Health check: / и /health")
+    print(f"- Debug: /debug_webhook (для диагностики)")
+    print(f"- Webhook info: /webhook_info (для проверки настроек)")
+    print(f"- Set webhook: /set_webhook (для ручной настройки)")
     
     return app
 
