@@ -1,0 +1,22 @@
+{
+    "123456789": {
+        "answers": {
+            "name": "Test User",
+            "age": "30",
+            "birthdate": "01.01.1990",
+            "birthplace": "Test City",
+            "timezone": "UTC+3"
+        },
+        "profile_completed": true,
+        "profile_text": "This is a test profile for the persistence functionality.",
+        "profile_details": "This is a detailed test profile for the persistence functionality.",
+        "personality_type": "Интеллектуальный",
+        "secondary_type": "Творческий",
+        "type_counts": {
+            "A": 10,
+            "B": 5,
+            "C": 8,
+            "D": 7
+        }
+    }
+}
