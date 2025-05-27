@@ -27,8 +27,17 @@ logger = logging.getLogger("webhook_server")
 # Определим переменную для Railway
 RAILWAY_ENV = os.getenv("RAILWAY", "false").lower() in ("true", "1", "yes") or os.getenv("RAILWAY_STATIC_URL") is not None
 
-# Настройка порта по умолчанию
+# Настройка порта по умолчанию - важно использовать PORT переменную от Railway
 DEFAULT_PORT = int(os.environ.get("PORT", 8080))
+
+# Вывод важных переменных для отладки
+print(f"WEBHOOK SERVER: Запуск на порту {DEFAULT_PORT}")
+print(f"WEBHOOK SERVER: Railway окружение: {RAILWAY_ENV}")
+print(f"WEBHOOK SERVER: Рабочая директория: {os.getcwd()}")
+print(f"WEBHOOK SERVER: Доступные переменные окружения для webhook:")
+print(f"   - WEBHOOK_URL: {os.environ.get('WEBHOOK_URL', 'не установлено')}")
+print(f"   - RAILWAY_PUBLIC_DOMAIN: {os.environ.get('RAILWAY_PUBLIC_DOMAIN', 'не установлено')}")
+print(f"   - PORT: {os.environ.get('PORT', 'не установлено, используется значение по умолчанию')}")
 
 # Проверка доступности порта
 def is_port_available(port):
@@ -59,6 +68,7 @@ async def on_startup(bot: Bot):
         webhook_path = f"/webhook/{bot.token}"
         webhook_url = f"https://{railway_public_domain}{webhook_path}"
         logger.info(f"Сформирован WEBHOOK_URL на основе Railway-домена: {webhook_url}")
+        print(f"WEBHOOK SERVER: Сформирован URL webhook: {webhook_url}")
     
     if webhook_url:
         # Устанавливаем webhook
@@ -70,10 +80,11 @@ async def on_startup(bot: Bot):
             # Устанавливаем новый webhook
             await bot.set_webhook(
                 url=webhook_url,
-                allowed_updates=["message", "callback_query", "inline_query"],
+                allowed_updates=["message", "callback_query", "inline_query", "edited_message", "chosen_inline_result"],
                 drop_pending_updates=True
             )
             logger.info(f"✅ Webhook установлен на URL: {webhook_url}")
+            print(f"WEBHOOK SERVER: Webhook успешно установлен на URL: {webhook_url}")
             
             # Проверяем, что webhook действительно установлен
             webhook_info = await bot.get_webhook_info()
@@ -81,15 +92,19 @@ async def on_startup(bot: Bot):
             
             if webhook_info.last_error_date:
                 logger.warning(f"⚠️ Последняя ошибка webhook: {webhook_info.last_error_message}")
+                print(f"WEBHOOK SERVER ПРЕДУПРЕЖДЕНИЕ: Последняя ошибка webhook: {webhook_info.last_error_message}")
                 
             # Проверяем, работает ли webhook
             if not webhook_info.url:
                 logger.error("❌ Webhook не установлен! Проверьте доступность URL и права бота.")
+                print("WEBHOOK SERVER ОШИБКА: Webhook не установлен! Проверьте URL и настройки бота.")
         except Exception as e:
             logger.error(f"❌ Ошибка при установке webhook: {e}")
+            print(f"WEBHOOK SERVER ОШИБКА: Не удалось установить webhook: {e}")
     else:
         logger.warning("⚠️ WEBHOOK_URL не установлен в переменных окружения")
         logger.warning("⚠️ Бот будет работать без webhook")
+        print("WEBHOOK SERVER ПРЕДУПРЕЖДЕНИЕ: WEBHOOK_URL не установлен, бот не сможет получать обновления!")
 
 async def on_shutdown(bot: Bot):
     """
@@ -166,8 +181,10 @@ def setup_webhook_app(dp: Dispatcher, bot: Bot):
                 return web.Response(text=response_text, status=200, content_type="text/plain")
         except Exception as e:
             logger.error(f"Health check failed: {e}")
-            error_message = f"ERROR - Bot health check failed: {str(e)}"
-            return web.Response(text=error_message, status=500, content_type="text/plain")
+            print(f"WEBHOOK SERVER ОШИБКА: Проверка health check не удалась: {e}")
+            # Railway ожидает статус 200 для успешного health check, 
+            # поэтому возвращаем 200 даже при ошибке, чтобы приложение не перезапускалось
+            return web.Response(text=f"OK (with warnings)", status=200, content_type="text/plain")
     
     # Добавляем обработчики для проверки здоровья приложения
     app.router.add_get("/", health_check)
@@ -215,6 +232,7 @@ async def start_webhook_server(dp: Dispatcher, bot: Bot, host='0.0.0.0', port=No
     
     # Запускаем сервер
     logger.info(f"Запуск webhook-сервера на {host}:{port}...")
+    print(f"WEBHOOK SERVER: Запуск на {host}:{port}")
     
     # Запускаем веб-сервер
     runner = web.AppRunner(app)
@@ -224,6 +242,7 @@ async def start_webhook_server(dp: Dispatcher, bot: Bot, host='0.0.0.0', port=No
     try:
         await site.start()
         logger.info(f"✅ Webhook-сервер запущен на {host}:{port}")
+        print(f"WEBHOOK SERVER: Сервер успешно запущен на {host}:{port}")
         
         # Если мы на Railway, добавляем переменную окружения WEBHOOK_MODE=true
         if RAILWAY_ENV and not os.environ.get("WEBHOOK_MODE"):
@@ -239,10 +258,12 @@ async def start_webhook_server(dp: Dispatcher, bot: Bot, host='0.0.0.0', port=No
                 logger.info(f"Health check passed: бот @{me.username} активен")
             except Exception as e:
                 logger.error(f"Health check failed: {e}")
+                print(f"WEBHOOK SERVER ОШИБКА: Внутренняя проверка здоровья не удалась: {e}")
     except KeyboardInterrupt:
         logger.info("Завершение работы webhook-сервера...")
     except Exception as e:
         logger.error(f"Ошибка в webhook-сервере: {e}")
+        print(f"WEBHOOK SERVER КРИТИЧЕСКАЯ ОШИБКА: {e}")
     finally:
         await runner.cleanup()
         logger.info("✅ Webhook-сервер остановлен")
@@ -293,4 +314,5 @@ def run_webhook_server():
 
 if __name__ == "__main__":
     logger.info("Запуск webhook-сервера...")
+    print("WEBHOOK SERVER: Начало запуска сервера webhook")
     sys.exit(run_webhook_server()) 

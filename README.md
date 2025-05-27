@@ -100,14 +100,46 @@ python test_bot.py --admin-chat-id=ваш_chat_id
 
 ## Деплой на Railway
 
-1. Зарегистрируйтесь на [Railway](https://railway.app/)
+1. Зарегистрируйтесь на Railway
 2. Создайте новый проект и выберите "Deploy from GitHub"
 3. Подключите ваш GitHub репозиторий
-4. Добавьте переменные окружения:
-   - `BOT_TOKEN` - токен вашего Telegram бота
-   - `WEBHOOK_MODE` - установите в `true`
-   - `RAILWAY_PUBLIC_DOMAIN` - будет установлен автоматически
+4. Добавьте переменные окружения:  
+   * `BOT_TOKEN` - токен вашего Telegram бота  
+   * `WEBHOOK_MODE` - установите в `true`  
+   * `RAILWAY_PUBLIC_DOMAIN` - будет установлен автоматически (или настройте `WEBHOOK_URL` вручную)
 5. Railway автоматически развернет ваше приложение
+
+### Важно для деплоя на Railway
+
+Railway требует, чтобы приложение отвечало на HTTP-запросы для проверки работоспособности (healthcheck). Для этого:
+
+1. Убедитесь, что в `railway.json` указано:
+   ```json
+   {
+     "deploy": {
+       "startCommand": "python webhook_server.py",
+       "healthcheckPath": "/health"
+     },
+     "variables": {
+       "WEBHOOK_MODE": "true",
+       "RAILWAY": "true"
+     }
+   }
+   ```
+
+2. При использовании webhook на Railway, URL вашего бота будет:
+   ```
+   https://<your-app-name>.up.railway.app/webhook/<BOT_TOKEN>
+   ```
+   
+3. Если ваш бот не отвечает на сообщения, проверьте:
+   * Правильно ли настроен webhook в Telegram (запустите `/webhook` в боте @BotFather)
+   * Логи в Railway на наличие ошибок
+   * Статус healthcheck в настройках Railway
+
+4. Для локального тестирования webhook можно использовать:
+   * ngrok: `ngrok http 8080`
+   * Затем установите `WEBHOOK_URL=https://<your-ngrok-url>/webhook/<BOT_TOKEN>`
 
 ## Решение распространенных проблем
 
