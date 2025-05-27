@@ -1390,10 +1390,50 @@ async def test_interpretations():
     except Exception as e:
         print(f"Ошибка при получении интерпретации: {e}")
 
-# Загружаем профили при импорте модуля
-asyncio.create_task(load_profiles_from_file())
+# Функция для запуска асинхронных задач
+def setup_async_tasks():
+    """
+    Запускает асинхронные задачи, необходимые для работы модуля.
+    Должна вызываться после создания event loop.
+    """
+    # Проверяем, есть ли запущенный event loop
+    try:
+        loop = asyncio.get_running_loop()
+        # Если loop существует, создаем задачу
+        asyncio.create_task(load_profiles_from_file())
+        logger.info("Запущена асинхронная задача загрузки профилей")
+    except RuntimeError:
+        # Если loop не существует, логируем это
+        logger.warning("Event loop не запущен, загрузка профилей будет выполнена позже")
+        # Не создаем задачу, так как нет запущенного event loop
+
+# Функция для инициализации модуля
+async def init_module():
+    """
+    Инициализирует модуль, загружая необходимые данные.
+    """
+    await load_profiles_from_file()
+    logger.info("Модуль survey_handler инициализирован")
+
+# Проверяем, загружается ли модуль в режиме временного импорта
+import sys
+if 'temp_import_mode' not in sys.modules:
+    # Если мы не в режиме временного импорта, пробуем запустить задачу
+    try:
+        # Пробуем создать задачу, только если есть активный event loop
+        asyncio.get_event_loop()
+        # Если предыдущая строка не вызвала исключение, вызываем setup_async_tasks
+        setup_async_tasks()
+    except RuntimeError:
+        # Если нет активного event loop, не пытаемся создавать задачу
+        logger.warning("Нет активного event loop при импорте модуля, автозагрузка профилей отложена")
+else:
+    # Если модуль загружается в режиме временного импорта, просто логируем это
+    logger.info("Модуль загружен в режиме временного импорта, инициализация отложена")
 
 # Добавляем в конец файла для запуска теста при прямом вызове
 if __name__ == "__main__":
     import asyncio
-    asyncio.run(test_interpretations()) 
+    asyncio.run(test_interpretations())
+    # Инициализируем модуль при прямом запуске
+    asyncio.run(init_module()) 

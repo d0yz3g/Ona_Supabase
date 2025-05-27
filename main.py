@@ -465,37 +465,23 @@ async def main():
         signal.signal(signal.SIGTERM, lambda sig, frame: signal_handler('SIGTERM'))
     
     try:
-        # Удаляем все обновления, которые были пропущены (если бот был отключен)
-        await bot.delete_webhook(drop_pending_updates=True)
-        railway_print("Старые обновления удалены", "INFO")
+        # Получаем информацию о системе
+        railway_print(f"Запуск бота на хосте {socket.gethostname()}", "INFO")
+        if PSUTIL_AVAILABLE:
+            railway_print(f"CPU usage: {psutil.cpu_percent()}%, Memory usage: {psutil.virtual_memory().percent}%", "INFO")
         
-        # Удаляем webhook (если он был установлен)
-        webhook_info = await bot.get_webhook_info()
-        if webhook_info.url:
-            await bot.delete_webhook()
-            logger.info("Webhook удален, старые обновления очищены")
-        
-        # Завершаем потенциально запущенные сессии бота (для предотвращения конфликтов)
-        if hasattr(bot, "session") and bot.session:
-            try:
-                await bot.session.close()
-                logger.info("Существующая сессия бота закрыта")
-            except Exception as e:
-                logger.warning(f"Не удалось закрыть существующую сессию: {e}")
-        
-        # Создаем новую сессию
-        bot._session = None  # Сбрасываем текущую сессию, чтобы создать новую
-        
-        # Проверяем соединение с Telegram API
-        bot_info = await bot.get_me()
-        logger.info(f"Соединение с Telegram API установлено успешно. Имя бота: @{bot_info.username}")
-        railway_print(f"Бот @{bot_info.username} успешно подключен к Telegram API", "INFO")
-        
-        # Запускаем планировщик заданий
+        # Инициализируем планировщик
         await start_scheduler()
         
-        # Сообщение о готовности бота
-        railway_print("=== ONA BOT ЗАПУЩЕН И ГОТОВ К РАБОТЕ ===", "INFO")
+        # Вызываем setup_async_tasks из survey_handler
+        try:
+            from survey_handler import setup_async_tasks
+            setup_async_tasks()
+            railway_print("Асинхронные задачи в survey_handler запущены", "INFO")
+        except ImportError:
+            railway_print("Не удалось импортировать setup_async_tasks из survey_handler", "WARNING")
+        except Exception as e:
+            railway_print(f"Ошибка при запуске асинхронных задач: {e}", "ERROR")
         
         # Запускаем бота с длинным поллингом и обработчиком корректного завершения
         polling_task = asyncio.create_task(

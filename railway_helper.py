@@ -234,20 +234,29 @@ scheduler = None
         
         for module_name in modules:
             try:
-                # Пытаемся импортировать модуль
-                importlib.import_module(module_name)
-                logger.info(f"Модуль {module_name} уже доступен")
-            except ImportError:
-                # Если не получается, создаем заглушку
-                logger.warning(f"Модуль {module_name} не найден, создаем заглушку")
-                self.create_placeholder_router(module_name)
-                
-                # Пытаемся импортировать созданную заглушку
-                try:
+                # Особая обработка для survey_handler из-за проблемы с asyncio
+                if module_name == "survey_handler":
+                    # Добавляем аттрибут для временного импорта, чтобы избежать создания asyncio task
+                    sys.modules['temp_import_mode'] = True
+                    
+                    # Импортируем модуль, но не выполняем инициализацию asyncio
                     importlib.import_module(module_name)
-                    logger.info(f"Заглушка для модуля {module_name} успешно импортирована")
-                except ImportError as e:
-                    logger.error(f"Не удалось импортировать заглушку для модуля {module_name}: {e}")
+                    
+                    # Удаляем временный аттрибут
+                    if 'temp_import_mode' in sys.modules:
+                        del sys.modules['temp_import_mode']
+                    
+                    logger.info(f"Модуль {module_name} успешно проверен (без asyncio init)")
+                else:
+                    # Стандартный импорт для других модулей
+                    importlib.import_module(module_name)
+                    logger.info(f"Модуль {module_name} успешно проверен")
+            except Exception as e:
+                logger.error(f"Ошибка при проверке модуля {module_name}: {e}")
+                # Если модуль не найден, пытаемся его зарегистрировать как пустой объект
+                if isinstance(e, ImportError):
+                    sys.modules[module_name] = type(module_name, (), {})
+                    logger.warning(f"Создан пустой заглушка для модуля {module_name}")
     
     @staticmethod
     def print_railway_info(message: str, level: str = "INFO") -> None:
