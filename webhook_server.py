@@ -10,6 +10,7 @@ import logging
 import asyncio
 import socket
 import time
+from datetime import datetime
 from aiohttp import web
 from aiogram import Bot, Dispatcher
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
@@ -188,9 +189,6 @@ async def start_webhook_server(dp: Dispatcher, bot: Bot, host='0.0.0.0', port=No
     """
     global start_time
     start_time = time.time()
-    
-    # Импортируем необходимые модули для health check
-    from datetime import datetime
     
     # Если порт не указан, берем из переменных окружения или используем 8080
     if port is None:
