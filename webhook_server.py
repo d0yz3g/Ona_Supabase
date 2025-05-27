@@ -8,6 +8,8 @@ import os
 import sys
 import logging
 import asyncio
+import socket
+import time
 from aiohttp import web
 from aiogram import Bot, Dispatcher
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
@@ -17,9 +19,27 @@ from dotenv import load_dotenv
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - [WEBHOOK] - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler()]
+    handlers=[logging.StreamHandler(), logging.FileHandler("webhook_server.log")]
 )
 logger = logging.getLogger("webhook_server")
+
+# Определим переменную для Railway
+RAILWAY_ENV = os.getenv("RAILWAY", "false").lower() in ("true", "1", "yes") or os.getenv("RAILWAY_STATIC_URL") is not None
+
+# Настройка порта по умолчанию
+DEFAULT_PORT = int(os.environ.get("PORT", 8080))
+
+# Проверка доступности порта
+def is_port_available(port):
+    """Проверяет, доступен ли указанный порт"""
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.settimeout(1)
+            result = sock.connect_ex(('localhost', port))
+            return result != 0  # Если result != 0, порт свободен
+    except Exception as e:
+        logger.error(f"Ошибка при проверке порта {port}: {e}")
+        return False
 
 async def on_startup(bot: Bot):
     """
@@ -38,12 +58,31 @@ async def on_startup(bot: Bot):
     
     if webhook_url:
         # Устанавливаем webhook
-        await bot.set_webhook(
-            url=webhook_url,
-            allowed_updates=["message", "callback_query", "inline_query"],
-            drop_pending_updates=True
-        )
-        logger.info(f"✅ Webhook установлен на URL: {webhook_url}")
+        try:
+            # Сначала удаляем старый webhook, чтобы избежать конфликтов
+            await bot.delete_webhook(drop_pending_updates=True)
+            logger.info("Старый webhook удален")
+            
+            # Устанавливаем новый webhook
+            await bot.set_webhook(
+                url=webhook_url,
+                allowed_updates=["message", "callback_query", "inline_query"],
+                drop_pending_updates=True
+            )
+            logger.info(f"✅ Webhook установлен на URL: {webhook_url}")
+            
+            # Проверяем, что webhook действительно установлен
+            webhook_info = await bot.get_webhook_info()
+            logger.info(f"Проверка webhook: URL={webhook_info.url}, pending_updates={webhook_info.pending_update_count}")
+            
+            if webhook_info.last_error_date:
+                logger.warning(f"⚠️ Последняя ошибка webhook: {webhook_info.last_error_message}")
+                
+            # Проверяем, работает ли webhook
+            if not webhook_info.url:
+                logger.error("❌ Webhook не установлен! Проверьте доступность URL и права бота.")
+        except Exception as e:
+            logger.error(f"❌ Ошибка при установке webhook: {e}")
     else:
         logger.warning("⚠️ WEBHOOK_URL не установлен в переменных окружения")
         logger.warning("⚠️ Бот будет работать без webhook")
@@ -54,8 +93,11 @@ async def on_shutdown(bot: Bot):
     Здесь можно выполнить дополнительные действия, например, удалить webhook
     """
     # Удаляем webhook
-    await bot.delete_webhook(drop_pending_updates=True)
-    logger.info("✅ Webhook удален")
+    try:
+        await bot.delete_webhook(drop_pending_updates=True)
+        logger.info("✅ Webhook удален")
+    except Exception as e:
+        logger.error(f"❌ Ошибка при удалении webhook: {e}")
 
 def setup_webhook_app(dp: Dispatcher, bot: Bot):
     """
@@ -89,11 +131,39 @@ def setup_webhook_app(dp: Dispatcher, bot: Bot):
     
     # Функция для проверки здоровья приложения
     async def health_check(request):
-        return web.Response(
-            text="OK - Bot is healthy and running in webhook mode",
-            status=200,
-            content_type="text/plain"
-        )
+        try:
+            # Проверяем, что бот доступен, отправив запрос getMe
+            me = await bot.get_me()
+            bot_info = f"@{me.username} (ID: {me.id})"
+            
+            # Формируем ответ
+            health_data = {
+                "status": "OK",
+                "bot": bot_info,
+                "uptime": int(time.time() - start_time),
+                "webhook_mode": True,
+                "railway": RAILWAY_ENV,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            # Определяем формат ответа
+            accept_header = request.headers.get('Accept', '')
+            if 'application/json' in accept_header:
+                return web.json_response(health_data)
+            else:
+                response_text = (
+                    f"Status: OK\n"
+                    f"Bot: {bot_info}\n"
+                    f"Uptime: {health_data['uptime']} seconds\n"
+                    f"Mode: webhook\n"
+                    f"Railway: {'yes' if RAILWAY_ENV else 'no'}\n"
+                    f"Timestamp: {health_data['timestamp']}\n"
+                )
+                return web.Response(text=response_text, status=200, content_type="text/plain")
+        except Exception as e:
+            logger.error(f"Health check failed: {e}")
+            error_message = f"ERROR - Bot health check failed: {str(e)}"
+            return web.Response(text=error_message, status=500, content_type="text/plain")
     
     # Добавляем обработчики для проверки здоровья приложения
     app.router.add_get("/", health_check)
@@ -116,9 +186,28 @@ async def start_webhook_server(dp: Dispatcher, bot: Bot, host='0.0.0.0', port=No
         port (int, optional): Порт для запуска сервера. Если не указан, будет использоваться
                               переменная окружения PORT или порт 8080 по умолчанию.
     """
+    global start_time
+    start_time = time.time()
+    
+    # Импортируем необходимые модули для health check
+    from datetime import datetime
+    
     # Если порт не указан, берем из переменных окружения или используем 8080
     if port is None:
-        port = int(os.environ.get("PORT", 8080))
+        port = DEFAULT_PORT
+    
+    # Проверяем доступность порта, если занят - пробуем другой
+    max_port_retries = 3
+    original_port = port
+    
+    for retry in range(max_port_retries):
+        if is_port_available(port):
+            break
+        logger.warning(f"Порт {port} занят, пробуем порт {port + 10}")
+        port += 10
+    
+    if port != original_port:
+        logger.info(f"Используем порт {port} вместо {original_port}")
     
     # Настраиваем приложение
     app = setup_webhook_app(dp, bot)
@@ -130,16 +219,29 @@ async def start_webhook_server(dp: Dispatcher, bot: Bot, host='0.0.0.0', port=No
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, host=host, port=port)
-    await site.start()
     
-    logger.info(f"✅ Webhook-сервер запущен на {host}:{port}")
-    
-    # Ждем до завершения приложения
     try:
+        await site.start()
+        logger.info(f"✅ Webhook-сервер запущен на {host}:{port}")
+        
+        # Если мы на Railway, добавляем переменную окружения WEBHOOK_MODE=true
+        if RAILWAY_ENV and not os.environ.get("WEBHOOK_MODE"):
+            os.environ["WEBHOOK_MODE"] = "true"
+            logger.info("Установлена переменная WEBHOOK_MODE=true для Railway")
+        
+        # Ждем до завершения приложения
         while True:
-            await asyncio.sleep(3600)  # Проверка каждый час
-    except (KeyboardInterrupt, SystemExit):
+            await asyncio.sleep(60)  # Проверка каждую минуту
+            # Периодическая проверка здоровья бота
+            try:
+                me = await bot.get_me()
+                logger.info(f"Health check passed: бот @{me.username} активен")
+            except Exception as e:
+                logger.error(f"Health check failed: {e}")
+    except KeyboardInterrupt:
         logger.info("Завершение работы webhook-сервера...")
+    except Exception as e:
+        logger.error(f"Ошибка в webhook-сервере: {e}")
     finally:
         await runner.cleanup()
         logger.info("✅ Webhook-сервер остановлен")
@@ -155,9 +257,6 @@ def run_webhook_server():
             logger.error("❌ Файл main.py не найден")
             return 1
         
-        # Импортируем необходимые компоненты
-        from main import setup_bot, setup_dispatcher
-        
         # Загружаем переменные окружения
         load_dotenv()
         
@@ -166,10 +265,18 @@ def run_webhook_server():
         if not bot_token:
             logger.error("❌ Переменная BOT_TOKEN не найдена в .env или переменных окружения")
             return 1
+            
+        # Импортируем необходимые компоненты
+        from main import setup_bot, setup_dispatcher
         
         # Настраиваем бота и диспетчер
         bot = setup_bot()
         dp = setup_dispatcher(bot)
+        
+        # Если мы на Railway, устанавливаем переменную WEBHOOK_MODE
+        if RAILWAY_ENV:
+            os.environ["WEBHOOK_MODE"] = "true"
+            logger.info("На Railway: установлена переменная WEBHOOK_MODE=true")
         
         # Запускаем веб-сервер
         asyncio.run(start_webhook_server(dp, bot))

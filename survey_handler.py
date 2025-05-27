@@ -1304,3 +1304,17 @@ async def test_interpretations():
 if __name__ == "__main__":
     import asyncio
     asyncio.run(test_interpretations()) 
+
+# Функция для регистрации обработчиков в диспетчере
+def register_survey_handlers(dp):
+    """
+    Регистрирует все обработчики опросов в диспетчере.
+    
+    Args:
+        dp: Диспетчер
+    """
+    # Включаем роутер опросов в диспетчер
+    dp.include_router(survey_router)
+    
+    # Логируем успешную регистрацию
+    logger.info("Обработчики опросов успешно зарегистрированы") 

@@ -489,4 +489,18 @@ async def back_to_main_menu(callback: CallbackQuery, state: FSMContext):
         parse_mode="HTML"
     )
     
-    logger.info(f"Пользователь {callback.from_user.id} вернулся в главное меню") 
+    logger.info(f"Пользователь {callback.from_user.id} вернулся в главное меню")
+
+# Функция для регистрации обработчиков медитаций
+def register_meditation_handlers(dp):
+    """
+    Регистрирует все обработчики медитаций в диспетчере.
+    
+    Args:
+        dp: Диспетчер
+    """
+    # Включаем роутер медитаций в диспетчер
+    dp.include_router(meditation_router)
+    
+    # Логируем успешную регистрацию
+    logger.info("Обработчики медитаций успешно зарегистрированы") 

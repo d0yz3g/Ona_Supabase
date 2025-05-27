@@ -1,6 +1,6 @@
 # Ona AI Telegram Bot
 
-Telegram бот с использованием aiogram и деплоем на Railway.
+Telegram бот с использованием aiogram 3.x и деплоем на Railway.
 
 ## Описание
 
@@ -8,114 +8,146 @@ Telegram бот с использованием aiogram и деплоем на R
 
 ## Особенности
 
-- Обработка сообщений пользователя с использованием AI
-- Персонализированные ответы
+- Обработка сообщений пользователя с использованием OpenAI
+- Профиль пользователя на основе вопросов
+- Голосовые медитации с ElevenLabs
 - Режимы работы webhook и long polling
-- Поддержка различных команд (/start, /help, /about, /meditate)
-- Автоматическое определение и настройка для деплоя на Railway
+- Поддержка различных команд (/start, /help, /profile, /meditate)
+- Автоматические напоминания
+- Готовность к деплою на Railway
 
-## Установка и запуск
+## Быстрый старт
 
-### Необходимые зависимости
+### Требования
+
+- Python 3.10+ 
+- Токен Telegram бота от BotFather
+- Опционально: API ключи OpenAI и ElevenLabs
+
+### 1. Установка зависимостей
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Настройка переменных окружения
+### 2. Настройка переменных окружения
 
-Создайте файл `.env` со следующими переменными:
+Запустите скрипт для создания файла `.env`:
+
+```bash
+python create_env.py
+```
+
+Или создайте файл вручную с минимальными настройками:
 
 ```
 BOT_TOKEN=ваш_токен_бота
-ADMIN_CHAT_ID=ваш_chat_id_для_администратора
+WEBHOOK_MODE=false
 ```
 
-### Режимы работы
+### 3. Запуск бота в режиме polling (для разработки)
+
+```bash
+python main.py
+```
+
+### 4. Или запуск в режиме webhook (для продакшена)
+
+```bash
+python webhook_server.py
+```
+
+## Режимы работы
 
 Бот поддерживает два режима работы:
 
-1. **Long polling** - для локальной разработки:
-   ```bash
-   python start_polling.py
-   ```
+1. **Long polling** - рекомендуется для локальной разработки:
+   - Проще в настройке
+   - Не требует внешнего доступа
+   - Запуск: `python main.py`
 
-2. **Webhook** - для production-окружения:
-   ```bash
-   python simple_server.py
-   ```
+2. **Webhook** - рекомендуется для продакшена:
+   - Более эффективное использование ресурсов
+   - Мгновенная обработка сообщений
+   - Требует публичный URL (например, Railway)
+   - Запуск: `python webhook_server.py`
+
+## Диагностика и проверка работоспособности
+
+### Автоматическая диагностика
+
+Для полной диагностики и выявления проблем запустите:
+
+```bash
+python diagnose.py --full
+```
+
+### Проверка здоровья
+
+Для проверки работоспособности бота:
+
+```bash
+python test_health.py
+```
+
+### Тестирование команд бота
+
+Для тестирования базовых команд (требуется указать ваш chat_id):
+
+```bash
+python test_bot.py --admin-chat-id=ваш_chat_id
+```
 
 ## Деплой на Railway
 
 1. Зарегистрируйтесь на [Railway](https://railway.app/)
-2. Создайте новый проект и подключите репозиторий GitHub
-3. Добавьте переменные окружения:
+2. Создайте новый проект и выберите "Deploy from GitHub"
+3. Подключите ваш GitHub репозиторий
+4. Добавьте переменные окружения:
    - `BOT_TOKEN` - токен вашего Telegram бота
-   - `ADMIN_CHAT_ID` - ID администратора для получения уведомлений
-4. Railway автоматически развернет ваше приложение
+   - `WEBHOOK_MODE` - установите в `true`
+   - `RAILWAY_PUBLIC_DOMAIN` - будет установлен автоматически
+5. Railway автоматически развернет ваше приложение
 
-## Диагностика и устранение проблем
+## Решение распространенных проблем
 
-### Проверка статуса бота
+### Конфликт webhook и polling
 
-Для проверки статуса бота используйте:
-
-```bash
-python check_railway_service.py --report
-```
-
-### Исправление проблем с webhook
-
-Если webhook настроен неправильно:
+Если видите ошибку "Conflict: terminated by other getUpdates request":
 
 ```bash
-python railway_fix.py --set-webhook
+python webhook_server.py --disable-webhook
 ```
 
-Для отключения webhook и перехода в режим long polling:
+Затем перезапустите бота в нужном режиме.
 
-```bash
-python railway_fix.py --disable-webhook
-```
+### Проблемы с портом на Railway
 
-### Отправка тестового сообщения
+Если health check не проходит:
 
-```bash
-python railway_fix.py --test-message --chat-id=ваш_chat_id
-```
+1. Убедитесь, что бот слушает порт из переменной `PORT`
+2. Проверьте наличие файла `railway.json` с правильными настройками
+3. Проверьте логи для выявления конкретной ошибки
+
+### Бот запускается, но не отвечает
+
+1. Проверьте валидность токена бота:
+   ```bash
+   python test_health.py
+   ```
+2. Убедитесь, что webhook установлен правильно (для webhook-режима)
+3. Проверьте, не блокирует ли сеть запросы к api.telegram.org
 
 ## Структура проекта
 
-- `simple_server.py` - основной сервер для webhook режима
-- `start_polling.py` - скрипт для запуска в режиме long polling
-- `railway_fix.py` - утилита для исправления проблем с webhook
-- `check_railway_service.py` - утилита для диагностики сервиса
-- `railway_helper.py` - вспомогательные функции для работы с Railway
+- `main.py` - основной файл для запуска в режиме polling
+- `webhook_server.py` - сервер для webhook режима
+- `test_health.py` - скрипт для проверки работоспособности
+- `diagnose.py` - утилита для диагностики
+- `health_check.py` - эндпоинт проверки здоровья для Railway
 
-## Полезные команды
+## Полная документация
 
-### Полная диагностика
-
-```bash
-python check_railway_service.py --report --output=report.txt
-```
-
-### Сброс webhook и очистка очереди обновлений
-
-```bash
-python railway_fix.py --disable-webhook --drop-updates
-```
-
-### Установка webhook на конкретный URL
-
-```bash
-python railway_fix.py --set-webhook --webhook-url="https://ваш-домен/webhook/BOT_TOKEN"
-```
-
-## Устранение проблем
-
-При возникновении проблем с деплоем на Railway, обратитесь к документации в файле [DEPLOYMENT_TROUBLESHOOTING.md](DEPLOYMENT_TROUBLESHOOTING.md).
-
-## Рекомендации по дальнейшему развитию
-
-Детальные рекомендации по устранению проблем и улучшению бота доступны в файле [RECOMMENDATIONS.md](RECOMMENDATIONS.md). 
+- [WEBHOOK_README.md](WEBHOOK_README.md) - подробная информация о работе с webhook
+- [DEPLOYMENT_TROUBLESHOOTING.md](DEPLOYMENT_TROUBLESHOOTING.md) - решение проблем с деплоем
+- [RECOMMENDATIONS.md](RECOMMENDATIONS.md) - рекомендации по улучшению бота 

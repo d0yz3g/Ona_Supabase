@@ -10,5 +10,10 @@
     "healthcheckPath": "/health",
     "healthcheckTimeout": 30,
     "healthcheckInterval": 60
+  },
+  "variables": {
+    "WEBHOOK_MODE": "true",
+    "RAILWAY": "true",
+    "PORT": "8080"
   }
 } 
