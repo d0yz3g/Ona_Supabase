@@ -87,7 +87,7 @@ def setup_webhook_app(dp: Dispatcher, bot: Bot):
     # Настраиваем пути веб-приложения
     webhook_handler.register(app, path=webhook_path)
     
-    # Добавляем простой обработчик для корневого пути
+    # Функция для проверки здоровья приложения
     async def health_check(request):
         return web.Response(
             text="OK - Bot is healthy and running in webhook mode",
@@ -95,11 +95,13 @@ def setup_webhook_app(dp: Dispatcher, bot: Bot):
             content_type="text/plain"
         )
     
+    # Добавляем обработчики для проверки здоровья приложения
     app.router.add_get("/", health_check)
+    app.router.add_get("/health", health_check)  # Добавляем для Railway health check
     
     # Выводим информацию о настроенных путях
     logger.info(f"Настроен webhook-обработчик на пути: {webhook_path}")
-    logger.info(f"Доступен health-check эндпоинт на пути: /")
+    logger.info(f"Доступен health-check эндпоинт на путях: / и /health")
     
     return app
 
