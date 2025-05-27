@@ -442,7 +442,7 @@ async def process_survey_answer(message: Message, state: FSMContext):
 
 async def complete_survey(message: Message, state: FSMContext, answers: Dict[str, str]):
     """
-    Завершает опрос и генерирует психологический профиль пользователя.
+    Завершает опрос и генерирует психологический профиль.
     
     Args:
         message: Сообщение от пользователя
@@ -470,12 +470,10 @@ async def complete_survey(message: Message, state: FSMContext, answers: Dict[str
         # Генерируем профиль
         profile_data = await generate_profile(answers)
         
-        # Разделяем краткий и подробный профили
-        profile_text = profile_data.get("profile", "")
+        # Получаем детальный профиль вместо краткого
         detailed_profile = profile_data.get("details", "")
         
         # Логируем информацию о полученных профилях для отладки
-        logger.info(f"Получен краткий профиль длиной {len(profile_text)} символов")
         logger.info(f"Получен детальный профиль длиной {len(detailed_profile)} символов")
         
         # Сбрасываем состояние опроса
@@ -485,7 +483,7 @@ async def complete_survey(message: Message, state: FSMContext, answers: Dict[str
         await state.update_data(
             answers=answers,
             profile_completed=True,
-            profile_text=profile_text,
+            profile_text=detailed_profile,  # Сохраняем детальный профиль как основной
             profile_details=detailed_profile,
             personality_type=primary_type,
             secondary_type=secondary_type,
@@ -500,19 +498,53 @@ async def complete_survey(message: Message, state: FSMContext, answers: Dict[str
         # Удаляем сообщение о генерации профиля
         await processing_message.delete()
         
-        # Создаем клавиатуру с кнопками
-        builder = InlineKeyboardBuilder()
-        builder.button(text="📊 Статистика", callback_data="show_stats")
-        builder.button(text="📋 Детальный анализ", callback_data="show_details")
-        builder.button(text="💡 Получить совет", callback_data="get_advice")
-        builder.adjust(1)  # Располагаем кнопки в столбик
+        # Проверяем, не слишком ли длинный профиль для отправки в одном сообщении
+        max_message_length = 4000  # Telegram ограничивает сообщения примерно до 4096 символов
         
-        # Отправляем профиль
-        await message.answer(
-            profile_text,
-            parse_mode="HTML",
-            reply_markup=builder.as_markup()
-        )
+        if len(detailed_profile) > max_message_length:
+            # Разбиваем детальный профиль на части
+            parts = []
+            current_part = ""
+            for line in detailed_profile.split('\n'):
+                if len(current_part) + len(line) + 1 <= max_message_length:
+                    current_part += line + '\n'
+                else:
+                    parts.append(current_part)
+                    current_part = line + '\n'
+            if current_part:
+                parts.append(current_part)
+            
+            # Отправляем части профиля
+            for i, part in enumerate(parts):
+                # Добавляем кнопки только к последней части
+                if i == len(parts) - 1:
+                    # Создаем клавиатуру с кнопками
+                    builder = InlineKeyboardBuilder()
+                    builder.button(text="💡 Получить совет", callback_data="get_advice")
+                    builder.adjust(1)  # Располагаем кнопки в столбик
+                    
+                    await message.answer(
+                        part,
+                        parse_mode="HTML",
+                        reply_markup=builder.as_markup()
+                    )
+                else:
+                    await message.answer(
+                        part,
+                        parse_mode="HTML"
+                    )
+        else:
+            # Создаем клавиатуру с кнопками
+            builder = InlineKeyboardBuilder()
+            builder.button(text="💡 Получить совет", callback_data="get_advice")
+            builder.adjust(1)  # Располагаем кнопки в столбик
+            
+            # Отправляем профиль
+            await message.answer(
+                detailed_profile,
+                parse_mode="HTML",
+                reply_markup=builder.as_markup()
+            )
         
         # Возвращаем основную клавиатуру
         await message.answer(
@@ -632,109 +664,80 @@ async def cancel_profile_reset(callback: CallbackQuery):
     await callback.answer("Отмена сброса профиля")
     logger.info(f"Пользователь {callback.from_user.id} отменил сброс профиля")
 
-# Обработчик для отображения подробной статистики
-@survey_router.callback_query(F.data == "show_stats")
-async def show_stats(callback: CallbackQuery, state: FSMContext):
-    """
-    Отображает подробную статистику по ответам.
-    
-    Args:
-        callback: Callback query
-        state: Состояние FSM
-    """
-    # Получаем данные пользователя
-    user_data = await state.get_data()
-    answers = user_data.get("answers", {})
-    
-    if not answers:
-        await callback.message.answer(
-            "❌ <b>Ошибка:</b> Данные профиля не найдены. Пожалуйста, пройдите опрос.",
-            parse_mode="HTML"
-        )
-        await callback.answer("Данные профиля не найдены")
-        return
-    
-    # Показываем индикатор "печатает..."
-    await callback.message.bot.send_chat_action(chat_id=callback.message.chat.id, action="typing")
-    
-    # Импортируем функцию для анализа ответов
-    from questions import get_personality_type_from_answers
-    
-    # Получаем статистику по типам ответов
-    type_counts, primary_type, secondary_type = get_personality_type_from_answers(answers)
-    
-    # Формируем красивый текст статистики
-    stats_text = "📊 <b>ПСИХОЛОГИЧЕСКИЙ ПРОФИЛЬ - ПОДРОБНАЯ СТАТИСТИКА</b>\n\n"
-    
-    # Добавляем информацию о типе личности
-    stats_text += f"<b>🧠 Ваш тип личности:</b> {primary_type}"
-    if secondary_type:
-        stats_text += f" <i>(с элементами {secondary_type})</i>"
-    stats_text += "\n\n"
-    
-    # Подсчитываем количество вопросов по типам
-    vasini_questions_count = sum(1 for key in answers if key.startswith('vasini_'))
-    demo_questions_count = sum(1 for key in answers if not key.startswith('vasini_'))
-    
-    # Добавляем базовую информацию о результатах
-    stats_text += "<b>📋 СТАТИСТИКА ОПРОСА:</b>\n"
-    stats_text += f"• Всего вопросов: {len(answers)}\n"
-    stats_text += f"• Вопросов профиля: {demo_questions_count}\n"
-    stats_text += f"• Вопросов психологического теста: {vasini_questions_count}\n\n"
-    
-    # Добавляем распределение ответов с визуальными элементами
-    stats_text += "<b>📈 РАСПРЕДЕЛЕНИЕ ОТВЕТОВ:</b>\n"
-    
-    # Визуализация распределения ответов
-    total_answers = sum(type_counts.values())
-    
-    # Типы личности и их эмодзи
-    type_emoji = {
-        "A": "🧠", # Интеллектуальный
-        "B": "❤️", # Эмоциональный
-        "C": "⚙️", # Практический
-        "D": "🎨"  # Творческий
-    }
-    
-    # Создаем строку статистики для каждого типа
-    for type_key, count in type_counts.items():
-        if total_answers > 0:
-            percentage = (count / total_answers) * 100
-            bar_length = max(1, int(round(percentage / 10)))
-            bar = "█" * bar_length + "░" * (10 - bar_length)
-            
-            type_name = {
-                "A": "Интеллектуальный",
-                "B": "Эмоциональный",
-                "C": "Практический",
-                "D": "Творческий"
-            }.get(type_key, type_key)
-            
-            stats_text += f"{type_emoji.get(type_key, '•')} <b>{type_name}:</b> {count} ({percentage:.1f}%)\n"
-            stats_text += f"  {bar} {count}/{total_answers}\n"
-    
-    # Добавляем кнопки для навигации
-    builder = InlineKeyboardBuilder()
-    builder.button(text="📋 Детальный анализ", callback_data="show_details")
-    builder.button(text="💡 Получить совет", callback_data="get_advice")
-    builder.button(text="🔙 Назад", callback_data="view_profile")
-    builder.adjust(1)
-    
-    # Отправляем статистику
-    await callback.message.answer(
-        stats_text,
-        parse_mode="HTML",
-        reply_markup=builder.as_markup()
-    )
-    
-    # Возвращаем основную клавиатуру после вывода статистики
-    await callback.message.answer(
-        "⬅️ Вернуться в главное меню",
-        reply_markup=get_main_keyboard()
-    )
-    
-    # Отвечаем на callback
-    await callback.answer("Статистика профиля")
+# Обработчик для отображения подробной статистики - не используется в текущей версии
+# @survey_router.callback_query(F.data == "show_stats")
+# async def show_stats(callback: CallbackQuery, state: FSMContext):
+#     """
+#     Отображает подробную статистику по ответам.
+#     
+#     Args:
+#         callback: Callback query
+#         state: Состояние FSM
+#     """
+#     # Получаем данные пользователя
+#     user_data = await state.get_data()
+#     answers = user_data.get("answers", {})
+#     
+#     if not answers:
+#         await callback.message.answer(
+#             "❌ <b>Ошибка:</b> Данные профиля не найдены. Пожалуйста, пройдите опрос.",
+#             parse_mode="HTML"
+#         )
+#         await callback.answer("Данные профиля не найдены")
+#         return
+#     
+#     # Показываем индикатор "печатает..."
+#     await callback.message.bot.send_chat_action(chat_id=callback.message.chat.id, action="typing")
+#     
+#     # Получаем данные о типе личности
+#     type_counts = user_data.get("type_counts", {})
+#     primary_type = user_data.get("personality_type", "Неизвестный")
+#     secondary_type = user_data.get("secondary_type", "")
+#     
+#     # Формируем заголовок статистики
+#     stats_text = "📊 <b>ПСИХОЛОГИЧЕСКИЙ ПРОФИЛЬ - ПОДРОБНАЯ СТАТИСТИКА</b>\n\n"
+#     
+#     # Добавляем информацию о типе личности
+#     stats_text += f"🧠 <b>Тип личности:</b> {primary_type}"
+#     if secondary_type:
+#         stats_text += f" (с элементами {secondary_type})\n\n"
+#     else:
+#         stats_text += "\n\n"
+#     
+#     # Добавляем распределение по типам личности
+#     stats_text += "<b>Распределение баллов по типам:</b>\n"
+#     for type_name, count in sorted(type_counts.items(), key=lambda x: x[1], reverse=True):
+#         # Добавляем эмодзи в зависимости от типа
+#         emoji = "🔵"
+#         if type_name == primary_type:
+#             emoji = "🟢"  # Основной тип
+#         elif type_name == secondary_type:
+#             emoji = "🟡"  # Вторичный тип
+#         
+#         # Формируем прогресс-бар
+#         max_score = max(type_counts.values()) if type_counts else 10
+#         bar_length = int((count / max_score) * 10)
+#         progress_bar = "█" * bar_length + "░" * (10 - bar_length)
+#         
+#         # Добавляем строку с типом и прогресс-баром
+#         stats_text += f"{emoji} {type_name}: {progress_bar} ({count} баллов)\n"
+#     
+#     # Создаем клавиатуру с кнопками навигации
+#     builder = InlineKeyboardBuilder()
+#     builder.button(text="📋 Детальный анализ", callback_data="show_details")
+#     builder.button(text="💡 Получить совет", callback_data="get_advice")
+#     builder.button(text="🔙 Назад", callback_data="view_profile")
+#     builder.adjust(1)
+#     
+#     # Отправляем статистику
+#     await callback.message.answer(
+#         stats_text,
+#         parse_mode="HTML",
+#         reply_markup=builder.as_markup()
+#     )
+#     
+#     # Отвечаем на callback
+#     await callback.answer("Статистика профиля")
 
 # Добавляем новый обработчик для отображения детального профиля
 @survey_router.callback_query(F.data == "show_details")
@@ -787,7 +790,6 @@ async def show_profile_details(callback: CallbackQuery, state: FSMContext):
             if i == len(parts) - 1:
                 # Добавляем кнопки для навигации
                 builder = InlineKeyboardBuilder()
-                builder.button(text="📊 Статистика", callback_data="show_stats")
                 builder.button(text="💡 Получить совет", callback_data="get_advice")
                 builder.button(text="🔙 Назад", callback_data="view_profile")
                 builder.adjust(1)
@@ -805,7 +807,6 @@ async def show_profile_details(callback: CallbackQuery, state: FSMContext):
     else:
         # Добавляем кнопки для навигации
         builder = InlineKeyboardBuilder()
-        builder.button(text="📊 Статистика", callback_data="show_stats")
         builder.button(text="💡 Получить совет", callback_data="get_advice")
         builder.button(text="🔙 Назад", callback_data="view_profile")
         builder.adjust(1)
@@ -904,7 +905,6 @@ async def view_profile_callback(callback: CallbackQuery, state: FSMContext):
     
     # Добавляем кнопки с возможными действиями
     builder = InlineKeyboardBuilder()
-    builder.button(text="📊 Подробная статистика", callback_data="show_stats")
     builder.button(text="📋 Детальный анализ", callback_data="show_details")
     builder.button(text="💡 Получить совет", callback_data="get_advice")
     builder.button(text="🔄 Пройти опрос заново", callback_data="restart_survey")
@@ -995,7 +995,6 @@ async def command_profile(message: Message, state: FSMContext):
         # Добавляем кнопки для действий с профилем
         builder = InlineKeyboardBuilder()
         builder.button(text="🔄 Пройти опрос заново", callback_data="restart_survey")
-        builder.button(text="📊 Подробная статистика", callback_data="show_stats")
         builder.button(text="📋 Детальный анализ", callback_data="show_details")
         builder.button(text="💡 Получить совет", callback_data="get_advice")
         builder.button(text="◀️ Вернуться в меню", callback_data="main_menu")
