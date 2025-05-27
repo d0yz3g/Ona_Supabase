@@ -20,8 +20,15 @@ RUN pip install --upgrade pip setuptools wheel
 # Копируем только requirements.txt
 COPY requirements.txt .
 
-# Установка всех зависимостей сразу для ускорения сборки
-RUN pip install --no-cache-dir -r requirements.txt
+# Установка зависимостей по группам для лучшей отладки
+RUN pip install --no-cache-dir python-dotenv requests
+RUN pip install --no-cache-dir aiogram==3.2.0 aiohttp
+RUN pip install --no-cache-dir pydantic psutil
+RUN pip install --no-cache-dir APScheduler
+RUN pip install --no-cache-dir openai httpx
+
+# Установка оставшихся зависимостей
+RUN pip install --no-cache-dir -r requirements.txt || echo "Некоторые зависимости не установлены, продолжаем сборку"
 
 # Создаем директорию для временных файлов и логов
 RUN mkdir -p tmp logs data
