@@ -140,10 +140,16 @@ async def save_user_profile(user_id: int, profile_data: Dict[str, Any]):
     """
     try:
         # Преобразуем user_id в строку, так как json не поддерживает целочисленные ключи
-        user_profiles[str(user_id)] = profile_data
+        user_id_str = str(user_id)
+        logger.info(f"Сохраняем профиль для пользователя с ID: {user_id_str}")
+        user_profiles[user_id_str] = profile_data
+        
         # Сохраняем обновленные профили в файл
-        await save_profiles_to_file()
-        logger.info(f"Профиль пользователя {user_id} сохранен")
+        saved = await save_profiles_to_file()
+        if saved:
+            logger.info(f"Профиль пользователя {user_id} сохранен успешно")
+        else:
+            logger.error(f"Ошибка при сохранении профиля пользователя {user_id} в файл")
     except Exception as e:
         logger.error(f"Ошибка при сохранении профиля пользователя {user_id}: {e}")
 
@@ -162,13 +168,16 @@ async def load_user_profile_to_state(user_id: int, state: FSMContext):
     try:
         # Получаем профиль пользователя из словаря (если существует)
         user_id_str = str(user_id)
+        logger.info(f"Пытаемся загрузить профиль для user_id: {user_id_str}")
+        logger.info(f"Доступные ID профилей: {', '.join(user_profiles.keys())}")
+        
         if user_id_str in user_profiles:
             # Загружаем профиль в state
             await state.update_data(**user_profiles[user_id_str])
-            logger.info(f"Профиль пользователя {user_id} загружен в state")
+            logger.info(f"Профиль пользователя {user_id} загружен в state успешно")
             return True
         else:
-            logger.info(f"Профиль пользователя {user_id} не найден")
+            logger.info(f"Профиль пользователя {user_id} не найден в словаре профилей")
             return False
     except Exception as e:
         logger.error(f"Ошибка при загрузке профиля пользователя {user_id} в state: {e}")
@@ -1111,18 +1120,24 @@ async def command_profile(message: Message, state: FSMContext):
         message: Сообщение от пользователя
         state: Состояние FSM
     """
+    # Логируем ID пользователя для отладки
+    logger.info(f"Запрошен профиль для пользователя ID: {message.from_user.id}")
+    
     # Проверяем, есть ли данные в state
     user_data = await state.get_data()
     profile_completed = user_data.get("profile_completed", False)
     
     # Если профиль не найден в state, пробуем загрузить из файла
     if not profile_completed:
+        logger.info(f"Профиль не найден в текущем state, пытаемся загрузить из файла user_profiles.json")
         profile_loaded = await load_user_profile_to_state(message.from_user.id, state)
         if profile_loaded:
             # Если профиль был загружен из файла, обновляем данные
             user_data = await state.get_data()
             profile_completed = user_data.get("profile_completed", False)
             logger.info(f"Профиль пользователя {message.from_user.id} загружен из файла")
+        else:
+            logger.warning(f"Не удалось загрузить профиль из файла для пользователя {message.from_user.id}")
     
     if profile_completed:
         # Получаем тип личности и ответы пользователя
@@ -1178,11 +1193,12 @@ async def command_profile(message: Message, state: FSMContext):
         await state.set_state(ProfileStates.viewing)
     else:
         # Предлагаем пройти опрос, если профиля нет
+        logger.info(f"Профиль не найден для пользователя {message.from_user.id}, предлагаем пройти опрос")
         builder = InlineKeyboardBuilder()
         builder.button(text="✅ Начать опрос", callback_data="start_survey")
         
         await message.answer(
-            "У вас пока нет психологического профиля. Чтобы создать его, нужно пройти опрос.",
+            f"У вас пока нет психологического профиля. Чтобы создать его, нужно пройти опрос.\nВаш ID пользователя: {message.from_user.id}",
             reply_markup=builder.as_markup()
         )
 
@@ -1498,3 +1514,146 @@ if __name__ == "__main__":
     asyncio.run(test_interpretations())
     # Инициализируем модуль при прямом запуске
     asyncio.run(init_module()) 
+
+# Добавим команду для тестирования загрузки профилей
+@survey_router.message(Command("debug_profile"))
+async def debug_profile(message: Message, state: FSMContext):
+    """
+    Отладочная команда для проверки данных профиля.
+    
+    Args:
+        message: Сообщение от пользователя
+        state: Состояние FSM
+    """
+    # Показываем ID пользователя
+    user_id = message.from_user.id
+    await message.answer(f"Ваш ID пользователя: {user_id}")
+    
+    # Показываем текущие загруженные профили
+    await message.answer(f"Загруженные профили в памяти: {', '.join(user_profiles.keys())}")
+    
+    # Проверяем, есть ли профиль в текущем состоянии
+    user_data = await state.get_data()
+    profile_completed = user_data.get("profile_completed", False)
+    
+    if profile_completed:
+        await message.answer("Профиль найден в текущем состоянии FSM")
+    else:
+        await message.answer("Профиль НЕ найден в текущем состоянии FSM")
+    
+    # Пробуем загрузить профиль из файла
+    profile_loaded = await load_user_profile_to_state(user_id, state)
+    
+    if profile_loaded:
+        await message.answer(f"Профиль успешно загружен из файла для ID: {user_id}")
+    else:
+        await message.answer(f"Не удалось загрузить профиль из файла для ID: {user_id}")
+    
+    # Возвращаем основную клавиатуру
+    await message.answer(
+        "Диагностические данные выведены",
+        reply_markup=get_main_keyboard()
+    )
+
+# Добавим команду для создания тестового профиля
+@survey_router.message(Command("create_test_profile"))
+async def create_test_profile_command(message: Message, state: FSMContext):
+    """
+    Создает тестовый профиль для текущего пользователя.
+    
+    Args:
+        message: Сообщение от пользователя
+        state: Состояние FSM
+    """
+    user_id = message.from_user.id
+    user_id_str = str(user_id)
+    
+    # Создаем тестовый профиль
+    profile_data = {
+        "answers": {
+            "name": f"Тестовый пользователь {user_id}",
+            "age": "30",
+            "birthdate": "01.01.1990",
+            "birthplace": "Test City",
+            "timezone": "UTC+3"
+        },
+        "profile_completed": True,
+        "profile_text": f"Это тестовый профиль для пользователя {user_id}, созданный командой /create_test_profile",
+        "profile_details": f"Это подробный тестовый профиль для пользователя {user_id}, созданный командой /create_test_profile",
+        "personality_type": "Интеллектуальный",
+        "secondary_type": "Творческий",
+        "type_counts": {
+            "A": 10,
+            "B": 5,
+            "C": 8,
+            "D": 7
+        }
+    }
+    
+    # Сохраняем профиль в dictionary и файл
+    user_profiles[user_id_str] = profile_data
+    saved = await save_profiles_to_file()
+    
+    # Обновляем состояние пользователя
+    await state.update_data(**profile_data)
+    
+    if saved:
+        await message.answer(
+            f"✅ Тестовый профиль создан для пользователя с ID: {user_id}\n"
+            f"Проверьте профиль с помощью команды /profile или кнопки 👤 Профиль"
+        )
+        logger.info(f"Создан тестовый профиль для пользователя {user_id}")
+    else:
+        await message.answer(
+            f"❌ Ошибка при сохранении тестового профиля для пользователя {user_id}"
+        )
+        logger.error(f"Ошибка при сохранении тестового профиля для пользователя {user_id}")
+    
+    # Возвращаем основную клавиатуру
+    await message.answer(
+        "Возврат в главное меню",
+        reply_markup=get_main_keyboard()
+    )
+
+# Добавим команду для просмотра всех профилей
+@survey_router.message(Command("list_profiles"))
+async def list_profiles_command(message: Message):
+    """
+    Показывает список всех сохраненных профилей.
+    
+    Args:
+        message: Сообщение от пользователя
+    """
+    # Проверяем, сколько профилей сохранено
+    if not user_profiles:
+        await message.answer("❌ Нет сохраненных профилей в системе")
+        return
+    
+    # Формируем сообщение со списком профилей
+    profiles_text = "📋 <b>Список сохраненных профилей:</b>\n\n"
+    
+    for user_id, profile in user_profiles.items():
+        name = profile.get("answers", {}).get("name", "Неизвестно")
+        personality_type = profile.get("personality_type", "Неизвестно")
+        
+        profiles_text += f"• ID: {user_id}\n"
+        profiles_text += f"  Имя: {name}\n"
+        profiles_text += f"  Тип: {personality_type}\n\n"
+    
+    # Добавляем информацию о текущем пользователе
+    profiles_text += f"Ваш ID: {message.from_user.id}\n"
+    
+    # Отправляем список профилей
+    await message.answer(
+        profiles_text,
+        parse_mode="HTML"
+    )
+    
+    # Предлагаем дополнительные команды
+    await message.answer(
+        "Доступные команды:\n"
+        "/create_test_profile - создать тестовый профиль\n"
+        "/debug_profile - проверить состояние вашего профиля\n"
+        "/profile - просмотреть ваш профиль",
+        reply_markup=get_main_keyboard()
+    )
