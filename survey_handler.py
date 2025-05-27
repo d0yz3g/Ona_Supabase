@@ -44,11 +44,31 @@ async def save_profiles_to_file():
     Сохраняет профили пользователей в файл.
     """
     try:
-        with open(PROFILES_FILE, 'w', encoding='utf-8') as f:
+        # Сначала пишем во временный файл
+        temp_file = f"{PROFILES_FILE}.temp"
+        with open(temp_file, 'w', encoding='utf-8') as f:
             json.dump(user_profiles, f, ensure_ascii=False, indent=4)
+        
+        # Создаем резервную копию существующего файла, если он существует
+        if os.path.exists(PROFILES_FILE):
+            backup_file = f"{PROFILES_FILE}.backup"
+            try:
+                import shutil
+                shutil.copy2(PROFILES_FILE, backup_file)
+            except Exception as backup_error:
+                logger.warning(f"Не удалось создать резервную копию файла профилей: {backup_error}")
+        
+        # Переименовываем временный файл в основной
+        import shutil
+        shutil.move(temp_file, PROFILES_FILE)
+        
         logger.info(f"Профили сохранены в файл {PROFILES_FILE}")
+        railway_print(f"Профили сохранены в файл {PROFILES_FILE}", "INFO")
+        return True
     except Exception as e:
         logger.error(f"Ошибка при сохранении профилей в файл: {e}")
+        railway_print(f"Ошибка при сохранении профилей в файл: {e}", "ERROR")
+        return False
 
 # Функция для загрузки профилей из файла
 async def load_profiles_from_file():
@@ -58,15 +78,56 @@ async def load_profiles_from_file():
     global user_profiles
     try:
         if os.path.exists(PROFILES_FILE):
+            # Проверяем размер файла
+            file_size = os.path.getsize(PROFILES_FILE)
+            if file_size == 0:
+                logger.warning(f"Файл профилей {PROFILES_FILE} пуст. Инициализируем пустой словарь профилей.")
+                user_profiles = {}
+                # Записываем пустой словарь в файл
+                await save_profiles_to_file()
+                return
+                
+            # Загружаем данные из файла
             with open(PROFILES_FILE, 'r', encoding='utf-8') as f:
-                user_profiles = json.load(f)
-            logger.info(f"Загружено {len(user_profiles)} профилей из файла {PROFILES_FILE}")
+                loaded_data = f.read().strip()
+                if not loaded_data:  # Если файл пустой или содержит только пробелы
+                    logger.warning(f"Файл профилей {PROFILES_FILE} содержит только пробелы. Инициализируем пустой словарь профилей.")
+                    user_profiles = {}
+                    await save_profiles_to_file()
+                    return
+                    
+                # Парсим JSON
+                user_profiles = json.loads(loaded_data)
+                logger.info(f"Загружено {len(user_profiles)} профилей из файла {PROFILES_FILE}")
+                railway_print(f"Загружено {len(user_profiles)} профилей из файла {PROFILES_FILE}", "INFO")
         else:
             logger.info(f"Файл профилей {PROFILES_FILE} не найден. Будет создан новый.")
+            railway_print(f"Файл профилей {PROFILES_FILE} не найден. Будет создан новый.", "INFO")
             user_profiles = {}
+            # Создаем файл с пустым словарем
+            await save_profiles_to_file()
+    except json.JSONDecodeError as json_error:
+        logger.error(f"Ошибка декодирования JSON при загрузке профилей: {json_error}")
+        railway_print(f"Ошибка декодирования JSON при загрузке профилей: {json_error}", "ERROR")
+        # Создаем резервную копию поврежденного файла
+        if os.path.exists(PROFILES_FILE):
+            backup_file = f"{PROFILES_FILE}.backup.{int(asyncio.get_event_loop().time())}"
+            try:
+                import shutil
+                shutil.copy2(PROFILES_FILE, backup_file)
+                logger.info(f"Создана резервная копия поврежденного файла профилей: {backup_file}")
+                railway_print(f"Создана резервная копия поврежденного файла профилей: {backup_file}", "INFO")
+            except Exception as backup_error:
+                logger.error(f"Не удалось создать резервную копию файла профилей: {backup_error}")
+        
+        # Инициализируем пустой словарь
+        user_profiles = {}
+        await save_profiles_to_file()
     except Exception as e:
         logger.error(f"Ошибка при загрузке профилей из файла: {e}")
+        railway_print(f"Ошибка при загрузке профилей из файла: {e}", "ERROR")
         user_profiles = {}
+        await save_profiles_to_file()
 
 # Функция для сохранения профиля конкретного пользователя
 async def save_user_profile(user_id: int, profile_data: Dict[str, Any]):
