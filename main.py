@@ -4,12 +4,16 @@ import os
 import sys
 import tempfile  # Для создания временного файла блокировки
 import socket  # Для получения имени хоста
+import signal  # Для обработки сигналов завершения
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 from aiogram.types import BufferedInputFile
+
+# Флаг для корректного завершения работы
+shutdown_event = asyncio.Event()
 
 # Импортируем fcntl только для Unix-подобных систем
 if sys.platform != 'win32':
@@ -383,6 +387,56 @@ async def start_scheduler():
         scheduler.start()
         logger.info("Планировщик заданий запущен")
 
+# Функция для корректного завершения работы бота
+async def shutdown(dp, bot):
+    """
+    Корректно завершает работу бота, сохраняя все данные.
+    
+    Args:
+        dp: Dispatcher
+        bot: Bot
+    """
+    logger.info("Получен сигнал завершения работы. Корректно завершаем работу бота...")
+    railway_print("Получен сигнал завершения работы. Корректно завершаем работу бота...", "INFO")
+    
+    # Сохраняем профили пользователей
+    try:
+        from survey_handler import save_profiles_to_file
+        await save_profiles_to_file()
+        logger.info("Профили пользователей сохранены")
+        railway_print("Профили пользователей сохранены", "INFO")
+    except Exception as e:
+        logger.error(f"Ошибка при сохранении профилей: {e}")
+        railway_print(f"Ошибка при сохранении профилей: {e}", "ERROR")
+    
+    # Останавливаем планировщик заданий
+    if scheduler and scheduler.running:
+        scheduler.shutdown()
+        logger.info("Планировщик заданий остановлен")
+    
+    # Закрываем сессию бота
+    if hasattr(bot, "session") and bot.session:
+        await bot.session.close()
+        logger.info("Сессия бота закрыта")
+    
+    # Останавливаем бота
+    railway_print("Бот корректно завершил работу", "INFO")
+    
+    # Освобождаем блокировку
+    release_lock()
+
+# Обработчик сигналов SIGINT и SIGTERM
+def signal_handler(signal_name):
+    """
+    Обработчик сигналов для корректного завершения работы бота.
+    
+    Args:
+        signal_name: Имя сигнала
+    """
+    logger.info(f"Получен сигнал {signal_name}")
+    railway_print(f"Получен сигнал {signal_name}", "INFO")
+    shutdown_event.set()
+
 async def main():
     """
     Главная функция запуска бота
@@ -396,6 +450,19 @@ async def main():
     # Инициализируем бот
     logger.info("Бот ОНА запускается...")
     railway_print("Запуск основного цикла бота...", "INFO")
+    
+    # Устанавливаем обработчики сигналов
+    if sys.platform != 'win32':
+        # В Unix-подобных системах используем asyncio.add_signal_handler
+        for sig_name in ('SIGINT', 'SIGTERM'):
+            asyncio.get_event_loop().add_signal_handler(
+                getattr(signal, sig_name),
+                lambda s=sig_name: signal_handler(s)
+            )
+    else:
+        # В Windows используем signal.signal
+        signal.signal(signal.SIGINT, lambda sig, frame: signal_handler('SIGINT'))
+        signal.signal(signal.SIGTERM, lambda sig, frame: signal_handler('SIGTERM'))
     
     try:
         # Удаляем все обновления, которые были пропущены (если бот был отключен)
@@ -430,8 +497,24 @@ async def main():
         # Сообщение о готовности бота
         railway_print("=== ONA BOT ЗАПУЩЕН И ГОТОВ К РАБОТЕ ===", "INFO")
         
-        # Запускаем бота с длинным поллингом и параметрами для предотвращения конфликтов
-        await dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
+        # Запускаем бота с длинным поллингом и обработчиком корректного завершения
+        polling_task = asyncio.create_task(
+            dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
+        )
+        
+        # Ожидаем сигнала завершения или ошибки в поллинге
+        await asyncio.wait(
+            [polling_task, shutdown_event.wait()],
+            return_when=asyncio.FIRST_COMPLETED
+        )
+        
+        # Если было получено событие завершения, выполняем корректное завершение
+        if shutdown_event.is_set():
+            logger.info("Получено событие завершения работы")
+            # Отменяем задачу поллинга
+            if not polling_task.done():
+                polling_task.cancel()
+            await shutdown(dp, bot)
     except Exception as e:
         # Проверяем, является ли ошибка конфликтом запросов
         if "Conflict: terminated by other getUpdates" in str(e) or "TelegramConflictError" in str(e):
@@ -449,7 +532,16 @@ async def main():
                 bot._session = None
                 
                 # Пробуем запустить снова
-                await dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
+                polling_task = asyncio.create_task(
+                    dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
+                )
+                
+                # Ожидаем сигнала завершения или ошибки в поллинге
+                await asyncio.wait(
+                    [polling_task, shutdown_event.wait()],
+                    return_when=asyncio.FIRST_COMPLETED
+                )
+                
                 railway_print("Повторный запуск выполнен успешно!", "INFO")
             except Exception as retry_error:
                 logger.error(f"Повторная попытка запуска не удалась: {retry_error}")
@@ -464,19 +556,9 @@ async def main():
             logger.error(f"Ошибка запуска бота: {e}")
             railway_print(f"Ошибка запуска: {str(e)}", "ERROR")
     finally:
-        # Освобождаем блокировку при завершении
-        release_lock()
-        
-        # Останавливаем планировщик заданий при выходе
-        if scheduler and scheduler.running:
-            scheduler.shutdown()
-            logger.info("Планировщик заданий остановлен")
-        
-        if hasattr(bot, "session") and bot.session:
-            await bot.session.close()
-            logger.info("Сессия бота закрыта")
-        
-        railway_print("Бот завершил работу", "INFO")
+        # Корректное завершение работы, если это еще не было сделано
+        if not shutdown_event.is_set():
+            await shutdown(dp, bot)
 
 if __name__ == "__main__":
     # Запускаем бота

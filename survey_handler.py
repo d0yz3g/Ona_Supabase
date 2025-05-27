@@ -1,5 +1,8 @@
 import logging
 from typing import Dict, Any, List, Tuple, Optional, Union
+import json
+import os
+import asyncio
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.filters import Command
@@ -8,6 +11,9 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from button_states import SurveyStates, ProfileStates
 from profile_generator import generate_profile, save_profile_to_db
+
+# Определяем путь к файлу сохранения профилей
+PROFILES_FILE = "user_profiles.json"
 
 # Импорт функции railway_print для логирования
 try:
@@ -28,6 +34,84 @@ except ImportError:
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
+
+# Словарь для хранения профилей пользователей
+user_profiles = {}
+
+# Функция для сохранения профилей в файл
+async def save_profiles_to_file():
+    """
+    Сохраняет профили пользователей в файл.
+    """
+    try:
+        with open(PROFILES_FILE, 'w', encoding='utf-8') as f:
+            json.dump(user_profiles, f, ensure_ascii=False, indent=4)
+        logger.info(f"Профили сохранены в файл {PROFILES_FILE}")
+    except Exception as e:
+        logger.error(f"Ошибка при сохранении профилей в файл: {e}")
+
+# Функция для загрузки профилей из файла
+async def load_profiles_from_file():
+    """
+    Загружает профили пользователей из файла.
+    """
+    global user_profiles
+    try:
+        if os.path.exists(PROFILES_FILE):
+            with open(PROFILES_FILE, 'r', encoding='utf-8') as f:
+                user_profiles = json.load(f)
+            logger.info(f"Загружено {len(user_profiles)} профилей из файла {PROFILES_FILE}")
+        else:
+            logger.info(f"Файл профилей {PROFILES_FILE} не найден. Будет создан новый.")
+            user_profiles = {}
+    except Exception as e:
+        logger.error(f"Ошибка при загрузке профилей из файла: {e}")
+        user_profiles = {}
+
+# Функция для сохранения профиля конкретного пользователя
+async def save_user_profile(user_id: int, profile_data: Dict[str, Any]):
+    """
+    Сохраняет профиль пользователя и записывает все профили в файл.
+    
+    Args:
+        user_id: ID пользователя
+        profile_data: Данные профиля пользователя
+    """
+    try:
+        # Преобразуем user_id в строку, так как json не поддерживает целочисленные ключи
+        user_profiles[str(user_id)] = profile_data
+        # Сохраняем обновленные профили в файл
+        await save_profiles_to_file()
+        logger.info(f"Профиль пользователя {user_id} сохранен")
+    except Exception as e:
+        logger.error(f"Ошибка при сохранении профиля пользователя {user_id}: {e}")
+
+# Функция для загрузки профиля конкретного пользователя в state
+async def load_user_profile_to_state(user_id: int, state: FSMContext):
+    """
+    Загружает профиль пользователя из сохраненных данных в state.
+    
+    Args:
+        user_id: ID пользователя
+        state: Состояние FSM
+    
+    Returns:
+        bool: True, если профиль загружен успешно, False в противном случае
+    """
+    try:
+        # Получаем профиль пользователя из словаря (если существует)
+        user_id_str = str(user_id)
+        if user_id_str in user_profiles:
+            # Загружаем профиль в state
+            await state.update_data(**user_profiles[user_id_str])
+            logger.info(f"Профиль пользователя {user_id} загружен в state")
+            return True
+        else:
+            logger.info(f"Профиль пользователя {user_id} не найден")
+            return False
+    except Exception as e:
+        logger.error(f"Ошибка при загрузке профиля пользователя {user_id} в state: {e}")
+        return False
 
 # Создаем роутер для опроса
 survey_router = Router()
@@ -479,16 +563,22 @@ async def complete_survey(message: Message, state: FSMContext, answers: Dict[str
         # Сбрасываем состояние опроса
         await state.set_state(None)
         
+        # Данные для сохранения в state и в файл
+        profile_state_data = {
+            "answers": answers,
+            "profile_completed": True,
+            "profile_text": detailed_profile,  # Сохраняем детальный профиль как основной
+            "profile_details": detailed_profile,
+            "personality_type": primary_type,
+            "secondary_type": secondary_type,
+            "type_counts": type_counts
+        }
+        
         # Сохраняем результаты в состоянии пользователя
-        await state.update_data(
-            answers=answers,
-            profile_completed=True,
-            profile_text=detailed_profile,  # Сохраняем детальный профиль как основной
-            profile_details=detailed_profile,
-            personality_type=primary_type,
-            secondary_type=secondary_type,
-            type_counts=type_counts
-        )
+        await state.update_data(**profile_state_data)
+        
+        # Сохраняем профиль в файл для постоянного хранения
+        await save_user_profile(message.from_user.id, profile_state_data)
         
         # Проверяем, что профили действительно сохранились
         verification_data = await state.get_data()
@@ -621,6 +711,15 @@ async def confirm_profile_reset(callback: CallbackQuery, state: FSMContext):
         question_index=0,
         is_demo_questions=True
     )
+    
+    # Обновляем профиль пользователя в постоянном хранилище
+    empty_profile = {
+        "answers": {},
+        "profile_completed": False,
+        "profile_text": "",
+        "personality_type": None
+    }
+    await save_user_profile(callback.from_user.id, empty_profile)
     
     # Удаляем сообщение с подтверждением
     await callback.message.delete()
@@ -951,9 +1050,18 @@ async def command_profile(message: Message, state: FSMContext):
         message: Сообщение от пользователя
         state: Состояние FSM
     """
-    # Получаем данные пользователя
+    # Проверяем, есть ли данные в state
     user_data = await state.get_data()
     profile_completed = user_data.get("profile_completed", False)
+    
+    # Если профиль не найден в state, пробуем загрузить из файла
+    if not profile_completed:
+        profile_loaded = await load_user_profile_to_state(message.from_user.id, state)
+        if profile_loaded:
+            # Если профиль был загружен из файла, обновляем данные
+            user_data = await state.get_data()
+            profile_completed = user_data.get("profile_completed", False)
+            logger.info(f"Профиль пользователя {message.from_user.id} загружен из файла")
     
     if profile_completed:
         # Получаем тип личности и ответы пользователя
@@ -1281,6 +1389,9 @@ async def test_interpretations():
         print("\nПроверка успешна! Интерпретации работают корректно.")
     except Exception as e:
         print(f"Ошибка при получении интерпретации: {e}")
+
+# Загружаем профили при импорте модуля
+asyncio.create_task(load_profiles_from_file())
 
 # Добавляем в конец файла для запуска теста при прямом вызове
 if __name__ == "__main__":
