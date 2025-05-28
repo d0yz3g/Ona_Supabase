@@ -143,6 +143,35 @@ else
     echo "✓ Файл services/__init__.py существует"
 fi
 
+# Создаем fix_supabase.py если не существует
+check_and_create "fix_supabase.py" '#!/usr/bin/env python
+"""Скрипт для проверки и исправления проблем с Supabase в Railway."""
+import sys
+import subprocess
+import logging
+logger = logging.getLogger("supabase_fix")
+logging.basicConfig(level=logging.INFO)
+try:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "supabase-py==2.3.1"])
+    logger.info("Модуль supabase-py успешно установлен")
+except Exception as e:
+    logger.error(f"Ошибка при установке модуля supabase-py: {e}")
+'
+
+# Проверка и исправление проблем с Supabase
+if [ -f "fix_supabase.py" ]; then
+    echo "Запуск fix_supabase.py для проверки и исправления проблем с Supabase..."
+    python fix_supabase.py
+    echo "✓ Скрипт fix_supabase.py выполнен"
+else
+    echo "ПРЕДУПРЕЖДЕНИЕ: Файл fix_supabase.py не найден, пропускаем проверку Supabase"
+fi
+
+# Установка зависимостей вручную
+echo "Установка критически важных зависимостей..."
+pip install supabase-py==2.3.1 python-dotenv httpx postgrest-py
+echo "✓ Зависимости установлены"
+
 # Запуск скриптов инициализации
 echo "Запуск скриптов инициализации..."
 
