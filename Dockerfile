@@ -29,15 +29,12 @@ RUN pip install --no-cache-dir python-dotenv pytz pre-commit pytest
 RUN pip install --no-cache-dir aiogram==3.2.0 
 RUN pip install --no-cache-dir aiohttp==3.9.1
 
-# Поэтапная установка Supabase и его зависимостей
-# Сначала устанавливаем httpx отдельно
+# Установка httpx отдельно
 RUN pip install --no-cache-dir httpx==0.24.1
 
-# Затем устанавливаем компоненты Supabase по одному
-RUN pip install --no-cache-dir postgrest-py==0.10.3
-RUN pip install --no-cache-dir gotrue==0.5.4
-RUN pip install --no-cache-dir storage3==0.5.4
-RUN pip install --no-cache-dir supabase-py==2.0.0
+# Установка Supabase и его зависимостей единым пакетом
+# Вместо поэтапной установки используем единый пакет supabase
+RUN pip install --no-cache-dir supabase==1.0.3 pydantic==1.10.12
 
 # Установка OpenAI и других библиотек
 RUN pip install --no-cache-dir openai==1.3.5
@@ -111,10 +108,7 @@ RUN if [ ! -f "services/__init__.py" ]; then \
 
 # Проверка Supabase - добавляем проверку импорта Supabase и его зависимостей
 RUN echo "Проверка импорта Supabase и его зависимостей:" > /app/supabase_status.txt && \
-    python -c "import supabase; print('supabase imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing supabase" >> /app/supabase_status.txt && \
-    python -c "import postgrest; print('postgrest imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing postgrest" >> /app/supabase_status.txt && \
-    python -c "import gotrue; print('gotrue imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing gotrue" >> /app/supabase_status.txt && \
-    python -c "import storage3; print('storage3 imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing storage3" >> /app/supabase_status.txt
+    python -c "import supabase; print('supabase imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing supabase" >> /app/supabase_status.txt
 
 # Дополнительная информация для логов
 RUN echo "Ona2.0 Telegram Bot - Railway Deployment" > /app/railway_info.txt

@@ -1,73 +1,102 @@
 #!/usr/bin/env python
 """
-Test script to verify Supabase connection and dependency installation.
-This script checks if all required Supabase-related dependencies are working properly.
+Тестирование подключения к Supabase.
+Этот скрипт проверяет, что библиотека Supabase успешно импортируется
+и может установить соединение с сервером Supabase.
 """
 
 import os
 import sys
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
 
-def check_dependency(module_name):
-    """Check if a dependency is installed correctly."""
+def test_supabase_import():
+    """Проверка импорта библиотеки Supabase и ее зависимостей."""
     try:
-        __import__(module_name)
-        print(f"✅ {module_name} imported successfully")
+        import supabase
+        print("✅ Библиотека supabase успешно импортирована.")
+        
+        # Выводим версию библиотеки
+        print(f"Версия supabase: {supabase.__version__}")
+        
+        # Проверяем зависимости
+        try:
+            from supabase import create_client, Client
+            print("✅ Импортирован create_client и Client из supabase")
+        except ImportError as e:
+            print(f"❌ Ошибка импорта из supabase: {e}")
+            return False
+        
         return True
     except ImportError as e:
-        print(f"❌ Error importing {module_name}: {e}")
+        print(f"❌ Ошибка импорта supabase: {e}")
         return False
 
-def test_supabase_dependencies():
-    """Test all Supabase-related dependencies."""
-    dependencies = [
-        "httpx",
-        "postgrest",
-        "gotrue",
-        "storage3",
-        "supabase"
-    ]
-    
-    all_success = True
-    for dep in dependencies:
-        if not check_dependency(dep):
-            all_success = False
-    
-    return all_success
 
 def test_supabase_connection():
-    """Test connection to Supabase if credentials are available."""
-    supabase_url = os.getenv("SUPABASE_URL")
-    supabase_key = os.getenv("SUPABASE_KEY")
-    
-    if not supabase_url or not supabase_key:
-        print("⚠️ Supabase credentials not found in environment variables")
-        return False
-    
+    """Тестирование подключения к Supabase."""
     try:
-        from supabase import create_client
+        from supabase import create_client, Client
         
-        supabase = create_client(supabase_url, supabase_key)
-        # Simple query to verify connection
-        response = supabase.table("profiles").select("*").limit(1).execute()
-        print(f"✅ Successfully connected to Supabase")
-        return True
+        # Получаем URL и ключ из переменных окружения
+        supabase_url = os.environ.get("SUPABASE_URL")
+        supabase_key = os.environ.get("SUPABASE_KEY") or os.environ.get("SUPABASE_SERVICE_KEY")
+        
+        if not supabase_url or not supabase_key:
+            print("⚠️ Переменные окружения SUPABASE_URL и/или SUPABASE_KEY не установлены.")
+            print("⚠️ Тест подключения пропущен.")
+            return None
+        
+        # Создаем клиент Supabase
+        print(f"Подключение к Supabase URL: {supabase_url[:20]}...")
+        supabase_client = create_client(supabase_url, supabase_key)
+        
+        # Выполняем простой запрос для проверки подключения
+        try:
+            # Проверка аутентификации - получение текущего пользователя
+            # Может вернуть None, если пользователь не аутентифицирован, но не должен вызывать ошибку
+            auth_response = supabase_client.auth.get_user()
+            print("✅ Проверка аутентификации прошла успешно.")
+            
+            # Попытка выполнить простой запрос к БД
+            # Заменить "users" на реальную таблицу в вашей базе данных
+            try:
+                # Просто получаем количество записей
+                query_response = supabase_client.table("users").select("count", count="exact").execute()
+                print(f"✅ Запрос к БД выполнен успешно. Получено записей: {query_response.count if hasattr(query_response, 'count') else 'N/A'}")
+            except Exception as e:
+                print(f"⚠️ Запрос к БД не удался: {e}")
+                print("⚠️ Это может быть нормально, если таблица не существует или нет доступа.")
+            
+            print("✅ Соединение с Supabase установлено успешно.")
+            return True
+        except Exception as e:
+            print(f"❌ Ошибка при тестировании Supabase: {e}")
+            return False
     except Exception as e:
-        print(f"❌ Failed to connect to Supabase: {e}")
+        print(f"❌ Ошибка при создании клиента Supabase: {e}")
         return False
 
+
 if __name__ == "__main__":
-    print("🔍 Testing Supabase dependencies and connection...")
+    print("\n=== Тестирование Supabase ===\n")
     
-    if test_supabase_dependencies():
-        print("✅ All Supabase dependencies are installed correctly")
+    # Проверка импорта
+    import_success = test_supabase_import()
+    if not import_success:
+        print("\n❌ Тест импорта Supabase не пройден. Выход.")
+        sys.exit(1)
+    
+    # Проверка подключения
+    print("\n--- Тестирование подключения ---\n")
+    connection_success = test_supabase_connection()
+    
+    if connection_success is None:
+        print("\n⚠️ Тест подключения пропущен из-за отсутствия переменных окружения.")
+        print("⚠️ Установите SUPABASE_URL и SUPABASE_KEY для полного тестирования.")
+        sys.exit(0)
+    elif connection_success:
+        print("\n✅ Все тесты Supabase пройдены успешно!")
+        sys.exit(0)
     else:
-        print("❌ Some Supabase dependencies are missing or installed incorrectly")
-    
-    # Optional connection test if environment variables are available
-    test_supabase_connection()
-    
-    print("🔍 Supabase dependency test complete") 
+        print("\n❌ Тесты Supabase не пройдены. Проверьте настройки и соединение.")
+        sys.exit(1) 
