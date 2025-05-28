@@ -27,6 +27,9 @@ RUN pip install --no-cache-dir aiogram==3.2.0
 RUN pip install --no-cache-dir openai==1.3.5
 RUN pip install --no-cache-dir ephem elevenlabs aiofiles apscheduler
 
+# Явная установка Supabase и его зависимостей
+RUN pip install --no-cache-dir --force-reinstall postgrest-py==0.11.0 httpx gotrue==1.3.0 storage3==0.6.1 realtime==1.0.0 supabase-py==2.3.1
+
 # Явная установка psutil с нужными зависимостями
 RUN pip install --no-cache-dir --force-reinstall psutil==5.9.5
 
@@ -93,6 +96,14 @@ RUN if [ ! -f "services/__init__.py" ]; then \
         echo "✓ Файл services/__init__.py существует"; \
     fi
 
+# Проверка Supabase - добавляем проверку импорта Supabase и его зависимостей
+RUN echo "Проверка импорта Supabase и его зависимостей:" > /app/supabase_status.txt && \
+    python -c "import supabase; print('supabase imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing supabase" >> /app/supabase_status.txt && \
+    python -c "import postgrest; print('postgrest imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing postgrest" >> /app/supabase_status.txt && \
+    python -c "import gotrue; print('gotrue imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing gotrue" >> /app/supabase_status.txt && \
+    python -c "import storage3; print('storage3 imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing storage3" >> /app/supabase_status.txt && \
+    python -c "import realtime; print('realtime imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing realtime" >> /app/supabase_status.txt
+
 # Дополнительная информация для логов
 RUN echo "Ona2.0 Telegram Bot - Railway Deployment" > /app/railway_info.txt
 RUN echo "Build date: $(date)" >> /app/railway_info.txt
@@ -105,14 +116,12 @@ RUN python -c "import psutil; print('psutil успешно установлен,
 RUN echo "Проверка импорта ключевых модулей:" >> /app/railway_info.txt
 RUN python -c "import sys; sys.path.insert(0, '/app'); import railway_logging; print('railway_logging импортирован успешно')" >> /app/railway_info.txt || echo "ОШИБКА: railway_logging не импортируется"
 
-# Делаем railway_start.sh исполняемым
+# Делаем скрипты исполняемыми
 RUN chmod +x railway_start.sh
+RUN if [ -f "railway_supabase_setup.sh" ]; then chmod +x railway_supabase_setup.sh; fi
 
 # Настройка логирования для Railway
 RUN touch /app/logs/bot.log /app/logs/restart.log
-
-# Установка psutil отдельно (часто требуется для системных операций)
-RUN pip install psutil
 
 # Добавление скрипта для проверки и остановки запущенных процессов бота
 RUN echo '#!/bin/bash\n\
@@ -136,6 +145,12 @@ if [ ! -z "$RUNNING_BOTS" ]; then\n\
     sleep 5\n\
 else\n\
     echo "Запущенных экземпляров бота не найдено"\n\
+fi\n\
+\n\
+# Тестирование Supabase перед запуском\n\
+if [ -f "test_supabase_connection.py" ]; then\n\
+    echo "Запуск теста подключения к Supabase..."\n\
+    python test_supabase_connection.py\n\
 fi\n\
 \n\
 # Запускаем бота через скрипт перезапуска\n\
