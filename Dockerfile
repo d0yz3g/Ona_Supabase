@@ -30,11 +30,13 @@ RUN pip install --no-cache-dir aiogram==3.2.0
 RUN pip install --no-cache-dir httpx==0.24.1 aiohttp==3.9.1
 
 # Поэтапная установка Supabase и его зависимостей
-RUN pip install --no-cache-dir postgrest-py==0.10.3
-RUN pip install --no-cache-dir gotrue==0.5.4
-RUN pip install --no-cache-dir storage3==0.5.4
-RUN pip install --no-cache-dir realtime==0.1.3
-RUN pip install --no-cache-dir supabase-py==2.0.0
+# Устанавливаем supabase-py и необходимые зависимости одним блоком
+# Это предотвращает проблемы совместимости между пакетами
+RUN pip install --no-cache-dir httpx==0.24.1 \
+    postgrest-py==0.10.3 \
+    gotrue==0.5.4 \
+    storage3==0.5.4 \
+    supabase-py==2.0.0
 
 # Установка OpenAI и других библиотек
 RUN pip install --no-cache-dir openai==1.3.5
@@ -111,8 +113,7 @@ RUN echo "Проверка импорта Supabase и его зависимос�
     python -c "import supabase; print('supabase imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing supabase" >> /app/supabase_status.txt && \
     python -c "import postgrest; print('postgrest imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing postgrest" >> /app/supabase_status.txt && \
     python -c "import gotrue; print('gotrue imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing gotrue" >> /app/supabase_status.txt && \
-    python -c "import storage3; print('storage3 imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing storage3" >> /app/supabase_status.txt && \
-    python -c "import realtime; print('realtime imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing realtime" >> /app/supabase_status.txt
+    python -c "import storage3; print('storage3 imported successfully')" >> /app/supabase_status.txt 2>&1 || echo "Error importing storage3" >> /app/supabase_status.txt
 
 # Дополнительная информация для логов
 RUN echo "Ona2.0 Telegram Bot - Railway Deployment" > /app/railway_info.txt

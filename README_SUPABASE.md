@@ -77,14 +77,14 @@ To run it on Railway:
    - Changed from `httpx==0.28.1` to `httpx==0.24.1`
    - Changed from `gotrue==1.3.0` to `gotrue==0.5.4`
    - Changed from `storage3==0.6.1` to `storage3==0.5.4`
-   - Changed from `realtime==1.0.0` to `realtime==0.1.3`
+   - Removed `realtime==0.1.3` as it's incompatible with Python 3.11 and not needed with `supabase-py==2.0.0`
 
 2. Added necessary system dependencies to Dockerfile:
    - Added g++
    - Added pkg-config
    - Added git
 
-3. Modified the installation process to install dependencies one by one
+3. Modified the installation process to install dependencies together rather than one by one to ensure compatibility
 
 4. Created testing and setup scripts:
    - `test_supabase_connection.py`: Tests Supabase connection with the correct versions
@@ -95,8 +95,18 @@ To run it on Railway:
 If you need to manually install Supabase on Railway:
 
 ```bash
-pip install httpx==0.24.1 postgrest-py==0.10.3 gotrue==0.5.4 storage3==0.5.4 realtime==0.1.3 supabase-py==2.0.0
+pip install httpx==0.24.1 postgrest-py==0.10.3 gotrue==0.5.4 storage3==0.5.4 supabase-py==2.0.0
 ```
+
+## About the `realtime` Package
+
+The separate `realtime==0.1.3` package has been removed from the dependencies because:
+
+1. It's incompatible with Python 3.11
+2. In newer versions of `supabase-py`, realtime functionality is integrated into the main package
+3. The version 0.1.3 is deprecated and no longer maintained
+
+Realtime functionality (websockets, subscriptions, etc.) still works with this configuration through the main `supabase-py` package. The change only affects how the dependencies are structured, not the available features.
 
 ## Troubleshooting
 

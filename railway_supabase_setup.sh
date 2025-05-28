@@ -23,7 +23,8 @@ pip install --no-cache-dir httpx==0.24.1
 pip install --no-cache-dir postgrest-py==0.10.3
 pip install --no-cache-dir gotrue==0.5.4 
 pip install --no-cache-dir storage3==0.5.4
-pip install --no-cache-dir realtime==0.1.3
+# Removing realtime==0.1.3 as it's incompatible with Python 3.11
+# It's not required as a separate dependency when using supabase-py
 pip install --no-cache-dir supabase-py==2.0.0
 
 # Check if installation was successful
@@ -37,7 +38,7 @@ fi
 
 # Verify all dependencies are installed
 echo "Checking Supabase dependencies..."
-for module in postgrest httpx gotrue storage3 realtime; do
+for module in postgrest httpx gotrue storage3; do
     if python -c "import $module; version = getattr($module, '__version__', 'unknown'); print(f'$module installed successfully (version: {version})')" 2>/dev/null; then
         echo "✅ $module dependency installed successfully"
     else
@@ -74,7 +75,6 @@ echo "   - postgrest-py==0.10.3"
 echo "   - httpx==0.24.1"
 echo "   - gotrue==0.5.4"
 echo "   - storage3==0.5.4"
-echo "   - realtime==0.1.3"
 echo "2. Set SUPABASE_URL and SUPABASE_KEY environment variables in Railway dashboard"
 echo "3. Deploy your application"
 echo ""

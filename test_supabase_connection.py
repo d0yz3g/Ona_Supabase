@@ -30,8 +30,8 @@ def check_supabase_installation():
             "postgrest": "0.10.3",
             "httpx": "0.24.1",
             "gotrue": "0.5.4",
-            "storage3": "0.5.4",
-            "realtime": "0.1.3"
+            "storage3": "0.5.4"
+            # realtime is not required as a separate dependency when using supabase-py
         }
         
         for module_name, expected_version in dependencies.items():
@@ -46,7 +46,7 @@ def check_supabase_installation():
         return True
     except ImportError as e:
         logger.error(f"❌ Supabase module import failed: {e}")
-        logger.error("   Please run: pip install supabase-py==2.0.0 postgrest-py==0.10.3 httpx==0.24.1 gotrue==0.5.4 storage3==0.5.4 realtime==0.1.3")
+        logger.error("   Please run: pip install supabase-py==2.0.0 postgrest-py==0.10.3 httpx==0.24.1 gotrue==0.5.4 storage3==0.5.4")
         return False
     except Exception as e:
         logger.error(f"❌ Unexpected error when importing Supabase: {e}")
