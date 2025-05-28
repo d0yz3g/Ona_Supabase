@@ -7,6 +7,10 @@
 
 import os
 import sys
+from dotenv import load_dotenv
+
+# Загрузка переменных окружения из .env файла
+load_dotenv()
 
 
 def test_supabase_import():
@@ -40,6 +44,10 @@ def test_supabase_connection():
         # Получаем URL и ключ из переменных окружения
         supabase_url = os.environ.get("SUPABASE_URL")
         supabase_key = os.environ.get("SUPABASE_KEY") or os.environ.get("SUPABASE_SERVICE_KEY")
+        
+        # Вывод для отладки
+        print(f"SUPABASE_URL в окружении: {'Да' if supabase_url else 'Нет'}")
+        print(f"SUPABASE_KEY в окружении: {'Да' if supabase_key else 'Нет'}")
         
         if not supabase_url or not supabase_key:
             print("⚠️ Переменные окружения SUPABASE_URL и/или SUPABASE_KEY не установлены.")
@@ -85,6 +93,15 @@ if __name__ == "__main__":
     if not import_success:
         print("\n❌ Тест импорта Supabase не пройден. Выход.")
         sys.exit(1)
+    
+    # Проверка переменных окружения
+    print("\nПеременные окружения:")
+    for var in ["SUPABASE_URL", "SUPABASE_KEY", "SUPABASE_SERVICE_KEY"]:
+        value = os.environ.get(var)
+        if value:
+            print(f"✅ {var}: установлена")
+        else:
+            print(f"❌ {var}: не установлена")
     
     # Проверка подключения
     print("\n--- Тестирование подключения ---\n")

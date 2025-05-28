@@ -12,6 +12,9 @@ ELEVEN_API_KEY=test-elevenlabs-api-key-for-testing
 ELEVENLABS_API_KEY=test-elevenlabs-api-key-for-testing
 ELEVEN_VOICE_ID=EXAVITQu4vr4xnSDxMaL
 ELEVENLABS_VOICE_ID=EXAVITQu4vr4xnSDxMaL
+# Добавляем переменные для Supabase
+SUPABASE_URL=https://supabase-test-url.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test-supabase-key-for-testing-purposes-only
 """
 
 # Записываем содержимое в файл
