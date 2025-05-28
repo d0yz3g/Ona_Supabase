@@ -4,13 +4,14 @@ from typing import Dict, Any, Optional, Tuple
 import json
 from openai import AsyncOpenAI
 import httpx
-from aiogram import Router
-
-# Создаем роутер для обработки коммуникаций
-communication_handler_router = Router(name="communication_handler")
+from aiogram import Router, F
+from aiogram.types import Message
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
+
+# Создаем роутер для обработки сообщений
+communication_router = Router(name="communication")
 
 # Проверка наличия API-ключа OpenAI
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -245,4 +246,34 @@ async def get_personality_type_from_profile(profile_text: str) -> str:
             max_score = score
             max_type = p_type
     
-    return max_type 
+    return max_type
+
+# Базовый обработчик текстовых сообщений
+@communication_router.message(F.text)
+async def handle_text_message(message: Message):
+    """
+    Обрабатывает текстовые сообщения, которые не были обработаны другими роутерами.
+    """
+    logger.info(f"Получено сообщение от пользователя {message.from_user.id}: {message.text}")
+    
+    try:
+        # Получаем или создаем базовый профиль пользователя
+        from profile_storage import load_user_profile
+        user_id = message.from_user.id
+        user_profile = await load_user_profile(user_id) or {"personality_type": "Интеллектуальный"}
+        
+        # Генерируем ответ
+        response = await generate_personalized_response(
+            message_text=message.text,
+            user_profile=user_profile
+        )
+        
+        # Отправляем ответ пользователю
+        await message.answer(response)
+        logger.info(f"Отправлен персонализированный ответ пользователю {user_id}")
+    except Exception as e:
+        logger.error(f"Ошибка при обработке текстового сообщения: {e}")
+        # Отправляем сообщение об ошибке
+        await message.answer(
+            "Извините, произошла ошибка при обработке вашего сообщения. Пожалуйста, попробуйте еще раз или используйте команду /restart."
+        ) 

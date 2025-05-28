@@ -547,4 +547,37 @@ async def to_main_menu(callback: CallbackQuery, state: FSMContext):
     
     # Отвечаем на callback
     await callback.answer("Возврат в главное меню")
-    logger.info(f"Пользователь {callback.from_user.id} вернулся в главное меню из напоминаний") 
+    logger.info(f"Пользователь {callback.from_user.id} вернулся в главное меню из напоминаний")
+
+# Функция для инициализации асинхронных задач напоминаний
+def setup_async_tasks():
+    """
+    Инициализирует асинхронные задачи для модуля напоминаний.
+    
+    Returns:
+        list: Список асинхронных задач для выполнения
+    """
+    async def initialize_reminders():
+        """
+        Инициализирует планировщик напоминаний при старте бота.
+        """
+        logger.info("Инициализация планировщика напоминаний...")
+        if scheduler and not scheduler.running:
+            scheduler.start()
+            logger.info("Планировщик напоминаний запущен")
+    
+    async def load_reminder_settings():
+        """
+        Загружает настройки напоминаний из хранилища.
+        """
+        global reminder_users
+        try:
+            # Можно реализовать загрузку из файла или базы данных
+            logger.info("Загрузка настроек напоминаний из хранилища...")
+            # Здесь может быть код для загрузки настроек
+            logger.info("Настройки напоминаний загружены")
+        except Exception as e:
+            logger.error(f"Ошибка при загрузке настроек напоминаний: {e}")
+    
+    # Возвращаем список асинхронных задач
+    return [initialize_reminders(), load_reminder_settings()] 
