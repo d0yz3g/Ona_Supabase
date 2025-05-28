@@ -11,9 +11,13 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from button_states import SurveyStates, ProfileStates
 from profile_generator import generate_profile, save_profile_to_db
-
-# Определяем путь к файлу сохранения профилей
-PROFILES_FILE = "user_profiles.json"
+from profile_storage import (
+    save_user_profile,
+    load_user_profile,
+    delete_user_profile,
+    list_all_profiles,
+    init_storage
+)
 
 # Импорт функции railway_print для логирования
 try:
@@ -35,154 +39,6 @@ except ImportError:
 # Настройка логирования
 logger = logging.getLogger(__name__)
 
-# Словарь для хранения профилей пользователей
-user_profiles = {}
-
-# Функция для сохранения профилей в файл
-async def save_profiles_to_file():
-    """
-    Сохраняет профили пользователей в файл.
-    """
-    try:
-        # Сначала пишем во временный файл
-        temp_file = f"{PROFILES_FILE}.temp"
-        with open(temp_file, 'w', encoding='utf-8') as f:
-            json.dump(user_profiles, f, ensure_ascii=False, indent=4)
-        
-        # Создаем резервную копию существующего файла, если он существует
-        if os.path.exists(PROFILES_FILE):
-            backup_file = f"{PROFILES_FILE}.backup"
-            try:
-                import shutil
-                shutil.copy2(PROFILES_FILE, backup_file)
-            except Exception as backup_error:
-                logger.warning(f"Не удалось создать резервную копию файла профилей: {backup_error}")
-        
-        # Переименовываем временный файл в основной
-        import shutil
-        shutil.move(temp_file, PROFILES_FILE)
-        
-        logger.info(f"Профили сохранены в файл {PROFILES_FILE}")
-        railway_print(f"Профили сохранены в файл {PROFILES_FILE}", "INFO")
-        return True
-    except Exception as e:
-        logger.error(f"Ошибка при сохранении профилей в файл: {e}")
-        railway_print(f"Ошибка при сохранении профилей в файл: {e}", "ERROR")
-        return False
-
-# Функция для загрузки профилей из файла
-async def load_profiles_from_file():
-    """
-    Загружает профили пользователей из файла.
-    """
-    global user_profiles
-    try:
-        if os.path.exists(PROFILES_FILE):
-            # Проверяем размер файла
-            file_size = os.path.getsize(PROFILES_FILE)
-            if file_size == 0:
-                logger.warning(f"Файл профилей {PROFILES_FILE} пуст. Инициализируем пустой словарь профилей.")
-                user_profiles = {}
-                # Записываем пустой словарь в файл
-                await save_profiles_to_file()
-                return
-                
-            # Загружаем данные из файла
-            with open(PROFILES_FILE, 'r', encoding='utf-8') as f:
-                loaded_data = f.read().strip()
-                if not loaded_data:  # Если файл пустой или содержит только пробелы
-                    logger.warning(f"Файл профилей {PROFILES_FILE} содержит только пробелы. Инициализируем пустой словарь профилей.")
-                    user_profiles = {}
-                    await save_profiles_to_file()
-                    return
-                    
-                # Парсим JSON
-                user_profiles = json.loads(loaded_data)
-                logger.info(f"Загружено {len(user_profiles)} профилей из файла {PROFILES_FILE}")
-                railway_print(f"Загружено {len(user_profiles)} профилей из файла {PROFILES_FILE}", "INFO")
-        else:
-            logger.info(f"Файл профилей {PROFILES_FILE} не найден. Будет создан новый.")
-            railway_print(f"Файл профилей {PROFILES_FILE} не найден. Будет создан новый.", "INFO")
-            user_profiles = {}
-            # Создаем файл с пустым словарем
-            await save_profiles_to_file()
-    except json.JSONDecodeError as json_error:
-        logger.error(f"Ошибка декодирования JSON при загрузке профилей: {json_error}")
-        railway_print(f"Ошибка декодирования JSON при загрузке профилей: {json_error}", "ERROR")
-        # Создаем резервную копию поврежденного файла
-        if os.path.exists(PROFILES_FILE):
-            backup_file = f"{PROFILES_FILE}.backup.{int(asyncio.get_event_loop().time())}"
-            try:
-                import shutil
-                shutil.copy2(PROFILES_FILE, backup_file)
-                logger.info(f"Создана резервная копия поврежденного файла профилей: {backup_file}")
-                railway_print(f"Создана резервная копия поврежденного файла профилей: {backup_file}", "INFO")
-            except Exception as backup_error:
-                logger.error(f"Не удалось создать резервную копию файла профилей: {backup_error}")
-        
-        # Инициализируем пустой словарь
-        user_profiles = {}
-        await save_profiles_to_file()
-    except Exception as e:
-        logger.error(f"Ошибка при загрузке профилей из файла: {e}")
-        railway_print(f"Ошибка при загрузке профилей из файла: {e}", "ERROR")
-        user_profiles = {}
-        await save_profiles_to_file()
-
-# Функция для сохранения профиля конкретного пользователя
-async def save_user_profile(user_id: int, profile_data: Dict[str, Any]):
-    """
-    Сохраняет профиль пользователя и записывает все профили в файл.
-    
-    Args:
-        user_id: ID пользователя
-        profile_data: Данные профиля пользователя
-    """
-    try:
-        # Преобразуем user_id в строку, так как json не поддерживает целочисленные ключи
-        user_id_str = str(user_id)
-        logger.info(f"Сохраняем профиль для пользователя с ID: {user_id_str}")
-        user_profiles[user_id_str] = profile_data
-        
-        # Сохраняем обновленные профили в файл
-        saved = await save_profiles_to_file()
-        if saved:
-            logger.info(f"Профиль пользователя {user_id} сохранен успешно")
-        else:
-            logger.error(f"Ошибка при сохранении профиля пользователя {user_id} в файл")
-    except Exception as e:
-        logger.error(f"Ошибка при сохранении профиля пользователя {user_id}: {e}")
-
-# Функция для загрузки профиля конкретного пользователя в state
-async def load_user_profile_to_state(user_id: int, state: FSMContext):
-    """
-    Загружает профиль пользователя из сохраненных данных в state.
-    
-    Args:
-        user_id: ID пользователя
-        state: Состояние FSM
-    
-    Returns:
-        bool: True, если профиль загружен успешно, False в противном случае
-    """
-    try:
-        # Получаем профиль пользователя из словаря (если существует)
-        user_id_str = str(user_id)
-        logger.info(f"Пытаемся загрузить профиль для user_id: {user_id_str}")
-        logger.info(f"Доступные ID профилей: {', '.join(user_profiles.keys())}")
-        
-        if user_id_str in user_profiles:
-            # Загружаем профиль в state
-            await state.update_data(**user_profiles[user_id_str])
-            logger.info(f"Профиль пользователя {user_id} загружен в state успешно")
-            return True
-        else:
-            logger.info(f"Профиль пользователя {user_id} не найден в словаре профилей")
-            return False
-    except Exception as e:
-        logger.error(f"Ошибка при загрузке профиля пользователя {user_id} в state: {e}")
-        return False
-
 # Создаем роутер для опроса
 survey_router = Router()
 
@@ -198,11 +54,39 @@ def get_main_keyboard() -> ReplyKeyboardMarkup:
         keyboard=[
             [KeyboardButton(text="👤 Профиль"), KeyboardButton(text="📝 Опрос")],
             [KeyboardButton(text="🧘 Медитации"), KeyboardButton(text="⏰ Напоминания")],
-            [KeyboardButton(text="💡 Советы"), KeyboardButton(text="💬 Помощь")],
-            [KeyboardButton(text="🔄 Рестарт")]
+            [KeyboardButton(text="💬 Помощь"), KeyboardButton(text="🔄 Рестарт")]
         ],
         resize_keyboard=True
     )
+
+# Функция для загрузки профиля конкретного пользователя в state
+async def load_user_profile_to_state(user_id: int, state: FSMContext) -> bool:
+    """
+    Загружает профиль пользователя из сохраненных данных в state.
+    
+    Args:
+        user_id: ID пользователя
+        state: Состояние FSM
+    
+    Returns:
+        bool: True, если профиль загружен успешно, False в противном случае
+    """
+    try:
+        # Получаем профиль пользователя из хранилища
+        profile_data = await load_user_profile(user_id)
+        logger.info(f"Пытаемся загрузить профиль для user_id: {user_id}")
+        
+        if profile_data:
+            # Загружаем профиль в state
+            await state.update_data(**profile_data)
+            logger.info(f"Профиль пользователя {user_id} загружен в state успешно")
+            return True
+        else:
+            logger.info(f"Профиль пользователя {user_id} не найден в хранилище")
+            return False
+    except Exception as e:
+        logger.error(f"Ошибка при загрузке профиля пользователя {user_id} в state: {e}")
+        return False
 
 async def start_survey(message: Message, state: FSMContext):
     """
@@ -596,143 +480,83 @@ async def process_survey_answer(message: Message, state: FSMContext):
 
 async def complete_survey(message: Message, state: FSMContext, answers: Dict[str, str]):
     """
-    Завершает опрос и генерирует психологический профиль.
+    Обрабатывает завершение опроса и генерирует профиль пользователя.
     
     Args:
-        message: Сообщение от пользователя
+        message: Сообщение пользователя
         state: Состояние FSM
-        answers: Словарь с ответами пользователя
+        answers: Словарь с ответами пользователя на вопросы
     """
-    # Показываем индикатор "печатает..."
-    await message.bot.send_chat_action(chat_id=message.chat.id, action="typing")
-    
-    # Отправляем сообщение о том, что опрос завершен и идет генерация профиля
-    processing_message = await message.answer(
-        "✅ <b>Опрос завершен!</b>\n\n"
-        "Генерирую ваш психологический профиль на основе ответов. "
-        "Это может занять несколько секунд...",
-        parse_mode="HTML"
-    )
-    
-    # Импортируем функцию для определения типа личности
-    from questions import get_personality_type_from_answers
-    
-    # Определяем тип личности
-    type_counts, primary_type, secondary_type = get_personality_type_from_answers(answers)
-    
     try:
-        # Генерируем профиль
-        profile_data = await generate_profile(answers)
+        user_id = message.from_user.id
+        user_name = message.from_user.first_name
         
-        # Получаем детальный профиль вместо краткого
-        detailed_profile = profile_data.get("details", "")
-        
-        # Логируем информацию о полученных профилях для отладки
-        logger.info(f"Получен детальный профиль длиной {len(detailed_profile)} символов")
-        
-        # Сбрасываем состояние опроса
-        await state.set_state(None)
-        
-        # Данные для сохранения в state и в файл
-        profile_state_data = {
-            "answers": answers,
-            "profile_completed": True,
-            "profile_text": detailed_profile,  # Сохраняем детальный профиль как основной
-            "profile_details": detailed_profile,
-            "personality_type": primary_type,
-            "secondary_type": secondary_type,
-            "type_counts": type_counts
+        # Формируем данные профиля с минимальной информацией о пользователе
+        user_data = {
+            "user_id": user_id,
+            "username": message.from_user.username,
+            "first_name": user_name,
+            "last_name": message.from_user.last_name,
+            "answers": answers
         }
         
-        # Сохраняем результаты в состоянии пользователя
-        await state.update_data(**profile_state_data)
+        # Отправляем сообщение о начале генерации профиля
+        await message.answer("📊 Генерирую профиль на основе ваших ответов...\n\nЭто может занять некоторое время, пожалуйста, подождите.")
         
-        # Сохраняем профиль в файл для постоянного хранения
-        await save_user_profile(message.from_user.id, profile_state_data)
-        
-        # Проверяем, что профили действительно сохранились
-        verification_data = await state.get_data()
-        saved_details = verification_data.get("profile_details", "")
-        logger.info(f"Проверка сохранения детального профиля: сохранено {len(saved_details)} символов")
-        
-        # Удаляем сообщение о генерации профиля
-        await processing_message.delete()
-        
-        # Проверяем, не слишком ли длинный профиль для отправки в одном сообщении
-        max_message_length = 4000  # Telegram ограничивает сообщения примерно до 4096 символов
-        
-        if len(detailed_profile) > max_message_length:
-            # Разбиваем детальный профиль на части
-            parts = []
-            current_part = ""
-            for line in detailed_profile.split('\n'):
-                if len(current_part) + len(line) + 1 <= max_message_length:
-                    current_part += line + '\n'
-                else:
-                    parts.append(current_part)
-                    current_part = line + '\n'
-            if current_part:
-                parts.append(current_part)
+        # Генерируем профиль на основе ответов
+        try:
+            profile = await generate_profile(user_data)
             
-            # Отправляем части профиля
-            for i, part in enumerate(parts):
-                # Добавляем кнопки только к последней части
-                if i == len(parts) - 1:
-                    # Создаем клавиатуру с кнопками
-                    builder = InlineKeyboardBuilder()
-                    builder.button(text="💡 Получить совет", callback_data="get_advice")
-                    builder.adjust(1)  # Располагаем кнопки в столбик
-                    
-                    await message.answer(
-                        part,
-                        parse_mode="HTML",
-                        reply_markup=builder.as_markup()
-                    )
-                else:
-                    await message.answer(
-                        part,
-                        parse_mode="HTML"
-                    )
-        else:
-            # Создаем клавиатуру с кнопками
-            builder = InlineKeyboardBuilder()
-            builder.button(text="💡 Получить совет", callback_data="get_advice")
-            builder.adjust(1)  # Располагаем кнопки в столбик
-            
-            # Отправляем профиль
+            if profile and "error" not in profile:
+                # Сохраняем профиль в базу данных
+                await save_user_profile(user_id, profile)
+                
+                # Сохраняем данные профиля в state
+                await state.update_data(**profile)
+                
+                # Переходим в состояние просмотра профиля
+                await state.set_state(ProfileStates.viewing_profile)
+                
+                # Отправляем краткую версию профиля
+                summary = profile.get("summary", "Профиль создан.")
+                
+                # Создаем инлайн-клавиатуру для действий с профилем
+                keyboard = InlineKeyboardBuilder()
+                keyboard.button(text="📋 Показать детали", callback_data="show_details")
+                keyboard.button(text="🔄 Пройти опрос заново", callback_data="restart_survey")
+                keyboard.button(text="💡 Получить совет", callback_data="get_advice")
+                
+                await message.answer(
+                    f"✅ Ваш профиль успешно создан, {user_name}!\n\n"
+                    f"📝 Краткое описание:\n{summary}\n\n"
+                    f"Используйте кнопки ниже для дополнительных действий:",
+                    reply_markup=keyboard.as_markup()
+                )
+                
+                # Возвращаем основную клавиатуру
+                await message.answer("Выберите действие:", reply_markup=get_main_keyboard())
+            else:
+                error_message = profile.get("error", "Произошла ошибка при генерации профиля. Пожалуйста, попробуйте позже.")
+                await message.answer(f"❌ Ошибка: {error_message}", reply_markup=get_main_keyboard())
+                
+                # Сбрасываем состояние
+                await state.clear()
+        except Exception as e:
+            logger.error(f"Ошибка при генерации профиля: {e}")
             await message.answer(
-                detailed_profile,
-                parse_mode="HTML",
-                reply_markup=builder.as_markup()
+                "❌ Произошла ошибка при создании профиля. Пожалуйста, попробуйте позже.",
+                reply_markup=get_main_keyboard()
             )
-        
-        # Возвращаем основную клавиатуру
-        await message.answer(
-            "⬅️ Вернуться в главное меню",
-            reply_markup=get_main_keyboard()
-        )
-        
-        # Логируем завершение опроса
-        logger.info(f"Пользователь {message.from_user.id} завершил опрос, профиль сгенерирован")
-        
+            # Сбрасываем состояние
+            await state.clear()
     except Exception as e:
-        # В случае ошибки отправляем сообщение
-        logger.error(f"Ошибка при генерации профиля: {e}")
-        await processing_message.edit_text(
-            "❌ <b>Произошла ошибка при генерации профиля.</b>\n\n"
-            "Пожалуйста, попробуйте пройти опрос еще раз.",
-            parse_mode="HTML"
-        )
-        
-        # Возвращаем основную клавиатуру
+        logger.error(f"Ошибка в функции complete_survey: {e}")
         await message.answer(
-            "Вернуться в главное меню",
+            "❌ Произошла непредвиденная ошибка. Пожалуйста, попробуйте позже.",
             reply_markup=get_main_keyboard()
         )
-        
-        # Удаляем состояние опроса
+        # Сбрасываем состояние
         await state.clear()
-        return
 
 # Обработчик для перезапуска опроса
 @survey_router.callback_query(F.data == "restart_survey")
@@ -765,52 +589,68 @@ async def restart_survey(callback: CallbackQuery, state: FSMContext):
 @survey_router.callback_query(F.data == "confirm_profile_reset")
 async def confirm_profile_reset(callback: CallbackQuery, state: FSMContext):
     """
-    Подтверждает сброс профиля и перезапускает опрос.
+    Подтверждает сброс профиля пользователя.
     
     Args:
-        callback: Callback query
+        callback: Callback query от нажатия на кнопку
         state: Состояние FSM
     """
-    # Очищаем текущие данные профиля
-    await state.update_data(
-        answers={},
-        profile_completed=False,
-        profile_text="",
-        personality_type=None,
-        waiting_for_vasini_confirmation=False,
-        question_index=0,
-        is_demo_questions=True
-    )
-    
-    # Обновляем профиль пользователя в постоянном хранилище
-    empty_profile = {
-        "answers": {},
-        "profile_completed": False,
-        "profile_text": "",
-        "personality_type": None
-    }
-    await save_user_profile(callback.from_user.id, empty_profile)
-    
-    # Удаляем сообщение с подтверждением
-    await callback.message.delete()
-    
-    # Сообщаем об успешном сбросе
-    await callback.message.answer(
-        "✅ <b>Профиль успешно сброшен!</b>\n\n"
-        "Сейчас мы начнем опрос заново.",
-        parse_mode="HTML"
-    )
-    
-    # Небольшая задержка перед началом нового опроса
-    import asyncio
-    await asyncio.sleep(1)
-    
-    # Начинаем опрос заново
-    await start_survey(callback.message, state)
-    
-    # Отвечаем на callback
-    await callback.answer("Профиль сброшен, начинаем опрос заново")
-    logger.info(f"Пользователь {callback.from_user.id} сбросил профиль и начал опрос заново")
+    try:
+        user_id = callback.from_user.id
+        user_name = callback.from_user.first_name
+        
+        # Удаляем профиль пользователя из базы данных
+        deletion_success = await delete_user_profile(user_id)
+        
+        if deletion_success:
+            # Очищаем данные state
+            await state.clear()
+            
+            # Отправляем сообщение об успешном удалении профиля
+            await callback.message.edit_text(
+                f"✅ Ваш профиль успешно удален, {user_name}!\n\n"
+                "Теперь вы можете пройти опрос заново, чтобы создать новый профиль."
+            )
+            
+            # Предлагаем пройти опрос заново
+            keyboard = InlineKeyboardBuilder()
+            keyboard.button(text="📝 Пройти опрос", callback_data="start_survey")
+            keyboard.button(text="🔙 Вернуться в меню", callback_data="main_menu")
+            
+            await callback.message.answer(
+                "Что бы вы хотели сделать дальше?",
+                reply_markup=keyboard.as_markup()
+            )
+        else:
+            # Отправляем сообщение об ошибке при удалении профиля
+            await callback.message.edit_text(
+                "❌ Произошла ошибка при удалении профиля. Пожалуйста, попробуйте позже."
+            )
+            
+            # Предлагаем вернуться в меню
+            keyboard = InlineKeyboardBuilder()
+            keyboard.button(text="🔙 Вернуться в меню", callback_data="main_menu")
+            
+            await callback.message.answer(
+                "Что бы вы хотели сделать дальше?",
+                reply_markup=keyboard.as_markup()
+            )
+    except Exception as e:
+        logger.error(f"Ошибка при подтверждении сброса профиля: {e}")
+        
+        # Отправляем сообщение об ошибке
+        await callback.message.edit_text(
+            "❌ Произошла ошибка при сбросе профиля. Пожалуйста, попробуйте позже."
+        )
+        
+        # Предлагаем вернуться в меню
+        keyboard = InlineKeyboardBuilder()
+        keyboard.button(text="🔙 Вернуться в меню", callback_data="main_menu")
+        
+        await callback.message.answer(
+            "Что бы вы хотели сделать дальше?",
+            reply_markup=keyboard.as_markup()
+        )
 
 @survey_router.callback_query(F.data == "cancel_profile_reset")
 async def cancel_profile_reset(callback: CallbackQuery):
@@ -1619,41 +1459,69 @@ async def create_test_profile_command(message: Message, state: FSMContext):
 @survey_router.message(Command("list_profiles"))
 async def list_profiles_command(message: Message):
     """
-    Показывает список всех сохраненных профилей.
+    Выводит список профилей пользователей (только для администраторов/отладки).
     
     Args:
-        message: Сообщение от пользователя
+        message: Сообщение с командой
     """
-    # Проверяем, сколько профилей сохранено
-    if not user_profiles:
-        await message.answer("❌ Нет сохраненных профилей в системе")
-        return
-    
-    # Формируем сообщение со списком профилей
-    profiles_text = "📋 <b>Список сохраненных профилей:</b>\n\n"
-    
-    for user_id, profile in user_profiles.items():
-        name = profile.get("answers", {}).get("name", "Неизвестно")
-        personality_type = profile.get("personality_type", "Неизвестно")
+    try:
+        # Получаем список всех профилей
+        profiles = await list_all_profiles()
         
-        profiles_text += f"• ID: {user_id}\n"
-        profiles_text += f"  Имя: {name}\n"
-        profiles_text += f"  Тип: {personality_type}\n\n"
+        if profiles:
+            # Формируем текст со списком профилей
+            profiles_text = "📋 Список профилей пользователей:\n\n"
+            
+            for profile in profiles:
+                user_id = profile["id"]
+                profile_data = profile["profile_data"]
+                
+                username = profile_data.get("username", "Нет имени пользователя")
+                first_name = profile_data.get("first_name", "Нет имени")
+                last_name = profile_data.get("last_name", "")
+                
+                full_name = f"{first_name} {last_name}".strip()
+                
+                profiles_text += f"ID: {user_id}\n"
+                profiles_text += f"Имя: {full_name}\n"
+                profiles_text += f"Username: @{username}\n"
+                profiles_text += "--------------------\n"
+            
+            # Отправляем список профилей (возможно, нужно разбить на несколько сообщений)
+            if len(profiles_text) <= 4000:
+                await message.answer(profiles_text)
+            else:
+                # Разбиваем на части по 4000 символов
+                parts = [profiles_text[i:i+4000] for i in range(0, len(profiles_text), 4000)]
+                for part in parts:
+                    await message.answer(part)
+                    await asyncio.sleep(0.5)  # Небольшая задержка между сообщениями
+        else:
+            await message.answer("📭 Список профилей пуст.")
+    except Exception as e:
+        logger.error(f"Ошибка при выводе списка профилей: {e}")
+        await message.answer("❌ Произошла ошибка при получении списка профилей.")
+
+# Асинхронная инициализация модуля
+async def init_module():
+    """
+    Асинхронная инициализация модуля при запуске бота.
+    """
+    try:
+        # Инициализируем хранилище данных
+        await init_storage()
+        logger.info("Модуль survey_handler инициализирован успешно")
+        railway_print("Модуль survey_handler инициализирован успешно", "INFO")
+    except Exception as e:
+        logger.error(f"Ошибка при инициализации модуля survey_handler: {e}")
+        railway_print(f"Ошибка при инициализации модуля survey_handler: {e}", "ERROR")
+
+# Настройка задач, которые нужно выполнить при запуске бота
+def setup_async_tasks():
+    """
+    Настраивает асинхронные задачи для выполнения при запуске бота.
     
-    # Добавляем информацию о текущем пользователе
-    profiles_text += f"Ваш ID: {message.from_user.id}\n"
-    
-    # Отправляем список профилей
-    await message.answer(
-        profiles_text,
-        parse_mode="HTML"
-    )
-    
-    # Предлагаем дополнительные команды
-    await message.answer(
-        "Доступные команды:\n"
-        "/create_test_profile - создать тестовый профиль\n"
-        "/debug_profile - проверить состояние вашего профиля\n"
-        "/profile - просмотреть ваш профиль",
-        reply_markup=get_main_keyboard()
-    )
+    Returns:
+        List: Список корутин для выполнения
+    """
+    return [init_module()]

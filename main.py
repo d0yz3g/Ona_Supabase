@@ -439,119 +439,86 @@ def signal_handler(signal_name):
 
 async def main():
     """
-    Главная функция запуска бота
+    Основная функция запуска бота.
     """
-    # Проверяем, что нет другого запущенного экземпляра
-    if not acquire_lock():
-        logger.error("Другой экземпляр бота уже запущен. Завершение работы.")
-        railway_print("КРИТИЧЕСКАЯ ОШИБКА: Обнаружен другой запущенный экземпляр бота. Завершение работы.", "ERROR")
-        return
-        
-    # Инициализируем бот
-    logger.info("Бот ОНА запускается...")
-    railway_print("Запуск основного цикла бота...", "INFO")
-    
-    # Устанавливаем обработчики сигналов
-    if sys.platform != 'win32':
-        # В Unix-подобных системах используем asyncio.add_signal_handler
-        for sig_name in ('SIGINT', 'SIGTERM'):
-            asyncio.get_event_loop().add_signal_handler(
-                getattr(signal, sig_name),
-                lambda s=sig_name: signal_handler(s)
-            )
-    else:
-        # В Windows используем signal.signal
-        signal.signal(signal.SIGINT, lambda sig, frame: signal_handler('SIGINT'))
-        signal.signal(signal.SIGTERM, lambda sig, frame: signal_handler('SIGTERM'))
-    
     try:
-        # Получаем информацию о системе
-        railway_print(f"Запуск бота на хосте {socket.gethostname()}", "INFO")
-        if PSUTIL_AVAILABLE:
-            railway_print(f"CPU usage: {psutil.cpu_percent()}%, Memory usage: {psutil.virtual_memory().percent}%", "INFO")
+        # Получаем блокировку для предотвращения запуска нескольких экземпляров
+        if not acquire_lock():
+            logger.error("Бот уже запущен. Завершение работы.")
+            railway_print("Бот уже запущен. Завершение работы.", "ERROR")
+            return
         
-        # Инициализируем планировщик
-        await start_scheduler()
+        # Настраиваем обработчики сигналов для корректного завершения работы
+        signal.signal(signal.SIGINT, lambda s, f: asyncio.create_task(signal_handler("SIGINT")))
+        signal.signal(signal.SIGTERM, lambda s, f: asyncio.create_task(signal_handler("SIGTERM")))
         
-        # Вызываем setup_async_tasks из survey_handler
+        # Создаем хранилище состояний FSM в памяти
+        storage = MemoryStorage()
+        
+        # Создаем объекты бота и диспетчера
+        bot = Bot(token=BOT_TOKEN)
+        dp = Dispatcher(storage=storage)
+        
+        # Регистрируем обработчики команд бота
+        dp.include_router(survey_router)
+        dp.include_router(meditation_router)
+        dp.include_router(conversation_router)
+        dp.include_router(reminder_router)
+        dp.include_router(voice_router)
+        dp.include_router(communication_router)
+        
+        # Регистрируем основные обработчики команд
+        dp.message.register(cmd_start, Command("start"))
+        dp.message.register(cmd_help, Command("help"))
+        dp.message.register(cmd_help, F.text == "💬 Помощь")
+        dp.message.register(cmd_api_key, Command("api_key"))
+        dp.message.register(cmd_restart, Command("restart"))
+        dp.message.register(cmd_restart, F.text == "🔄 Рестарт")
+        
+        # Запускаем запланированные задачи
+        asyncio.create_task(start_scheduler())
+        
+        # Запускаем асинхронные задачи из других модулей
+        setup_tasks = []
+        
+        # Добавляем задачи из модуля опросов
         try:
-            from survey_handler import setup_async_tasks
-            setup_async_tasks()
-            railway_print("Асинхронные задачи в survey_handler запущены", "INFO")
-        except ImportError:
-            railway_print("Не удалось импортировать setup_async_tasks из survey_handler", "WARNING")
-        except Exception as e:
-            railway_print(f"Ошибка при запуске асинхронных задач: {e}", "ERROR")
+            from survey_handler import setup_async_tasks as survey_setup_tasks
+            setup_tasks.extend(survey_setup_tasks())
+        except (ImportError, AttributeError) as e:
+            logger.warning(f"Не удалось настроить асинхронные задачи из модуля survey_handler: {e}")
         
-        # Запускаем бота с длинным поллингом и обработчиком корректного завершения
-        polling_task = asyncio.create_task(
-            dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
-        )
+        # Добавляем задачи из модуля напоминаний
+        try:
+            from reminder_handler import setup_async_tasks as reminder_setup_tasks
+            setup_tasks.extend(reminder_setup_tasks())
+        except (ImportError, AttributeError) as e:
+            logger.warning(f"Не удалось настроить асинхронные задачи из модуля reminder_handler: {e}")
         
-        # Создаем задачу для ожидания события завершения
-        shutdown_wait_task = asyncio.create_task(shutdown_event.wait())
+        # Запускаем все подготовленные задачи
+        for task in setup_tasks:
+            asyncio.create_task(task)
         
-        # Ожидаем сигнала завершения или ошибки в поллинге
-        await asyncio.wait(
-            [polling_task, shutdown_wait_task],
-            return_when=asyncio.FIRST_COMPLETED
-        )
-        
-        # Если было получено событие завершения, выполняем корректное завершение
-        if shutdown_event.is_set():
-            logger.info("Получено событие завершения работы")
-            # Отменяем задачу поллинга
-            if not polling_task.done():
-                polling_task.cancel()
-            await shutdown(dp, bot)
+        # Запускаем бота в режиме long polling
+        railway_print("Начинаем поллинг обновлений Telegram", "INFO")
+        await dp.start_polling(bot)
     except Exception as e:
-        # Проверяем, является ли ошибка конфликтом запросов
-        if "Conflict: terminated by other getUpdates" in str(e) or "TelegramConflictError" in str(e):
-            logger.error("Обнаружен конфликт запросов Telegram API - другой экземпляр бота уже запущен")
-            railway_print("КОНФЛИКТ: Другой экземпляр бота уже получает обновления. Выполняем повторную попытку через 10 секунд...", "ERROR")
-            
-            # Делаем паузу и пробуем снова
-            await asyncio.sleep(10)
-            railway_print("Повторная попытка запуска после конфликта...", "INFO")
-            
-            try:
-                # Создаем новую сессию
-                if hasattr(bot, "session") and bot.session:
-                    await bot.session.close()
-                bot._session = None
-                
-                # Пробуем запустить снова
-                polling_task = asyncio.create_task(
-                    dp.start_polling(bot, fast=True, timeout=60, allowed_updates=None, polling_timeout=60)
-                )
-                
-                # Создаем задачу для ожидания события завершения
-                shutdown_wait_task = asyncio.create_task(shutdown_event.wait())
-                
-                # Ожидаем сигнала завершения или ошибки в поллинге
-                await asyncio.wait(
-                    [polling_task, shutdown_wait_task],
-                    return_when=asyncio.FIRST_COMPLETED
-                )
-                
-                railway_print("Повторный запуск выполнен успешно!", "INFO")
-            except Exception as retry_error:
-                logger.error(f"Повторная попытка запуска не удалась: {retry_error}")
-                railway_print(f"Повторная попытка не удалась: {str(retry_error)}", "ERROR")
-                
-                # Если мы запускаемся из restart_bot.py, повторный запуск будет выполнен автоматически
-                if 'restart_bot.py' in sys.argv[0]:
-                    railway_print("Ожидаем перезапуска через монитор...", "INFO")
-                else:
-                    railway_print("Рекомендуется запускать бота через restart_bot.py для автоматического перезапуска", "WARNING")
-        else:
-            logger.error(f"Ошибка запуска бота: {e}")
-            railway_print(f"Ошибка запуска: {str(e)}", "ERROR")
+        logger.error(f"Ошибка при запуске бота: {e}")
+        railway_print(f"Ошибка при запуске бота: {e}", "ERROR")
     finally:
-        # Корректное завершение работы, если это еще не было сделано
-        if not shutdown_event.is_set():
-            await shutdown(dp, bot)
+        # Корректно завершаем работу
+        await shutdown(dp, bot)
+        # Освобождаем блокировку
+        release_lock()
 
+# Запуск бота
 if __name__ == "__main__":
-    # Запускаем бота
-    asyncio.run(main()) 
+    # Запускаем основную функцию
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("Бот остановлен пользователем (Ctrl+C)")
+        railway_print("Бот остановлен пользователем (Ctrl+C)", "INFO")
+    except Exception as e:
+        logger.critical(f"Критическая ошибка при запуске бота: {e}")
+        railway_print(f"Критическая ошибка при запуске бота: {e}", "ERROR") 
