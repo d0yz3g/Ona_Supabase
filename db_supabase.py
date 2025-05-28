@@ -1,237 +1,260 @@
 import os
 import logging
-import json
-from typing import Dict, Any, List, Optional, Union, Tuple
-from supabase import create_client, Client
 from dotenv import load_dotenv
+from supabase import create_client, Client
 
-# Настройка логирования
-logger = logging.getLogger(__name__)
-
-# Импорт функции railway_print для логирования
-try:
-    from railway_logging import railway_print
-except ImportError:
-    # Определяем функцию railway_print, если модуль railway_logging не найден
-    def railway_print(message, level="INFO"):
-        prefix = "ИНФО"
-        if level.upper() == "ERROR":
-            prefix = "ОШИБКА"
-        elif level.upper() == "WARNING":
-            prefix = "ПРЕДУПРЕЖДЕНИЕ"
-        elif level.upper() == "DEBUG":
-            prefix = "ОТЛАДКА"
-        print(f"{prefix}: {message}")
-        import sys
-        sys.stdout.flush()
-
-# Загружаем переменные окружения
 load_dotenv()
 
-# Получаем данные для подключения к Supabase
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
-# Проверка наличия ключей Supabase
-if not SUPABASE_URL or not SUPABASE_KEY:
-    logger.error("Отсутствуют ключи для подключения к Supabase. "
-                "Убедитесь, что переменные SUPABASE_URL и SUPABASE_KEY заданы в .env файле.")
-    railway_print("Отсутствуют ключи для подключения к Supabase!", "ERROR")
-    # Не выходим из программы, так как будет использован резервный механизм локального хранения
+# Initialize Supabase client
+supabase_url = os.environ.get("SUPABASE_URL")
+supabase_key = os.environ.get("SUPABASE_KEY")
 
-# Глобальная переменная для клиента Supabase
-supabase_client: Optional[Client] = None
+if not supabase_url or not supabase_key:
+    logger.error("SUPABASE_URL or SUPABASE_KEY environment variables are not set")
+    raise ValueError("SUPABASE_URL and SUPABASE_KEY must be set in environment variables")
 
-def init_supabase() -> Optional[Client]:
-    """
-    Инициализация клиента Supabase
-    
-    Returns:
-        Optional[Client]: Клиент Supabase или None, если инициализация не удалась
-    """
-    global supabase_client
-    
-    try:
-        if SUPABASE_URL and SUPABASE_KEY:
-            supabase_client = create_client(SUPABASE_URL, SUPABASE_KEY)
-            logger.info("Успешное подключение к Supabase")
-            railway_print("Успешное подключение к Supabase", "INFO")
-            return supabase_client
-        else:
-            logger.warning("Не удалось подключиться к Supabase: отсутствуют URL или API-ключ")
-            railway_print("Не удалось подключиться к Supabase: отсутствуют URL или API-ключ", "WARNING")
-            return None
-    except Exception as e:
-        logger.error(f"Ошибка при инициализации Supabase: {e}")
-        railway_print(f"Ошибка при инициализации Supabase: {e}", "ERROR")
-        return None
+try:
+    supabase: Client = create_client(supabase_url, supabase_key)
+    logger.info("Supabase client initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize Supabase client: {e}")
+    raise
 
-def get_supabase_client() -> Optional[Client]:
-    """
-    Получение клиента Supabase (с ленивой инициализацией)
+class SupabaseDB:
+    """Class for handling Supabase database operations."""
     
-    Returns:
-        Optional[Client]: Клиент Supabase или None, если инициализация не удалась
-    """
-    global supabase_client
-    
-    if supabase_client is None:
-        supabase_client = init_supabase()
-    
-    return supabase_client
-
-async def init_supabase_tables():
-    """
-    Создание необходимых таблиц в Supabase, если они отсутствуют.
-    
-    Эта функция должна быть вызвана при запуске приложения.
-    """
-    client = get_supabase_client()
-    if not client:
-        logger.warning("Невозможно создать таблицы: отсутствует подключение к Supabase")
-        return
-    
-    try:
-        # Проверка существования таблиц выполняется автоматически при создании
-        # Supabase создаст таблицы через миграции в консоли управления
+    @staticmethod
+    async def get_user_profile(user_id: int) -> dict:
+        """
+        Retrieve a user profile from Supabase.
         
-        logger.info("Таблицы в Supabase успешно инициализированы")
-        railway_print("Таблицы в Supabase успешно инициализированы", "INFO")
-    except Exception as e:
-        logger.error(f"Ошибка при инициализации таблиц в Supabase: {e}")
-        railway_print(f"Ошибка при инициализации таблиц в Supabase: {e}", "ERROR")
-
-async def save_user_profile_to_supabase(user_id: int, profile_data: Dict[str, Any]) -> bool:
-    """
-    Сохраняет профиль пользователя в Supabase
-    
-    Args:
-        user_id: ID пользователя
-        profile_data: Данные профиля пользователя
-    
-    Returns:
-        bool: True, если сохранение прошло успешно, False в противном случае
-    """
-    client = get_supabase_client()
-    if not client:
-        logger.warning(f"Невозможно сохранить профиль пользователя {user_id}: отсутствует подключение к Supabase")
-        return False
-    
-    try:
-        # Преобразуем user_id в строку для соответствия структуре БД
-        user_id_str = str(user_id)
-        
-        # Сериализуем сложные типы данных в JSON
-        prepared_data = {
-            "id": user_id_str,
-            "profile_data": json.dumps(profile_data, ensure_ascii=False)
-        }
-        
-        # Используем upsert для создания или обновления записи
-        response = client.table("user_profiles").upsert(prepared_data).execute()
-        
-        if response.data:
-            logger.info(f"Профиль пользователя {user_id} успешно сохранен в Supabase")
-            return True
-        else:
-            logger.error(f"Ошибка при сохранении профиля пользователя {user_id} в Supabase: {response.error}")
-            return False
-    except Exception as e:
-        logger.error(f"Ошибка при сохранении профиля пользователя {user_id} в Supabase: {e}")
-        return False
-
-async def load_user_profile_from_supabase(user_id: int) -> Optional[Dict[str, Any]]:
-    """
-    Загружает профиль пользователя из Supabase
-    
-    Args:
-        user_id: ID пользователя
-    
-    Returns:
-        Optional[Dict[str, Any]]: Данные профиля пользователя или None, если профиль не найден
-    """
-    client = get_supabase_client()
-    if not client:
-        logger.warning(f"Невозможно загрузить профиль пользователя {user_id}: отсутствует подключение к Supabase")
-        return None
-    
-    try:
-        # Преобразуем user_id в строку для соответствия структуре БД
-        user_id_str = str(user_id)
-        
-        # Получаем данные пользователя
-        response = client.table("user_profiles").select("profile_data").eq("id", user_id_str).execute()
-        
-        if response.data and len(response.data) > 0:
-            # Десериализуем JSON из колонки profile_data
-            profile_data = json.loads(response.data[0]["profile_data"])
-            logger.info(f"Профиль пользователя {user_id} успешно загружен из Supabase")
-            return profile_data
-        else:
-            logger.info(f"Профиль пользователя {user_id} не найден в Supabase")
-            return None
-    except Exception as e:
-        logger.error(f"Ошибка при загрузке профиля пользователя {user_id} из Supabase: {e}")
-        return None
-
-async def delete_user_profile_from_supabase(user_id: int) -> bool:
-    """
-    Удаляет профиль пользователя из Supabase
-    
-    Args:
-        user_id: ID пользователя
-    
-    Returns:
-        bool: True, если удаление прошло успешно, False в противном случае
-    """
-    client = get_supabase_client()
-    if not client:
-        logger.warning(f"Невозможно удалить профиль пользователя {user_id}: отсутствует подключение к Supabase")
-        return False
-    
-    try:
-        # Преобразуем user_id в строку для соответствия структуре БД
-        user_id_str = str(user_id)
-        
-        # Удаляем данные пользователя
-        response = client.table("user_profiles").delete().eq("id", user_id_str).execute()
-        
-        logger.info(f"Профиль пользователя {user_id} успешно удален из Supabase")
-        return True
-    except Exception as e:
-        logger.error(f"Ошибка при удалении профиля пользователя {user_id} из Supabase: {e}")
-        return False
-
-async def list_all_profiles_from_supabase() -> List[Dict[str, Any]]:
-    """
-    Получает список всех профилей из Supabase
-    
-    Returns:
-        List[Dict[str, Any]]: Список всех профилей пользователей
-    """
-    client = get_supabase_client()
-    if not client:
-        logger.warning("Невозможно получить список профилей: отсутствует подключение к Supabase")
-        return []
-    
-    try:
-        # Получаем все профили
-        response = client.table("user_profiles").select("id, profile_data").execute()
-        
-        profiles = []
-        if response.data:
-            for item in response.data:
-                profile_data = json.loads(item["profile_data"])
-                profiles.append({
-                    "id": item["id"],
-                    "profile_data": profile_data
-                })
+        Args:
+            user_id: Telegram user ID
+            
+        Returns:
+            dict: User profile data or empty dict if not found
+        """
+        try:
+            response = supabase.table("profiles").select("*").eq("user_id", user_id).execute()
+            
+            if response.data and len(response.data) > 0:
+                logger.info(f"Retrieved profile for user {user_id}")
+                return response.data[0]
+            else:
+                logger.info(f"No profile found for user {user_id}")
+                return {}
                 
-            logger.info(f"Успешно загружено {len(profiles)} профилей из Supabase")
-            return profiles
-        else:
-            logger.info("Профили не найдены в Supabase")
+        except Exception as e:
+            logger.error(f"Error retrieving user profile for {user_id}: {e}")
+            return {}
+    
+    @staticmethod
+    async def save_user_profile(user_id: int, profile_data: dict) -> bool:
+        """
+        Save or update a user profile in Supabase.
+        
+        Args:
+            user_id: Telegram user ID
+            profile_data: Profile data to save
+            
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        try:
+            # Add user_id to the profile data
+            profile_data["user_id"] = user_id
+            
+            # Check if profile exists
+            existing_profile = await SupabaseDB.get_user_profile(user_id)
+            
+            if existing_profile:
+                # Update existing profile
+                response = supabase.table("profiles").update(profile_data).eq("user_id", user_id).execute()
+                logger.info(f"Updated profile for user {user_id}")
+            else:
+                # Insert new profile
+                response = supabase.table("profiles").insert(profile_data).execute()
+                logger.info(f"Created new profile for user {user_id}")
+                
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error saving user profile for {user_id}: {e}")
+            return False
+    
+    @staticmethod
+    async def save_survey_response(user_id: int, question_id: str, answer: str) -> bool:
+        """
+        Save a survey response to Supabase.
+        
+        Args:
+            user_id: Telegram user ID
+            question_id: Question identifier
+            answer: User's answer
+            
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        try:
+            response_data = {
+                "user_id": user_id,
+                "question_id": question_id,
+                "answer": answer,
+                "created_at": "now()"
+            }
+            
+            response = supabase.table("survey_responses").insert(response_data).execute()
+            logger.info(f"Saved survey response for user {user_id}, question {question_id}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error saving survey response for user {user_id}, question {question_id}: {e}")
+            return False
+    
+    @staticmethod
+    async def get_survey_responses(user_id: int) -> list:
+        """
+        Get all survey responses for a user.
+        
+        Args:
+            user_id: Telegram user ID
+            
+        Returns:
+            list: List of survey responses
+        """
+        try:
+            response = supabase.table("survey_responses").select("*").eq("user_id", user_id).execute()
+            
+            if response.data:
+                logger.info(f"Retrieved {len(response.data)} survey responses for user {user_id}")
+                return response.data
+            else:
+                logger.info(f"No survey responses found for user {user_id}")
+                return []
+                
+        except Exception as e:
+            logger.error(f"Error retrieving survey responses for user {user_id}: {e}")
             return []
-    except Exception as e:
-        logger.error(f"Ошибка при получении списка профилей из Supabase: {e}")
-        return [] 
+    
+    @staticmethod
+    async def save_reminder(user_id: int, reminder_data: dict) -> bool:
+        """
+        Save a reminder to Supabase.
+        
+        Args:
+            user_id: Telegram user ID
+            reminder_data: Reminder data
+            
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        try:
+            # Add user_id to the reminder data
+            reminder_data["user_id"] = user_id
+            
+            response = supabase.table("reminders").insert(reminder_data).execute()
+            logger.info(f"Saved reminder for user {user_id}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error saving reminder for user {user_id}: {e}")
+            return False
+    
+    @staticmethod
+    async def get_reminders(user_id: int) -> list:
+        """
+        Get all reminders for a user.
+        
+        Args:
+            user_id: Telegram user ID
+            
+        Returns:
+            list: List of reminders
+        """
+        try:
+            response = supabase.table("reminders").select("*").eq("user_id", user_id).execute()
+            
+            if response.data:
+                logger.info(f"Retrieved {len(response.data)} reminders for user {user_id}")
+                return response.data
+            else:
+                logger.info(f"No reminders found for user {user_id}")
+                return []
+                
+        except Exception as e:
+            logger.error(f"Error retrieving reminders for user {user_id}: {e}")
+            return []
+    
+    @staticmethod
+    async def delete_reminder(reminder_id: str) -> bool:
+        """
+        Delete a reminder from Supabase.
+        
+        Args:
+            reminder_id: Reminder ID
+            
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        try:
+            response = supabase.table("reminders").delete().eq("id", reminder_id).execute()
+            logger.info(f"Deleted reminder {reminder_id}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error deleting reminder {reminder_id}: {e}")
+            return False
+            
+    @staticmethod
+    async def update_meditation_count(user_id: int, meditation_type: str) -> int:
+        """
+        Update meditation count for a user.
+        
+        Args:
+            user_id: Telegram user ID
+            meditation_type: Type of meditation
+            
+        Returns:
+            int: New count or -1 if error
+        """
+        try:
+            # Get current user stats
+            response = supabase.table("user_stats").select("*").eq("user_id", user_id).execute()
+            
+            if response.data and len(response.data) > 0:
+                # Update existing stats
+                current_stats = response.data[0]
+                meditation_count = current_stats.get("meditation_count", 0) + 1
+                
+                update_data = {
+                    "meditation_count": meditation_count,
+                    "last_meditation_type": meditation_type,
+                    "last_meditation_at": "now()"
+                }
+                
+                supabase.table("user_stats").update(update_data).eq("user_id", user_id).execute()
+                logger.info(f"Updated meditation count for user {user_id} to {meditation_count}")
+                return meditation_count
+            else:
+                # Create new stats
+                new_stats = {
+                    "user_id": user_id,
+                    "meditation_count": 1,
+                    "last_meditation_type": meditation_type,
+                    "last_meditation_at": "now()"
+                }
+                
+                supabase.table("user_stats").insert(new_stats).execute()
+                logger.info(f"Created new stats for user {user_id} with meditation count 1")
+                return 1
+                
+        except Exception as e:
+            logger.error(f"Error updating meditation count for user {user_id}: {e}")
+            return -1 
