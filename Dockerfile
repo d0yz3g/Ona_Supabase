@@ -27,16 +27,17 @@ RUN pip install --no-cache-dir python-dotenv pytz pre-commit pytest
 
 # Установка aiogram и http-клиентов
 RUN pip install --no-cache-dir aiogram==3.2.0 
-RUN pip install --no-cache-dir httpx==0.24.1 aiohttp==3.9.1
+RUN pip install --no-cache-dir aiohttp==3.9.1
 
 # Поэтапная установка Supabase и его зависимостей
-# Устанавливаем supabase-py и необходимые зависимости одним блоком
-# Это предотвращает проблемы совместимости между пакетами
-RUN pip install --no-cache-dir httpx==0.24.1 \
-    postgrest-py==0.10.3 \
-    gotrue==0.5.4 \
-    storage3==0.5.4 \
-    supabase-py==2.0.0
+# Сначала устанавливаем httpx отдельно
+RUN pip install --no-cache-dir httpx==0.24.1
+
+# Затем устанавливаем компоненты Supabase по одному
+RUN pip install --no-cache-dir postgrest-py==0.10.3
+RUN pip install --no-cache-dir gotrue==0.5.4
+RUN pip install --no-cache-dir storage3==0.5.4
+RUN pip install --no-cache-dir supabase-py==2.0.0
 
 # Установка OpenAI и других библиотек
 RUN pip install --no-cache-dir openai==1.3.5
