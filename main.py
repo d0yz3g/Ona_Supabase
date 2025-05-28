@@ -204,6 +204,7 @@ try:
     from conversation_handler import conversation_router
     from meditation_handler import meditation_router
     from reminder_handler import reminder_router, scheduler
+    from communication_handler import communication_router
     railway_print("Все модули успешно импортированы", "INFO")
 except ImportError as e:
     logger.error(f"Ошибка импорта модулей: {e}")
@@ -220,6 +221,7 @@ except ImportError as e:
     conversation_router = Router(name="conversation")
     meditation_router = Router(name="meditation")
     reminder_router = Router(name="reminder")
+    communication_router = Router(name="communication")
     
     # Создаем базовую клавиатуру
     def get_main_keyboard():
@@ -244,17 +246,6 @@ bot = Bot(
     protect_content=False  # Разрешаем пересылку сообщений
 )
 dp = Dispatcher(storage=MemoryStorage())
-
-# Регистрируем роутеры в правильном порядке
-# Сначала регистрируем роутер опроса, чтобы он имел приоритет при обработке сообщений в состоянии опроса
-dp.include_router(survey_router)
-# Затем регистрируем роутер голосовых сообщений
-dp.include_router(voice_router)
-# Далее регистрируем остальные роутеры
-dp.include_router(meditation_router)
-dp.include_router(reminder_router)
-# Регистрируем роутер обычных сообщений последним
-dp.include_router(conversation_router)
 
 # Обработчик команды /start
 @dp.message(Command("start"))
@@ -401,7 +392,7 @@ async def shutdown(dp, bot):
     
     # Сохраняем профили пользователей
     try:
-        from survey_handler import save_profiles_to_file
+        from profile_storage import save_profiles_to_file
         await save_profiles_to_file()
         logger.info("Профили пользователей сохранены")
         railway_print("Профили пользователей сохранены", "INFO")
