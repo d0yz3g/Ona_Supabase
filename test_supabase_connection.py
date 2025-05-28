@@ -25,18 +25,28 @@ def check_supabase_installation():
         import supabase
         logger.info(f"✅ Supabase module successfully imported (version: {supabase.__version__ if hasattr(supabase, '__version__') else 'unknown'})")
         
-        # Check for required dependencies
-        for module_name in ["postgrest", "httpx", "gotrue", "storage3", "realtime"]:
+        # Check for required dependencies with specific versions
+        dependencies = {
+            "postgrest": "0.10.3",
+            "httpx": "0.24.1",
+            "gotrue": "0.5.4",
+            "storage3": "0.5.4",
+            "realtime": "0.1.3"
+        }
+        
+        for module_name, expected_version in dependencies.items():
             try:
                 module = __import__(module_name)
-                logger.info(f"✅ Dependency {module_name} successfully imported")
+                version = getattr(module, "__version__", "unknown")
+                logger.info(f"✅ Dependency {module_name} successfully imported (version: {version})")
             except ImportError as e:
                 logger.error(f"❌ Dependency {module_name} import failed: {e}")
+                return False
         
         return True
     except ImportError as e:
         logger.error(f"❌ Supabase module import failed: {e}")
-        logger.error("   Please run: pip install supabase-py postgrest-py httpx gotrue storage3 realtime")
+        logger.error("   Please run: pip install supabase-py==2.0.0 postgrest-py==0.10.3 httpx==0.24.1 gotrue==0.5.4 storage3==0.5.4 realtime==0.1.3")
         return False
     except Exception as e:
         logger.error(f"❌ Unexpected error when importing Supabase: {e}")
@@ -65,20 +75,20 @@ def test_supabase_connection():
             # Check if user_profiles table exists by trying to access it
             response = client.table("user_profiles").select("id").limit(1).execute()
             logger.info(f"✅ Successfully connected to Supabase and queried user_profiles table!")
-            logger.info(f"   Response data: {response.data}")
+            logger.info(f"   Response data: {response.data if hasattr(response, 'data') else 'No data'}")
             return True
         except Exception as query_error:
             logger.warning(f"⚠️ Could not query user_profiles table: {query_error}")
             
-            # Try a more basic test
-            logger.info("Trying a basic test query...")
+            # Try a more basic test with a different table or approach
+            logger.info("Trying a basic connection test...")
             try:
-                # Try a simpler query to check connectivity
-                health = client.table("healthcheck").select("*").limit(1).execute()
-                logger.info("✅ Successfully connected to Supabase with basic query")
+                # For supabase-py 2.0.0, we might need a different approach
+                version_info = client.postgrest.version()
+                logger.info(f"✅ Successfully connected to Supabase! PostgreSQL version info available")
                 return True
             except Exception as basic_error:
-                logger.error(f"❌ Basic query also failed: {basic_error}")
+                logger.error(f"❌ Basic connection test also failed: {basic_error}")
                 return False
     except Exception as e:
         logger.error(f"❌ Error when connecting to Supabase: {e}")

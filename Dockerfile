@@ -2,33 +2,43 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Установка системных зависимостей
+# Установка системных зависимостей для сборки Python-пакетов
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
+    g++ \
     python3-dev \
     libffi-dev \
     libssl-dev \
-    libc-dev \
+    pkg-config \
+    git \
     procps \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Обновим pip
-RUN pip install --upgrade pip setuptools wheel
+# Обновление pip и установка инструментов сборки
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 # Копируем только requirements.txt
 COPY requirements.txt .
 
-# Установка зависимостей в оптимальном порядке
-# Сначала базовые и критичные зависимости
+# Установка базовых зависимостей
 RUN pip install --no-cache-dir python-dotenv pytz pre-commit pytest
-RUN pip install --no-cache-dir httpx==0.25.2 aiohttp==3.9.1
-RUN pip install --no-cache-dir aiogram==3.2.0
+
+# Установка aiogram и http-клиентов
+RUN pip install --no-cache-dir aiogram==3.2.0 
+RUN pip install --no-cache-dir httpx==0.24.1 aiohttp==3.9.1
+
+# Поэтапная установка Supabase и его зависимостей
+RUN pip install --no-cache-dir postgrest-py==0.10.3
+RUN pip install --no-cache-dir gotrue==0.5.4
+RUN pip install --no-cache-dir storage3==0.5.4
+RUN pip install --no-cache-dir realtime==0.1.3
+RUN pip install --no-cache-dir supabase-py==2.0.0
+
+# Установка OpenAI и других библиотек
 RUN pip install --no-cache-dir openai==1.3.5
 RUN pip install --no-cache-dir ephem elevenlabs aiofiles apscheduler
-
-# Явная установка Supabase и его зависимостей
-RUN pip install --no-cache-dir --force-reinstall postgrest-py==0.11.0 httpx gotrue==1.3.0 storage3==0.6.1 realtime==1.0.0 supabase-py==2.3.1
 
 # Явная установка psutil с нужными зависимостями
 RUN pip install --no-cache-dir --force-reinstall psutil==5.9.5
